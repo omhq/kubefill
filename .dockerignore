@@ -1,0 +1,26 @@
+.git
+.ipynb_checkpoints/*
+/notebooks/*
+/unused/*
+Dockerfile
+.DS_Store
+.gitignore
+README.md
+env.*
+/devops/*
+*.log
+.vscode/
+.idea/
+vendor/
+dist/
+*.iml
+# delve debug binaries
+cmd/**/debug
+debug.test
+coverage.out
+ui/node_modules/
+
+
+# To prevent storing dev/temporary container data
+*.csv
+/tmp/*

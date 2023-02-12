@@ -1,0 +1,351 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubefill-server-role
+rules:
+- apiGroups: ["batch", "extensions"]
+  resources: ["jobs"]
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups: [""]
+  resources:
+  - pods
+  - pods/log
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubefill-server
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubefill-server-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kubefill-server-role
+subjects:
+- kind: ServiceAccount
+  name: kubefill-server
+  namespace: kubefill
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kubefill-repos-pv-volume
+  labels:
+    type: local
+    app: kubefill-repo-server
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/repos"
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kubefill-ssh-volume
+  labels:
+    type: local
+    app: kubefill-repo-server
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/ssh"
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: kubefill-postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/postgres"
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubefill-repos-pv-claim
+  labels:
+    app: kubefill-repo-server
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubefill-ssh-pv-claim
+  labels:
+    app: kubefill-repo-server
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: kubefill-postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kubefill-postgres
+  name: kubefill-postgres
+spec:
+  selector:
+    matchLabels:
+      app: kubefill-postgres
+  template:
+    metadata:
+      labels:
+        app: kubefill-postgres
+      name: kubefill-postgres
+    spec:
+      containers:
+      - name: main
+        image: postgres:12-alpine
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: postgres
+        readinessProbe:
+          exec:
+            command:
+            - psql
+            - -U
+            - postgres
+            - -c
+            - SELECT 1
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgres-persistent-storage
+      volumes:
+        - name: postgres-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubefill-postgres
+  name: kubefill-postgres
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: kubefill-postgres
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubefill-postgres
+type: Opaque
+stringData:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubefill-repo-server
+  labels:
+    app: kubefill-repo-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubefill-repo-server
+  template:
+    metadata:
+      labels:
+        app: kubefill-repo-server
+    spec:
+      containers:
+        - name: kubefill-repo-server
+          image: kubefill/kubefill:latest
+          imagePullPolicy: Always
+          env:
+            - name: REPO_ROOT
+              value: /home/kubefill/repos
+            - name: SSH_ROOT
+              value: /home/kubefill/ssh
+          ports:
+            - name: http
+              containerPort: 8081
+          command:
+            - kubefill-reposerver
+          volumeMounts:
+            - mountPath: /home/kubefill/ssh
+              name: ssh-persistent-storage
+            - mountPath: /home/kubefill/repos
+              name: repos-persistent-storage
+      initContainers:
+        - name: ssh-volume-mount-hack
+          image: busybox
+          command: ["sh", "-c", "chown -R 999:999 /home/kubefill/ssh"]
+          volumeMounts:
+            - mountPath: /home/kubefill/ssh
+              name: ssh-persistent-storage
+        - name: repos-volume-mount-hack
+          image: busybox
+          command: ["sh", "-c", "chown -R 999:999 /home/kubefill/repos"]
+          volumeMounts:
+            - mountPath: /home/kubefill/repos
+              name: repos-persistent-storage
+      volumes:
+        - name: ssh-persistent-storage
+          persistentVolumeClaim:
+            claimName: kubefill-ssh-pv-claim
+        - name: repos-persistent-storage
+          persistentVolumeClaim:
+            claimName: kubefill-repos-pv-claim
+
+---
+apiVersion: v1  
+kind: Service
+metadata:
+  name: kubefill-repo-server
+  labels:
+    app: kubefill-repo-server
+spec:
+  type: NodePort
+  selector:
+    app: kubefill-repo-server
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 8081
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secrets-key
+data:
+  key: MDQwNzZkNjRiZGI2ZmNmMzE3MDZlZWE4NWVjOTg0MzE=
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubefill-server
+  labels:
+    app: kubefill-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubefill-server
+  template:
+    metadata:
+      labels:
+        app: kubefill-server
+    spec:
+      containers:
+      - name: kubefill-server
+        image: kubefill/kubefill:latest
+        imagePullPolicy: Always
+        env:
+        - name: LOGS_PATH
+          value: /home/kubefill/logs
+        - name: SECRETS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secrets-key
+              key: key
+        ports:
+        - name: http
+          containerPort: 8080
+        command:
+        - kubefill-server
+      serviceAccountName: kubefill-server
+
+---
+apiVersion: v1  
+kind: Service
+metadata:
+  name: kubefill-server
+  labels:
+    app: kubefill-server
+spec:
+  type: NodePort
+  selector:
+    app: kubefill-server
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080

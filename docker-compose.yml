@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+
+  kubefill-postgres:
+    image: postgres:12-alpine
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+
+  kubefill-repo-server:
+    build:
+      dockerfile: ./Dockerfile
+    image: kubefill/kubefill:dev-6623c18-dirty
+    ports:
+      - 8081:8081
+    command: ["kubefill-reposerver"]
+    volumes:
+      - ./repos:/home/kubefill/repos
+      - ./ssh:/home/kubefill/ssh
+    environment:
+      - REPO_ROOT=/home/kubefill/repos
+      - SSH_ROOT=/home/kubefill/ssh
+
+  kubefill-server:
+    build:
+      dockerfile: ./Dockerfile
+    image: kubefill/kubefill:dev-6623c18-dirty
+    depends_on:
+      - kubefill-repo-server
+      - kubefill-postgres
+    ports:
+      - 8080:8080
+    command: ["kubefill-server"]
+    volumes:
+      - ~/.kube/config:/home/kubefill/.kube/config
+      - ./logs:/home/kubefill/logs
+    environment:
+      - SECRETS_KEY=
+      - LOGS_PATH=/home/kubefill/logs
+      - KUBECONFIG=/home/kubefill/.kube/config

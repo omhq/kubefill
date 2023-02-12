@@ -1,0 +1,66 @@
+syntax = "proto3";
+package reposerver;
+
+option go_package = ".;reposerver";
+
+import "google/protobuf/struct.proto";
+
+
+message SyncRequest {
+    string repo = 1;
+    string repoId = 2;
+}
+
+message SyncResponse {
+    string hash = 1;
+    string commit = 2;
+}
+
+message SaveSshKeyRequest {
+    string sshKey = 1;
+    string repoId = 2;
+}
+
+message SaveSshKeyResponse {}
+
+message RemoveSshKeyRequest {
+    string repoId = 1;
+}
+
+message RemoveSshKeyResponse {}
+
+message ManifestsRequest {
+	string path = 1;
+}
+
+message RepoDirRequest {
+    string repoUrl = 1;
+    string repoId = 2;
+}
+
+message RepoDirResponse {
+    string path = 2;
+}
+
+message PathsRequest {}
+
+message PathsResponse {
+    string repoRoot = 1;
+    string sshRoot = 2;
+    string privateKey = 3;
+}
+
+message ManifestsResponse {
+    google.protobuf.Struct data = 1;
+    google.protobuf.Struct ui_schema = 2;
+    google.protobuf.Struct schema = 3;
+}
+
+service RepoService {
+    rpc Sync(SyncRequest) returns (SyncResponse) {}
+    rpc SaveSshKey(SaveSshKeyRequest) returns (SaveSshKeyResponse) {}
+    rpc RemoveSshKey(RemoveSshKeyRequest) returns (RemoveSshKeyResponse) {}
+    rpc GetManifests(ManifestsRequest) returns (ManifestsResponse) {}
+    rpc GetRepoDir(RepoDirRequest) returns (RepoDirResponse) {}
+    rpc GetPaths(PathsRequest) returns (PathsResponse) {}
+}
