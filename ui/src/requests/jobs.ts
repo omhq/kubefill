@@ -1,11 +1,12 @@
-import { deleteRequest, parseOrThrowRequest } from "./utils";
-import { API_PATH, SERVER_HOSTNAME, SERVER_PORT } from "../constants";
+import { deleteRequest, getServerPort, parseOrThrowRequest } from "./utils";
+import { API_PATH, SERVER_HOSTNAME } from "../constants";
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
 const PROTOCOL = window.location.protocol;
+const PORT = getServerPort();
 
 const getBaseUrl = () => {
-  return `${PROTOCOL}//${DOMAIN}${SERVER_PORT ? `:${SERVER_PORT}` : ""}/${API_PATH}`;
+  return `${PROTOCOL}//${DOMAIN}${PORT ? `:${PORT}` : ""}/${API_PATH}`;
 };
 
 export const fetchJob = async (id: number) => {

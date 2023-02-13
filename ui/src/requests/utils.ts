@@ -1,3 +1,5 @@
+import { SERVER_PORT } from "../constants";
+
 type ErrorWithMessage = {
   message: string;
 };
@@ -81,4 +83,16 @@ export const put = async (url: string, data: any, { headers = {} } = {}) => {
   if (!res.ok) throw res;
   if (res.status === 204) return;
   return await res.json();
+};
+
+export const getServerPort = (): string => {
+  if (SERVER_PORT) {
+    return SERVER_PORT;
+  }
+
+  if (window.location.port) {
+    return window.location.port;
+  }
+
+  return "";
 };

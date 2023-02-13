@@ -1,12 +1,14 @@
 import { deleteRequest, parseOrThrowRequest, post, put } from "./utils";
 import { Application, RunStatus, FormData, ApplicationFull, Secret, SecretCreate } from "../types";
-import { API_PATH, SERVER_HOSTNAME, SERVER_PORT } from "../constants";
+import { getServerPort } from "./utils";
+import { API_PATH, SERVER_HOSTNAME } from "../constants";
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
 const PROTOCOL = window.location.protocol;
+const PORT = getServerPort();
 
 const getBaseUrl = () => {
-  return `${PROTOCOL}//${DOMAIN}${SERVER_PORT ? `:${SERVER_PORT}` : ""}/${API_PATH}`;
+  return `${PROTOCOL}//${DOMAIN}${PORT ? `:${PORT}` : ""}/${API_PATH}`;
 };
 
 export const createApplication = async (values: Partial<any>) => {

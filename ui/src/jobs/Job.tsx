@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import JobBar from "./JobBar";
 import { useSnackbar } from "notistack";
-import { getErrorMessage } from "../requests/utils";
+import { getErrorMessage, getServerPort } from "../requests/utils";
 import { WS_PATH, SERVER_PORT, SERVER_HOSTNAME } from "../constants";
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
@@ -126,9 +126,11 @@ const Job = () => {
 
   useEffect(() => {
     if (ws === null && uniqueId) {
+      const PORT = getServerPort();
       const connection = new WebSocket(
-        `ws://${DOMAIN}${SERVER_PORT ? `:${SERVER_PORT}` : ""}/${WS_PATH}?id=${uniqueId}`
+        `ws://${DOMAIN}${PORT ? `:${PORT}` : ""}/${WS_PATH}?id=${uniqueId}`
       );
+
       setWs(connection);
     }
 
