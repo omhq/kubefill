@@ -120,7 +120,11 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			repo, err := repoService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -136,7 +140,11 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			repo, err := repoService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -168,7 +176,11 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			repo, err := repoService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -213,7 +225,11 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			repo, err := repoService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -264,7 +280,11 @@ func (s *Server) applicationHandler(applicationService *application.Service, rep
 			app, err := applicationService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -306,7 +326,11 @@ func (s *Server) applicationHandler(applicationService *application.Service, rep
 			app, err := applicationService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -361,7 +385,11 @@ func (s *Server) applicationHandler(applicationService *application.Service, rep
 			app, err := applicationService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -610,7 +638,11 @@ func (s *Server) applicationSecretHandler(applicationService *application.Servic
 			storedSecret, err := secretService.Get(secretIdUint)
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -631,7 +663,11 @@ func (s *Server) applicationSecretHandler(applicationService *application.Servic
 			storedSecret, err := secretService.Get(secretIdUint)
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -672,7 +708,11 @@ func (s *Server) applicationSecretHandler(applicationService *application.Servic
 			storedSecret, err := secretService.Get(secretIdUint)
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -824,7 +864,11 @@ func (s *Server) jobHandler(jobService *job.JobService) http.HandlerFunc {
 			job, err := jobService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
@@ -849,7 +893,11 @@ func (s *Server) jobHandler(jobService *job.JobService) http.HandlerFunc {
 			app, err := jobService.Get(uint(idAsUInt))
 
 			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				if err.Error() == "record not found" {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusNotFound)
+				} else {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				}
 				return
 			}
 
