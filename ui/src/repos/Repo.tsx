@@ -140,12 +140,20 @@ const Repo = () => {
 
   useEffect(() => {
     if (repoId) {
-      fetchRepo(repoId).then((data) => {
-        setRepo(data);
-        setFormDefaults({
-          url: data.url,
+      fetchRepo(repoId)
+        .then((data) => {
+          setRepo(data);
+          setFormDefaults({
+            url: data.url,
+          });
+        })
+        .catch((err) => {
+          err.json().then((resp: any) => {
+            enqueueSnackbar(getErrorMessage(resp), {
+              variant: "error",
+            });
+          });
         });
-      });
     }
   }, [repoId]);
 

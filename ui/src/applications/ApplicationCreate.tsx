@@ -67,11 +67,13 @@ const ApplicationCreate = () => {
   useEffect(() => {
     fetchRepos()
       .then(setRepos)
-      .catch((err) =>
-        enqueueSnackbar(getErrorMessage(err), {
-          variant: "error",
-        })
-      );
+      .catch((err) => {
+        err.json().then((resp: any) => {
+          enqueueSnackbar(getErrorMessage(resp), {
+            variant: "error",
+          });
+        });
+      });
   }, [enqueueSnackbar]);
 
   const handleValueUpdate = (values: FormikValues) => {

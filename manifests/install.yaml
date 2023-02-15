@@ -218,6 +218,24 @@ stringData:
   POSTGRES_DB: postgres
 
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin
+type: Opaque
+stringData:
+  password: pass
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt
+type: Opaque
+stringData:
+  key: supersecretkey
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

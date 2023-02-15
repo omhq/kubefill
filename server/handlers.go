@@ -17,6 +17,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kubefill/kubefill/pkg/application"
+	"github.com/kubefill/kubefill/pkg/auth"
 	"github.com/kubefill/kubefill/pkg/client"
 	"github.com/kubefill/kubefill/pkg/job"
 	repoPkg "github.com/kubefill/kubefill/pkg/repo"
@@ -25,6 +26,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func (s *Server) apiRoot() http.HandlerFunc {
@@ -782,13 +784,6 @@ func (s *Server) applicationJobHandler(applicationService *application.Service, 
 				secretsMap[sc.Name] = decrypted
 			}
 
-			randomString, err := GenerateRandomString(10)
-
-			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
-				return
-			}
-
 			sp, _ := json.Marshal(jobPayload.Spec)
 			spAsString := string(sp)
 			reg := regexp.MustCompile(`{{([^}}]*)}}`)
@@ -807,7 +802,7 @@ func (s *Server) applicationJobHandler(applicationService *application.Service, 
 
 			json.Unmarshal([]byte(spAsString), &jobPayload.Spec)
 
-			jobName := fmt.Sprintf("%s-%s", jobPayload.ObjectMeta.Name, randomString)
+			jobName := fmt.Sprintf("%s-%s", jobPayload.ObjectMeta.Name, generateRandomString(12, charset))
 			jobConfig := client.JobConfig{ObjectMeta: jobPayload.ObjectMeta, Spec: jobPayload.Spec}
 			newJob := jobService.Create(job.Job{Name: jobName, ApplicationID: appIdUint})
 			labels := make(map[string]string)
@@ -933,6 +928,85 @@ func (s *Server) wsHandler(hub *Hub) http.HandlerFunc {
 
 			go client.writePump()
 			go client.readPump()
+		default:
+			JSONError(rw, errorResp{Message: "Something went wrong..."}, http.StatusInternalServerError)
+		}
+	}
+}
+
+func (s *Server) loginHandler() http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "POST":
+			var tokenRequestPayload TokenRequest
+			decoder := json.NewDecoder(r.Body)
+			err := decoder.Decode(&tokenRequestPayload)
+
+			if err != nil {
+				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				return
+			}
+
+			jwtKeySecret, err := s.clientset.CoreV1().Secrets("kubefill").Get(context.TODO(), "jwt", metav1.GetOptions{})
+
+			if err != nil {
+				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				return
+			}
+
+			jwtKey := string(jwtKeySecret.Data["key"])
+
+			if tokenRequestPayload.Username == "admin" {
+				s, err := s.clientset.CoreV1().Secrets("kubefill").Get(context.TODO(), "admin", metav1.GetOptions{})
+
+				if err != nil {
+					JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+					return
+				}
+
+				if tokenRequestPayload.Password == string(s.Data["password"]) {
+					tokenString, err := auth.GenerateJWT(jwtKey, tokenRequestPayload.Username, tokenRequestPayload.Username)
+
+					if err != nil {
+						JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+						return
+					}
+
+					respBytes, err := json.Marshal(TokenHttpResponse{Token: tokenString})
+
+					if err != nil {
+						JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+						return
+					}
+
+					io.WriteString(rw, string(respBytes))
+					return
+				} else {
+					JSONError(rw, errorResp{Message: "bad admin password"}, http.StatusUnauthorized)
+					return
+				}
+			}
+
+			JSONError(rw, errorResp{Message: "users are not setup"}, http.StatusUnauthorized)
+		default:
+			JSONError(rw, errorResp{Message: "Something went wrong..."}, http.StatusInternalServerError)
+		}
+	}
+}
+
+func (s *Server) selfHandler() http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			resp := SelfHttpResponse{User: "admin"}
+			respBytes, err := json.Marshal(resp)
+
+			if err != nil {
+				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				return
+			}
+
+			io.WriteString(rw, string(respBytes))
 		default:
 			JSONError(rw, errorResp{Message: "Something went wrong..."}, http.StatusInternalServerError)
 		}

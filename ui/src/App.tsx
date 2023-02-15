@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import Application from "./applications/Application";
 import Applications from "./applications/Applications";
@@ -14,8 +14,38 @@ import RepoCreate from "./repos/RepoCreate";
 import Secrets from "./secrets/Secrets";
 import Secret from "./secrets/Secret";
 import SecretCreate from "./secrets/SecretCreate";
+import ProtectedRoute, { ProtectedRouteProps } from "./partials/ProtectedRoute";
+import { useLocalStorageAuth } from "./hooks/auth";
+import { useEffect, useReducer } from "react";
+import { getSelf } from "./requests/auth";
+import { authSelf, initialState, reducer } from "./reducers";
+import { LOCAL_STORAGE } from "./constants";
+import Login from "./login";
 
 const App = () => {
+  const [_, dispatch] = useReducer(reducer, initialState);
+  const auth = useLocalStorageAuth();
+  const navigate = useNavigate();
+  const isAuthenticated = !!(auth && Object.keys(auth).length);
+
+  const defaultProtectedRouteProps: Omit<ProtectedRouteProps, "outlet"> = {
+    isAuthenticated: isAuthenticated,
+    authenticationPath: "/login",
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getSelf()
+        .then((data) => {
+          dispatch(authSelf(data));
+        })
+        .catch((err) => {
+          localStorage.removeItem(LOCAL_STORAGE);
+          navigate("/login");
+        });
+    }
+  }, [dispatch, isAuthenticated]);
+
   return (
     <>
       <SnackbarProvider
@@ -26,20 +56,65 @@ const App = () => {
         }}
       >
         <Routes>
-          <Route path="/" element={<Applications />} />
-          <Route path="/repos/" element={<Repos />} />
-          <Route path="/repos/new" element={<RepoCreate />} />
-          <Route path="/repos/:repoId" element={<Repo />} />
-          <Route path="/applications/" element={<Applications />} />
-          <Route path="/applications/new" element={<ApplicationCreate />} />
-          <Route path="/applications/:appId" element={<Application />} />
-          <Route path="/applications/:appId/secrets" element={<Secrets />} />
-          <Route path="/applications/:appId/secrets/new" element={<SecretCreate />} />
-          <Route path="/applications/:appId/secrets/:secretId" element={<Secret />} />
-          <Route path="/applications/:appId/run" element={<Run />} />
-          <Route path="/applications/:appId/runs" element={<Jobs />} />
-          <Route path="/applications/:appId/runs/:jobId" element={<Job />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route
+            path="/"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
+          />
+          <Route
+            path="/repos/"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repos />} />}
+          />
+          <Route
+            path="/repos/new"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RepoCreate />} />}
+          />
+          <Route
+            path="/repos/:repoId"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repo />} />}
+          />
+          <Route
+            path="/applications/"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
+          />
+          <Route
+            path="/applications/new"
+            element={
+              <ProtectedRoute {...defaultProtectedRouteProps} outlet={<ApplicationCreate />} />
+            }
+          />
+          <Route
+            path="/applications/:appId"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Application />} />}
+          />
+          <Route
+            path="/applications/:appId/secrets"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Secrets />} />}
+          />
+          <Route
+            path="/applications/:appId/secrets/new"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<SecretCreate />} />}
+          />
+          <Route
+            path="/applications/:appId/secrets/:secretId"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Secret />} />}
+          />
+          <Route
+            path="/applications/:appId/run"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Run />} />}
+          />
+          <Route
+            path="/applications/:appId/runs"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Jobs />} />}
+          />
+          <Route
+            path="/applications/:appId/runs/:jobId"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Job />} />}
+          />
+          <Route
+            path="/settings"
+            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Settings />} />}
+          />
+          <Route path="/login" element={<Login dispatch={dispatch} />} />
         </Routes>
       </SnackbarProvider>
     </>

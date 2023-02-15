@@ -21,7 +21,7 @@ import {
 import JobBar from "./JobBar";
 import { useSnackbar } from "notistack";
 import { getErrorMessage, getServerPort } from "../requests/utils";
-import { WS_PATH, SERVER_PORT, SERVER_HOSTNAME } from "../constants";
+import { WS_PATH, SERVER_HOSTNAME } from "../constants";
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
 

@@ -107,25 +107,35 @@ const Application = () => {
 
   useEffect(() => {
     if (appId) {
-      fetchApplication(parseInt(appId)).then((data) => {
-        setApplication(data);
-        setFormDefaults({
-          name: data.app.name,
-          manifest_path: data.app.manifest_path,
-          repo_id: data.app.repo_id,
+      fetchApplication(parseInt(appId))
+        .then((data) => {
+          setApplication(data);
+          setFormDefaults({
+            name: data.app.name,
+            manifest_path: data.app.manifest_path,
+            repo_id: data.app.repo_id,
+          });
+        })
+        .catch((err) => {
+          err.json().then((resp: any) => {
+            enqueueSnackbar(getErrorMessage(resp), {
+              variant: "error",
+            });
+          });
         });
-      });
     }
   }, [appId]);
 
   useEffect(() => {
     fetchRepos()
       .then(setRepos)
-      .catch((err) =>
-        enqueueSnackbar(getErrorMessage(err), {
-          variant: "error",
-        })
-      );
+      .catch((err) => {
+        err.json().then((resp: any) => {
+          enqueueSnackbar(getErrorMessage(resp), {
+            variant: "error",
+          });
+        });
+      });
   }, [enqueueSnackbar]);
 
   const handleValueUpdate = (values: FormikValues) => {

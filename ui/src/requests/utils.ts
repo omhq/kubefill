@@ -1,4 +1,4 @@
-import { SERVER_PORT } from "../constants";
+import { LOCAL_STORAGE, SERVER_PORT } from "../constants";
 
 type ErrorWithMessage = {
   message: string;
@@ -37,22 +37,20 @@ export const parseOrThrowRequest = async (
   url: RequestInfo | URL,
   { headers = {} as Record<string, string> } = {}
 ) => {
-  const _headers = new Headers();
-  Object.entries(headers).forEach(([key, value]) => {
-    if (value) {
-      _headers.append(key, value);
-    }
-  });
-  const res = await fetch(url, { headers: _headers });
+  const res = await fetch(url, { headers: { "Content-Type": "application/json", ...headers } });
   if (!res.ok) throw res;
   if (res.status === 204) return;
   return await res.json();
 };
 
-export const deleteRequest = async (url: string, data: Record<string, string | number>) => {
+export const deleteRequest = async (
+  url: string,
+  data: Record<string, string | number>,
+  { headers = {} } = {}
+) => {
   const res = await fetch(url, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
     body: JSON.stringify(data),
   });
 
@@ -95,4 +93,14 @@ export const getServerPort = (): string => {
   }
 
   return "";
+};
+
+export const getLocalStorageJWTKeys = () => {
+  const jwtKeys = localStorage.getItem(LOCAL_STORAGE);
+
+  if (jwtKeys) {
+    return JSON.parse(jwtKeys);
+  }
+
+  return null;
 };

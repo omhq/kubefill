@@ -1,4 +1,4 @@
-import { getServerPort, parseOrThrowRequest } from "./utils";
+import { getLocalStorageJWTKeys, getServerPort, parseOrThrowRequest } from "./utils";
 import { API_PATH, SERVER_HOSTNAME } from "../constants";
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
@@ -10,6 +10,12 @@ const getBaseUrl = () => {
 };
 
 export const fetchLogs = async (id: number) => {
+  const jwtKeys = getLocalStorageJWTKeys();
   const url = `${getBaseUrl()}/jobs/${id}/logs`;
-  return (await parseOrThrowRequest(url)) as Promise<any>;
+  return (await parseOrThrowRequest(url, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwtKeys.token}`,
+    },
+  })) as Promise<any>;
 };

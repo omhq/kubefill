@@ -105,7 +105,7 @@ func (c *PodLoggingController) podUpdate(old, new interface{}) {
 	pod := new.(*corev1.Pod)
 	labels := pod.ObjectMeta.Labels
 	job_id := JobIdAsUint(labels["job_id"])
-	log.Infof("pod %s updated for job id %d with phase %s", job_id, pod.Name, string(pod.Status.Phase))
+	log.Infof("pod %s updated, job id %d, phase %s", job_id, pod.Name, string(pod.Status.Phase))
 	c.updateJobStatus(job_id, string(pod.Status.Phase))
 	_, ok := c.pods[pod.Name]
 

@@ -4,10 +4,13 @@ import { Crumb, Crumbs } from "../Crumbs";
 import { useEffect, useState } from "react";
 import { fetchSettings } from "../requests/settings";
 import { Typography } from "@mui/material";
+import { getErrorMessage } from "../requests/utils";
+import { useSnackbar } from "notistack";
 
 const Settings = () => {
   const [crumbs, setCrumbs] = useState<Crumb[]>([]);
   const [settings, setSettings] = useState<Record<string, string>>();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setCrumbs([
@@ -20,9 +23,17 @@ const Settings = () => {
   }, []);
 
   useEffect(() => {
-    fetchSettings().then((data) => {
-      setSettings(data);
-    });
+    fetchSettings()
+      .then((data) => {
+        setSettings(data);
+      })
+      .catch((err) => {
+        err.json().then((resp: any) => {
+          enqueueSnackbar(getErrorMessage(resp), {
+            variant: "error",
+          });
+        });
+      });
   }, []);
 
   return (

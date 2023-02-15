@@ -26,6 +26,7 @@ import (
 	"github.com/gorilla/mux"
 	ui "github.com/kubefill/kubefill"
 	log "github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var uiFS fs.FS
@@ -89,6 +90,13 @@ func (s *Server) Run() {
 	secretService := secret.NewService(s.db)
 	applicationService := application.NewService(s.db)
 	informer := client.NewInformer(s.clientset, jobService)
+	jwtKeySecret, err := s.clientset.CoreV1().Secrets("kubefill").Get(context.TODO(), "jwt", metav1.GetOptions{})
+
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+
+	jwtKey := string(jwtKeySecret.Data["key"])
 
 	s.router.HandleFunc("/api/v1/", s.apiRoot())
 	s.router.HandleFunc("/api/v1/repos", s.reposHandler(s.repoService))
@@ -103,12 +111,16 @@ func (s *Server) Run() {
 	s.router.HandleFunc("/api/v1/jobs/{id:[0-9]+}/logs", s.logsHandler())
 	s.router.HandleFunc("/api/v1/settings", s.settingsHandler())
 
+	s.router.HandleFunc("/api/v1/auth/login", s.loginHandler())
+	s.router.HandleFunc("/api/v1/auth/self", s.selfHandler())
+
 	s.router.HandleFunc("/health", httpState.Health)
 	s.router.HandleFunc("/ws", s.wsHandler(s.hub))
 
 	spa := spaHandler{indexPath: "index.html"}
 	s.router.PathPrefix("/").Handler(spa)
 	s.router.Use(corsMiddleware)
+	s.router.Use(authMiddleware(jwtKey))
 
 	http.Handle("/", s.router)
 

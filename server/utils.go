@@ -4,19 +4,21 @@ import (
 	"bufio"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
+	cryptoRand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/big"
+	"math/rand"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/djherbis/times"
 	"github.com/golang/gddo/httputil/header"
+	"github.com/kubefill/kubefill/pkg/auth"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 )
@@ -125,7 +127,7 @@ func decodeJSONBody(w http.ResponseWriter, r *http.Request, dst interface{}) err
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Add("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, AccessToken, X-CSRF-Token, Authorization, Token")
 		w.Header().Add("Access-Control-Allow-Credentials", "true")
 		w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		if r.Method == "OPTIONS" {
@@ -136,18 +138,74 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func GenerateRandomString(n int) (string, error) {
-	const letters = "abcdefghijklmnopqrstuvwxyz-"
-	ret := make([]byte, n)
-	for i := 0; i < n; i++ {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
-		if err != nil {
-			return "", err
-		}
-		ret[i] = letters[num.Int64()]
+func check(result string) (bool, error) {
+	secureRoutes := []string{
+		"repos",
+		"applications",
+		"jobs",
+		"settings",
+		"auth/self",
 	}
 
-	return string(ret), nil
+	for _, v := range secureRoutes {
+		m, err := regexp.MatchString(v, result)
+
+		if err != nil {
+			return true, err
+		}
+
+		if m {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func authMiddleware(jwtKey string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			secure, err := check(r.RequestURI)
+
+			if err != nil {
+				JSONError(w, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				return
+			}
+
+			if secure {
+				reqToken := r.Header.Get("Authorization")
+
+				if reqToken == "" {
+					JSONError(w, errorResp{Message: "Missing auth token"}, http.StatusForbidden)
+					return
+				}
+
+				splitToken := strings.Split(reqToken, "Bearer ")
+				tokenString := splitToken[1]
+				err := auth.ValidateToken(jwtKey, tokenString)
+
+				if err != nil {
+					JSONError(w, errorResp{Message: "bad auth token"}, http.StatusForbidden)
+					return
+				}
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+const charset = "abcdefghijklmnopqrstuvwxyz"
+
+var seededRand *rand.Rand = rand.New(
+	rand.NewSource(time.Now().UnixNano()))
+
+func generateRandomString(length int, charset string) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
 }
 
 func readLines(path string) ([]string, error) {
@@ -194,7 +252,7 @@ func encrypt(key []byte, message string) (string, error) {
 	cipherText := make([]byte, aes.BlockSize+len(byteMsg))
 	iv := cipherText[:aes.BlockSize]
 
-	if _, err = io.ReadFull(rand.Reader, iv); err != nil {
+	if _, err = io.ReadFull(cryptoRand.Reader, iv); err != nil {
 		return "", fmt.Errorf("could not encrypt: %v", err)
 	}
 

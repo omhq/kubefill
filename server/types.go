@@ -62,3 +62,16 @@ type PairList []Pair
 func (p PairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 func (p PairList) Len() int           { return len(p) }
 func (p PairList) Less(i, j int) bool { return p[i].Value.DateCreated.Before(p[j].Value.DateCreated) }
+
+type SelfHttpResponse struct {
+	User string `json:"user"`
+}
+
+type TokenRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type TokenHttpResponse struct {
+	Token string `json:"token"`
+}

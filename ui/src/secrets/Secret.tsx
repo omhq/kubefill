@@ -130,12 +130,20 @@ const Repo = () => {
 
   useEffect(() => {
     if (appId && secretId) {
-      fetchApplicationSecret(appId, secretId).then((data) => {
-        setSecret(data);
-        setFormDefaults({
-          name: data.name,
+      fetchApplicationSecret(appId, secretId)
+        .then((data) => {
+          setSecret(data);
+          setFormDefaults({
+            name: data.name,
+          });
+        })
+        .catch((err) => {
+          err.json().then((resp: any) => {
+            enqueueSnackbar(getErrorMessage(resp), {
+              variant: "error",
+            });
+          });
         });
-      });
     }
   }, [secretId]);
 
@@ -143,9 +151,17 @@ const Repo = () => {
     let unsubscribed = false;
 
     if (appId) {
-      fetchApplication(parseInt(appId)).then((data) => {
-        setApplication(data);
-      });
+      fetchApplication(parseInt(appId))
+        .then((data) => {
+          setApplication(data);
+        })
+        .catch((err) => {
+          err.json().then((resp: any) => {
+            enqueueSnackbar(getErrorMessage(resp), {
+              variant: "error",
+            });
+          });
+        });
     }
 
     return () => {

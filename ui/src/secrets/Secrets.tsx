@@ -121,9 +121,17 @@ const Secrets = () => {
           });
         });
 
-      fetchApplication(parseInt(appId)).then((data) => {
-        setApplication(data);
-      });
+      fetchApplication(parseInt(appId))
+        .then((data) => {
+          setApplication(data);
+        })
+        .catch((err) => {
+          err.json().then((resp: any) => {
+            enqueueSnackbar(getErrorMessage(resp), {
+              variant: "error",
+            });
+          });
+        });
     }
 
     return () => {

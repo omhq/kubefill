@@ -8,11 +8,14 @@ import ApplicationsBar from "./ApplicationsBar";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
 import Drawer from "../globals/Drawer";
+import { useSnackbar } from "notistack";
+import { getErrorMessage } from "../requests/utils";
 
 const Applications = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState<ApplicationType[]>();
   const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "name", headerName: "NAME", flex: 0.2, width: 100 },
@@ -88,12 +91,20 @@ const Applications = () => {
       },
     ]);
 
-    fetchApplications().then((data) => {
-      if (!unsubscribed) {
-        const sortedData = data.sort((a, b) => b.id - a.id);
-        setApplications(sortedData);
-      }
-    });
+    fetchApplications()
+      .then((data) => {
+        if (!unsubscribed) {
+          const sortedData = data.sort((a, b) => b.id - a.id);
+          setApplications(sortedData);
+        }
+      })
+      .catch((err) => {
+        err.json().then((resp: any) => {
+          enqueueSnackbar(getErrorMessage(resp), {
+            variant: "error",
+          });
+        });
+      });
 
     return () => {
       unsubscribed = true;
