@@ -1,10 +1,12 @@
-# KubeFill
+# Kubefill
 
 Self-service UIs
 
 ## Why does this exist
 
-Sometimes its easier and quicker to fill out a form and click run than to dig up a repo, export envs, set the right kubernetes cluster context, read up some docs as a refresher, and then finally run kubectl commands. This project puts version controlled html forms between a user and the workloads in your kubernetes cluster.
+This project puts version controlled html forms and markdown docs between a user and the workloads in your k8s cluster.
+
+![kubefill](https://user-images.githubusercontent.com/849403/219342375-d6798267-4eee-4c5b-b877-e163dbf012cf.jpg)
 
 ## Install
 
