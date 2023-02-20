@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: reposerver/reposervice.proto
+// source: reposervice.proto
 
 package reposerver
 
@@ -281,5 +281,5 @@ var RepoService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "reposerver/reposervice.proto",
+	Metadata: "reposervice.proto",
 }

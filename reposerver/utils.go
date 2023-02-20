@@ -3,8 +3,10 @@ package reposerver
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	giturl "github.com/kubescape/go-git-url"
 	log "github.com/sirupsen/logrus"
@@ -32,9 +34,9 @@ func getFullRepoDir(rootDir string, giturl giturl.IGitURL) string {
 	return fmt.Sprintf("%s/%s-%s", rootDir, giturl.GetOwnerName(), giturl.GetRepoName())
 }
 
-func doSync(repoId string, repoUrl string, repoDir string) (*git.Repository, error) {
+func doSync(repoId string, repoUrl string, repoBranch string, repoDir string) (*git.Repository, error) {
 	if _, err := os.Stat(repoDir); os.IsNotExist(err) {
-		r, err := cloneRepo(repoId, repoUrl, repoDir)
+		r, err := cloneRepo(repoId, repoUrl, repoBranch, repoDir)
 
 		if err != nil {
 			return nil, err
@@ -44,7 +46,7 @@ func doSync(repoId string, repoUrl string, repoDir string) (*git.Repository, err
 	}
 
 	if _, err := os.Stat(repoDir); !os.IsNotExist(err) {
-		r, err := pullRepo(repoId, repoDir)
+		r, err := pullRepo(repoId, repoUrl, repoBranch, repoDir)
 
 		if err != nil {
 			return nil, err
@@ -74,19 +76,22 @@ func getPublicKey(dirPath string) (*ssh.PublicKeys, error) {
 	return publicKey, err
 }
 
-func cloneRepo(repoId string, repoUrl string, repoDir string) (*git.Repository, error) {
-	log.Infof("cloning %s into %s", repoUrl, repoDir)
+func cloneRepo(repoId string, repoUrl string, repoBranch string, repoDir string) (*git.Repository, error) {
+	log.Infof("git clone -b %s --single-branch %s %s", repoBranch, repoUrl, repoDir)
 	dirPath := os.Getenv(SSH_ROOT) + "/" + repoId
 	auth, keyErr := getPublicKey(dirPath)
+	referenceName := fmt.Sprintf("refs/heads/%s", repoBranch)
 
 	if keyErr != nil {
 		return nil, keyErr
 	}
 
 	r, err := git.PlainClone(repoDir, false, &git.CloneOptions{
-		Progress: os.Stdout,
-		URL:      repoUrl,
-		Auth:     auth,
+		Progress:      os.Stdout,
+		URL:           repoUrl,
+		Auth:          auth,
+		ReferenceName: plumbing.ReferenceName(referenceName),
+		SingleBranch:  true,
 	})
 
 	if err != nil {
@@ -96,39 +101,72 @@ func cloneRepo(repoId string, repoUrl string, repoDir string) (*git.Repository, 
 	return r, nil
 }
 
-func pullRepo(repoId string, repoDir string) (*git.Repository, error) {
-	log.Infof("pulling %s", repoDir)
+func pullBranch(r *git.Repository, repoId string, repoBranch string) error {
+	dirPath := os.Getenv(SSH_ROOT) + "/" + repoId
+	auth, err := getPublicKey(dirPath)
+
+	if err != nil {
+		return err
+	}
+
+	w, err := r.Worktree()
+
+	if err != nil {
+		return err
+	}
+
+	err = w.Pull(&git.PullOptions{
+		Progress:      os.Stdout,
+		RemoteName:    "origin",
+		Auth:          auth,
+		ReferenceName: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", repoBranch)),
+	})
+
+	if err != nil {
+		if err == git.NoErrAlreadyUpToDate {
+			return nil
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func pullRepo(repoId string, repoUrl string, repoBranch string, repoDir string) (*git.Repository, error) {
+	log.Infof("git pull origin %s", repoBranch)
 	r, err := git.PlainOpen(repoDir)
 
 	if err != nil {
 		return nil, err
 	}
 
-	w, err := r.Worktree()
+	h, err := r.Head()
 
 	if err != nil {
 		return nil, err
 	}
 
-	dirPath := os.Getenv(SSH_ROOT) + "/" + repoId
-	auth, keyErr := getPublicKey(dirPath)
+	currentBranch := strings.TrimPrefix(string(h.Name()), "refs/heads/")
 
-	if keyErr != nil {
-		return nil, keyErr
-	}
+	if currentBranch == repoBranch {
+		err := pullBranch(r, repoId, repoBranch)
 
-	err = w.Pull(&git.PullOptions{
-		Progress:   os.Stdout,
-		RemoteName: "origin",
-		Auth:       auth,
-	})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err := os.RemoveAll(repoDir)
 
-	if err != nil {
-		if err == git.NoErrAlreadyUpToDate {
-			return r, nil
+		if err != nil {
+			return nil, err
 		}
 
-		return nil, err
+		r, err = doSync(repoId, repoUrl, repoBranch, repoDir)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return r, nil

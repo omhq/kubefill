@@ -142,7 +142,7 @@ func (s *Server) Run() {
 			repos := s.repoService.List()
 
 			for _, repo := range repos {
-				message := reposerver.SyncRequest{Repo: repo.Url, RepoId: strconv.FormatInt(int64(repo.Id), 10)}
+				message := reposerver.SyncRequest{Repo: repo.Url, Branch: repo.Branch, RepoId: strconv.FormatInt(int64(repo.Id), 10)}
 				resp, err := rp.Sync(context.Background(), &message)
 
 				if err != nil {

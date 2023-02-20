@@ -72,6 +72,7 @@ func (s *Server) reposHandler(service *repoPkg.Service) http.HandlerFunc {
 
 			var newRepo repoPkg.Repo
 			newRepo.Url = newRepoPayload.Url
+			newRepo.Branch = newRepoPayload.Branch
 			repo := service.Create(newRepo)
 
 			if len(newRepoPayload.Ssh_Private_Key) > 0 {
@@ -153,7 +154,7 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			action := vars["action"]
 
 			if action == "sync" {
-				message := reposerver.SyncRequest{Repo: repo.Url, RepoId: strconv.FormatInt(int64(repo.ID), 10)}
+				message := reposerver.SyncRequest{Repo: repo.Url, Branch: repo.Branch, RepoId: strconv.FormatInt(int64(repo.ID), 10)}
 				resp, err := rp.Sync(context.Background(), &message)
 
 				if err != nil {
@@ -195,6 +196,7 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 			}
 
 			repo.Url = updateRepoPayload.Url
+			repo.Branch = updateRepoPayload.Branch
 			repoService.Update(repo)
 
 			if len(updateRepoPayload.Ssh_Private_Key) > 0 {
@@ -212,6 +214,7 @@ func (s *Server) repoHandler(repoService *repoPkg.Service) http.HandlerFunc {
 				Url:        repo.Url,
 				Commit:     repo.Commit,
 				Hash:       repo.Hash,
+				Branch:     repo.Branch,
 				Created_At: repo.CreatedAt.String(),
 				Updated_At: repo.UpdatedAt.String(),
 				Deleted_At: repo.DeletedAt.Time.String(),

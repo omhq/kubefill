@@ -145,6 +145,7 @@ const Repo = () => {
           setRepo(data);
           setFormDefaults({
             url: data.url,
+            branch: data.branch,
           });
         })
         .catch((err) => {
@@ -196,6 +197,14 @@ const Repo = () => {
             body={
               <>
                 <Crumbs crumbs={crumbs} />
+
+                <Typography variant="body1" fontWeight={600} gutterBottom>
+                  Branch
+                </Typography>
+
+                <Typography variant="body1" gutterBottom>
+                  {repo?.branch}
+                </Typography>
 
                 {repo?.commit && (
                   <>

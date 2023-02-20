@@ -17,7 +17,7 @@ func (s *Service) List() []Repo {
 }
 
 func (s *Service) Create(payload Repo) db.Repo {
-	repo := db.Repo{Url: payload.Url}
+	repo := db.Repo{Url: payload.Url, Branch: payload.Branch}
 	s.db.Create(&repo)
 	return repo
 }

@@ -10,6 +10,7 @@ export type Application = {
   id: number;
   name: string;
   repo_id: string;
+  branch: string;
   manifest_path: any;
   created_at: string;
   updated_at: string;
@@ -28,12 +29,14 @@ export type ApplicationFull = {
 export type Repo = {
   id: number;
   url: string;
+  branch: string;
   commit: string;
   hash: string;
 };
 
 export type RepoCreate = {
   url: string;
+  branch: string;
   ssh_private_key: string;
 };
 

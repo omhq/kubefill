@@ -64,6 +64,30 @@ const RepoForm = ({ repoId, initialValues, formValid, handleValueUpdate }: RepoF
         </FormControl>
 
         <FormControl
+          error={!!formik.touched?.branch && !!formik.errors?.branch}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          <InputLabel htmlFor="branch">Branch</InputLabel>
+          <OutlinedInput
+            required
+            error={!!formik.touched?.branch && !!formik.errors?.branch}
+            id="branch"
+            name="branch"
+            label="Branch"
+            value={formik.values?.branch || ""}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+
+          {formik.touched?.branch && formik.errors?.branch && (
+            <FormHelperText id="name-error-text">
+              <>{formik.errors?.branch}</>
+            </FormHelperText>
+          )}
+        </FormControl>
+
+        <FormControl
           error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
           fullWidth
           sx={{ mb: 2 }}

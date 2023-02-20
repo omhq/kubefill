@@ -103,13 +103,14 @@ func (s RepoService) SaveSshKey(_ context.Context, request *SaveSshKeyRequest) (
 
 func (s RepoService) Sync(_ context.Context, syncRequest *SyncRequest) (*SyncResponse, error) {
 	repo := syncRequest.Repo
+	branch := syncRequest.Branch
 	gitURL, err := giturl.NewGitURL(repo)
 
 	if err != nil {
 		return nil, err
 	}
 
-	r, err := doSync(syncRequest.RepoId, repo, getFullRepoDir(s.repoRoot, gitURL))
+	r, err := doSync(syncRequest.RepoId, repo, branch, getFullRepoDir(s.repoRoot, gitURL))
 
 	if err != nil {
 		return nil, err

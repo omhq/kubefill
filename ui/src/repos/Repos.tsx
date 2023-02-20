@@ -20,6 +20,7 @@ const Repos = () => {
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "url", headerName: "URL", flex: 0.8, width: 100 },
+    { field: "branch", headerName: "BRANCH", flex: 0.8, width: 100 },
     {
       field: "created",
       headerName: "CREATED ON",

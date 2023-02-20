@@ -31,6 +31,7 @@ type Repo struct {
 	ID         uint `gorm:"primary_key" json:"id"`
 	gorm.Model `json:"model"`
 	Url        string `json:"url"`
+	Branch     string `json:"branch"`
 	Hash       string `json:"hash"`
 	Commit     string `json:"commit"`
 }

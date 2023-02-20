@@ -140,11 +140,11 @@ func corsMiddleware(next http.Handler) http.Handler {
 
 func check(result string) (bool, error) {
 	secureRoutes := []string{
-		"repos",
-		"applications",
-		"jobs",
-		"settings",
-		"auth/self",
+		"api/v1/repos",
+		"api/v1/applications",
+		"api/v1/jobs",
+		"api/v1/settings",
+		"api/v1/auth/self",
 	}
 
 	for _, v := range secureRoutes {

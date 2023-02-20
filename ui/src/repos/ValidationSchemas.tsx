@@ -7,6 +7,7 @@ export const CreateValidationSchema = Yup.object({
       "Enter an SSH URL, like git@github.com:user/repo.git"
     )
     .required("Input required"),
+  branch: Yup.string().required("Input required"),
   ssh_private_key: Yup.string().required("Input required"),
 });
 
@@ -17,4 +18,5 @@ export const UpdateValidationSchema = Yup.object({
       "Enter an SSH URL, like git@github.com:user/repo.git"
     )
     .required("Input required"),
+  branch: Yup.string().required("Input required"),
 });

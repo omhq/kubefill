@@ -8,7 +8,8 @@ import "google/protobuf/struct.proto";
 
 message SyncRequest {
     string repo = 1;
-    string repoId = 2;
+    string branch = 2;
+    string repoId = 3;
 }
 
 message SyncResponse {

@@ -17,7 +17,11 @@ func (s *Service) List() []Application {
 }
 
 func (s *Service) Create(payload Application) Application {
-	application := db.Application{Name: payload.Name, RepoID: payload.RepoID, ManifestPath: payload.ManifestPath}
+	application := db.Application{
+		Name:         payload.Name,
+		RepoID:       payload.RepoID,
+		ManifestPath: payload.ManifestPath,
+	}
 	s.db.Create(&application)
 	payload.Id = int(application.ID)
 	payload.Created_At = application.CreatedAt.String()

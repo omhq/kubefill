@@ -58,6 +58,7 @@ const RepoCreate = () => {
 
     setFormDefaults({
       url: "",
+      branch: "",
       ssh_private_key: "",
     });
   }, []);
