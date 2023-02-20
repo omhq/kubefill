@@ -1,6 +1,6 @@
 # Kubefill
 
-Self-service UIs
+Run kubernetes workloads through user friendly forms.
 
 ## Why does this exist
 
