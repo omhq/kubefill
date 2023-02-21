@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Highlight from "react-highlight";
 import { fetchLogs } from "../requests/logs";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 
 import "highlight.js/styles/a11y-dark.css";
-import { Alert } from "@mui/material";
+import "./logs.css";
+import { Alert, Box } from "@mui/material";
 
 const waitForOpenConnection = (socket: WebSocket) => {
   return new Promise((resolve, reject) => {
@@ -38,6 +39,44 @@ const Logs = ({ job, ws }: { job: any; ws: WebSocket | null }) => {
   const [logs, setLogs] = useState<string[]>([]);
   const [liveLogs, setLiveLogs] = useState<string[]>([]);
   const { enqueueSnackbar } = useSnackbar();
+  const logWrapRef = useRef<HTMLDivElement>(null);
+  const [clientHeight, setVh] = useState<number>();
+  const [clientWidth, setVw] = useState<number>();
+
+  const getVh = useCallback(() => {
+    return Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+  }, []);
+  const getVw = useCallback(() => {
+    return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVh(getVh());
+      setVw(getVw());
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [getVh, getVw]);
+
+  useEffect(() => {
+    setVh(getVh());
+    setVw(getVw());
+  }, []);
+
+  const scrollToBottom = () => {
+    if (logWrapRef.current) {
+      logWrapRef.current.scrollIntoView();
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [logs, clientWidth, clientHeight]);
 
   useEffect(() => {
     if (job && job.phase === "Running") {
@@ -92,13 +131,18 @@ const Logs = ({ job, ws }: { job: any; ws: WebSocket | null }) => {
   return (
     <>
       {(logs && logs.length) || (liveLogs && liveLogs.length) ? (
-        <Highlight className="plaintext">
-          {logs && logs.length > 0 && logs?.map((log, index) => <div key={index}>{log}</div>)}
+        <Box
+          sx={{ p: 0, overflowY: "scroll", maxHeight: clientHeight ? clientHeight - 200 : "100%" }}
+        >
+          <Highlight className="plaintext">
+            {logs && logs.length > 0 && logs?.map((log, index) => <div key={index}>{log}</div>)}
 
-          {liveLogs &&
-            liveLogs.length > 0 &&
-            liveLogs?.map((log, index) => <div key={index}>{log}</div>)}
-        </Highlight>
+            {liveLogs &&
+              liveLogs.length > 0 &&
+              liveLogs?.map((log, index) => <div key={index}>{log}</div>)}
+          </Highlight>
+          <div ref={logWrapRef} />
+        </Box>
       ) : (
         <Alert variant="outlined" severity="info">
           No logs collected from this run.

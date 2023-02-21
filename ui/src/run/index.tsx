@@ -71,7 +71,7 @@ const Public = () => {
       {application && (
         <>
           {application?.manifests ? (
-            <Container sx={{ mt: 10, mb: 2, p: 0 }} maxWidth="sm">
+            <Container sx={{ mt: 10, mb: 2, px: 2 }} maxWidth="md">
               <ApplicationForm
                 defaultData={application.manifests.data}
                 schema={application.manifests.schema}
@@ -80,7 +80,7 @@ const Public = () => {
               />
             </Container>
           ) : (
-            <Container sx={{ mt: 12, mb: 2, p: 0 }} maxWidth="sm">
+            <Container sx={{ mt: 12, mb: 2, px: 2 }} maxWidth="sm">
               <Alert severity="warning">
                 Missing manifests! Make sure a repository is connected to this app.
               </Alert>
