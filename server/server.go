@@ -119,6 +119,7 @@ func (s *Server) Run() {
 
 	spa := spaHandler{indexPath: "index.html"}
 	s.router.PathPrefix("/").Handler(spa)
+
 	s.router.Use(corsMiddleware)
 	s.router.Use(authMiddleware(jwtKey))
 
@@ -180,6 +181,7 @@ type spaHandler struct {
 
 func (h spaHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	path, err := filepath.Abs(r.URL.Path)
+	rw.Header().Set("Cache-Control", "max-age=3600")
 
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusBadRequest)
