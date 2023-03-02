@@ -808,10 +808,18 @@ func (s *Server) applicationJobHandler(applicationService *application.Service, 
 			jobName := fmt.Sprintf("%s-%s", jobPayload.ObjectMeta.Name, generateRandomString(12, charset))
 			jobConfig := client.JobConfig{ObjectMeta: jobPayload.ObjectMeta, Spec: jobPayload.Spec}
 			newJob := jobService.Create(job.Job{Name: jobName, ApplicationID: appIdUint})
+			jobId := strconv.FormatUint(uint64(newJob.ID), 10)
 			labels := make(map[string]string)
 
 			labels["invoked"] = ""
-			labels["job_id"] = strconv.FormatUint(uint64(newJob.ID), 10)
+			labels["job_id"] = jobId
+
+			jobRootLogsPath := filepath.Join(s.LogsPath, jobId)
+			err = os.RemoveAll(jobRootLogsPath)
+
+			if err != nil {
+				log.Errorln(err)
+			}
 
 			jobConfig.Labels = labels
 			resp, err := s.clientset.Run(jobName, jobConfig)
