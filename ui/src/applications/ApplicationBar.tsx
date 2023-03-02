@@ -58,7 +58,7 @@ function ApplicationBar({
           color="inherit"
           href={`/applications/${appId}/run`}
         >
-          Public
+          Run
         </Link>
 
         <Box>
