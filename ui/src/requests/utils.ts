@@ -17,6 +17,10 @@ export const toErrorWithMessage = (maybeError: unknown): ErrorWithMessage => {
   if (isErrorWithMessage(maybeError)) return maybeError;
 
   try {
+    if (typeof maybeError === "string") {
+      return new Error(maybeError);
+    }
+
     return new Error(JSON.stringify(maybeError));
   } catch {
     return new Error(String(maybeError));
