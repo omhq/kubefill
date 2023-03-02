@@ -12,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	structpb "google.golang.org/protobuf/types/known/structpb"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 const (
@@ -160,6 +161,7 @@ func (s RepoService) GetManifests(_ context.Context, manifestsRequest *Manifests
 	rootDir := os.Getenv(REPO_ROOT)
 	repoRoot := filepath.Join(rootDir, manifestsRequest.Path)
 	files, err := os.ReadDir(repoRoot)
+	validYamlExt := []string{".yaml", ".yml"}
 	allowedFiles := map[string]string{
 		"data":     "",
 		"schema":   "",
@@ -174,8 +176,16 @@ func (s RepoService) GetManifests(_ context.Context, manifestsRequest *Manifests
 
 			if ok {
 				var result map[string]interface{}
-				contents := readFile(filepath.Join(repoRoot, file.Name()))
-				json.Unmarshal([]byte(contents), &result)
+				path := filepath.Join(repoRoot, file.Name())
+				ext := filepath.Ext(path)
+				contents := readFile(path)
+
+				if contains(validYamlExt, ext) {
+					yaml.Unmarshal([]byte(contents), &result)
+				} else {
+					json.Unmarshal([]byte(contents), &result)
+				}
+
 				details, err := structpb.NewStruct(result)
 
 				if err != nil {
