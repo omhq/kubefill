@@ -12,6 +12,7 @@ import { getErrorMessage } from "../requests/utils";
 const Public = () => {
   const { appId } = useParams<{ appId: string }>();
   const [formData, setFormData] = useState<FormData>();
+  const [cloneData, setCloneData] = useState<FormData>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [loading, setLoading] = useState<boolean>(false);
   const [jobId, setJobId] = useState<number | null>(null);
@@ -21,19 +22,23 @@ const Public = () => {
     setFormData(data);
   };
 
-  const handleRun = () => {
-    if (application && formData) {
-      const obj = {};
+  useEffect(() => {
+    const obj = { ...cloneData };
 
-      for (const key in formData) {
-        if (key in formData) {
-          _.set(obj, key, formData[key]);
-        }
+    for (const key in formData) {
+      if (key in formData) {
+        _.set(obj, key, formData[key]);
       }
+    }
 
+    setCloneData(obj);
+  }, [formData]);
+
+  const handleRun = () => {
+    if (application && cloneData) {
       setLoading(true);
 
-      startJob(application.app.id, obj)
+      startJob(application.app.id, cloneData)
         .then((resp: any) => {
           setJobId(resp.job.id);
           enqueueSnackbar("Job started", {
@@ -58,6 +63,7 @@ const Public = () => {
       fetchApplication(parseInt(appId)).then((data) => {
         if (data?.manifests?.data) {
           setFormData(data.manifests.data);
+          setCloneData(data.manifests.data);
         }
 
         setApplication(data);
