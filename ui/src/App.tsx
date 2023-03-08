@@ -21,6 +21,7 @@ import { getSelf } from "./requests/auth";
 import { authSelf, initialState, reducer } from "./reducers";
 import { LOCAL_STORAGE } from "./constants";
 import Login from "./login";
+import { PrimaryLayout } from "./layouts";
 
 const App = () => {
   const [_, dispatch] = useReducer(reducer, initialState);
@@ -56,10 +57,18 @@ const App = () => {
         }}
       >
         <Routes>
-          <Route
-            path="/"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
-          />
+          <Route element={<PrimaryLayout />}>
+            <Route
+              path="/"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
+            />
+
+            <Route
+              path="/applications/"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
+            />
+          </Route>
+
           <Route
             path="/repos/"
             element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repos />} />}
@@ -71,10 +80,6 @@ const App = () => {
           <Route
             path="/repos/:repoId"
             element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repo />} />}
-          />
-          <Route
-            path="/applications/"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
           />
           <Route
             path="/applications/new"
