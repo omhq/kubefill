@@ -92,14 +92,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
   })
 );
 
-export default function MiniDrawer({ child, body }: { child: any; body: any }) {
+export default function MiniDrawer({ body }: { child: any; body: any }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const location = useLocation();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -108,23 +104,6 @@ export default function MiniDrawer({ child, body }: { child: any; body: any }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          {child}
-        </Toolbar>
-      </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
