@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert, Link, Icon, ButtonBase, Button, styled } from "@mui/material";
+import { Box, IconButton, Alert, Link, Icon, Button, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
+import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
@@ -15,10 +15,13 @@ const Action = styled(Button)`
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 
-const Applications = () => {
+const DataGridContainer = styled("div")`
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
+
+const Applications: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<ApplicationType[]>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [applications, setApplications] = useState<ApplicationType[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
@@ -87,14 +90,6 @@ const Applications = () => {
   useEffect(() => {
     let unsubscribed = false;
 
-    setCrumbs([
-      {
-        label: "applications",
-        path: "/",
-        current: true,
-      },
-    ]);
-
     fetchApplications()
       .then((data) => {
         if (!unsubscribed) {
@@ -117,6 +112,16 @@ const Applications = () => {
   return (
     <>
       <WorkspaceNavBar>
+        <Crumbs
+          crumbs={[
+            {
+              label: "applications",
+              path: "/",
+              current: true,
+            },
+          ]}
+        />
+
         <Link underline="none" color="inherit" href="/applications/new">
           <Action variant="contained" size="small" disableElevation={true}>
             <Icon sx={{ mr: 1 }} fontSize="small">
@@ -127,25 +132,20 @@ const Applications = () => {
         </Link>
       </WorkspaceNavBar>
 
-      <Crumbs crumbs={crumbs} />
-
-      {applications && applications.length ? (
-        <>
-          <div style={{ flexGrow: 1 }}>
-            <DataGrid
-              autoHeight
-              rows={applications}
-              columns={columns}
-              pageSize={100}
-              rowsPerPageOptions={[100]}
-            />
-          </div>
-
-          {!applications.length && <>no apps</>}
-        </>
-      ) : (
+      {applications.length > 0 && (
+        <DataGridContainer>
+          <DataGrid
+            autoHeight={true}
+            rows={applications}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+          />
+        </DataGridContainer>
+      )}
+      {applications.length === 0 && (
         <Alert variant="outlined" severity="info">
-          No applications yet.
+          No applications yet
         </Alert>
       )}
     </>
