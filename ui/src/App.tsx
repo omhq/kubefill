@@ -64,8 +64,13 @@ const App = () => {
             />
 
             <Route
-              path="/applications/"
+              path="/applications"
               element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Applications />} />}
+            />
+
+            <Route
+              path="/applications/:appId"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Application />} />}
             />
           </Route>
 
@@ -86,10 +91,6 @@ const App = () => {
             element={
               <ProtectedRoute {...defaultProtectedRouteProps} outlet={<ApplicationCreate />} />
             }
-          />
-          <Route
-            path="/applications/:appId"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Application />} />}
           />
           <Route
             path="/applications/:appId/secrets"
