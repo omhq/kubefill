@@ -2,31 +2,66 @@ import { useEffect, useState } from "react";
 import { ApplicationFull } from "../types";
 import { deleteApplication, fetchApplication, updateApplication } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, ICrumb } from "../Crumbs";
-import ApplicationBar from "./ApplicationBar";
+import { Crumbs } from "../Crumbs";
 import ApplicationForm from "./ApplicationForm";
-import Drawer from "../globals/Drawer";
 import { useSnackbar } from "notistack";
 import { FormikValues } from "formik";
 import { fetchRepos } from "../requests/repos";
 import { getErrorMessage } from "../requests/utils";
+import { LoadingButton } from "@mui/lab";
 import {
+  Link,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  styled,
   useMediaQuery,
   useTheme,
+  Icon,
 } from "@mui/material";
+import { WorkspaceNavBar } from "../components";
+
+const Filler = styled("div")`
+  display: flex;
+  flex-grow: 1;
+`;
+
+const Actions = styled("div")`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: ${({ theme }) => theme.spacing(2)};
+
+  padding: ${({ theme }) => theme.spacing(1)};
+  margin: ${({ theme }) => theme.spacing(1)};
+  border-radius: ${({ theme }) => theme.spacing(1)};
+`;
+
+const Action = styled(Button)`
+  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  border-radius: ${({ theme }) => theme.spacing(0.5)};
+  min-width: 100px;
+`;
+
+const StyledLink = styled(Link)`
+  display: flex;
+  align-items: center;
+`;
+
+const LoadingAction = styled(LoadingButton)`
+  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  border-radius: ${({ theme }) => theme.spacing(0.5)};
+  min-width: 100px;
+`;
 
 const Application = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [updating, setUpdating] = useState<boolean>(false);
   const [deleting, setDelelting] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const [repos, setRepos] = useState<any>();
@@ -87,23 +122,6 @@ const Application = () => {
         });
     }
   };
-
-  useEffect(() => {
-    if (application?.app) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application]);
 
   useEffect(() => {
     if (appId) {
@@ -170,32 +188,99 @@ const Application = () => {
             </DialogActions>
           </Dialog>
 
-          <Drawer
-            child={
-              <ApplicationBar
-                appId={appId}
-                update={handleUpdate}
-                del={handleDelete}
-                formValid={formValid}
-                updating={updating}
-                deleting={deleting}
-              />
-            }
-            body={
-              <>
-                <Crumbs crumbs={crumbs} />
+          <>
+            <WorkspaceNavBar>
+              {application && (
+                <Crumbs
+                  crumbs={[
+                    {
+                      label: "applications",
+                      path: "/",
+                      current: false,
+                    },
+                    {
+                      label: application.app.name,
+                      path: `/applications/${application.app.id}`,
+                      current: true,
+                    },
+                  ]}
+                />
+              )}
+              {!application && <Filler />}
 
-                {repos && formDefaults && (
-                  <ApplicationForm
-                    repos={repos}
-                    initialValues={formDefaults}
-                    formValid={setFormValid}
-                    handleValueUpdate={handleValueUpdate}
-                  />
-                )}
-              </>
-            }
-          />
+              <Actions>
+                <Action variant="contained" disableElevation={true} size="small">
+                  <StyledLink
+                    underline="none"
+                    color="inherit"
+                    href={`/applications/${appId}/secrets`}
+                  >
+                    <Icon fontSize="small" sx={{ mr: 1 }}>
+                      lock
+                    </Icon>
+                    Secrets
+                  </StyledLink>
+                </Action>
+
+                <Action variant="contained" disableElevation={true} size="small">
+                  <StyledLink underline="none" color="inherit" href={`/applications/${appId}/runs`}>
+                    <Icon fontSize="small" sx={{ mr: 1 }}>
+                      list
+                    </Icon>
+                    Runs
+                  </StyledLink>
+                </Action>
+
+                <Action variant="contained" disableElevation={true} size="small">
+                  <StyledLink underline="none" color="inherit" href={`/applications/${appId}/run`}>
+                    <Icon fontSize="small" sx={{ mr: 1 }}>
+                      play_arrow
+                    </Icon>
+                    Run
+                  </StyledLink>
+                </Action>
+
+                <LoadingAction
+                  variant="contained"
+                  size="small"
+                  aria-label="delete"
+                  disableElevation={true}
+                  disabled={deleting}
+                  onClick={handleDelete}
+                  color="error"
+                  loading={deleting}
+                >
+                  <Icon fontSize="small" sx={{ mr: 1 }}>
+                    delete
+                  </Icon>
+                  Delete
+                </LoadingAction>
+
+                <LoadingAction
+                  disabled={!formValid}
+                  loading={!!updating}
+                  onClick={handleUpdate}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                >
+                  <Icon fontSize="small" sx={{ mr: 1 }}>
+                    edit
+                  </Icon>
+                  Update
+                </LoadingAction>
+              </Actions>
+            </WorkspaceNavBar>
+
+            {repos && formDefaults && (
+              <ApplicationForm
+                repos={repos}
+                initialValues={formDefaults}
+                formValid={setFormValid}
+                handleValueUpdate={handleValueUpdate}
+              />
+            )}
+          </>
         </>
       )}
     </>
