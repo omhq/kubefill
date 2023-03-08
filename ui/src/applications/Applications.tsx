@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert } from "@mui/material";
+import { Box, IconButton, Alert, Link, Icon, ButtonBase, Button, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumb, Crumbs } from "../Crumbs";
-import ApplicationsBar from "./ApplicationsBar";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
-import Drawer from "../globals/Drawer";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
+import { WorkspaceNavBar } from "../components";
+
+const Action = styled(Button)`
+  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  border-radius: ${({ theme }) => theme.spacing(0.5)};
+`;
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -112,34 +116,38 @@ const Applications = () => {
   }, []);
   return (
     <>
-      <Drawer
-        child={<ApplicationsBar />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Link underline="none" color="inherit" href="/applications/new">
+          <Action variant="contained" size="small" disableElevation={true}>
+            <Icon sx={{ mr: 1 }} fontSize="small">
+              add_circle_outline
+            </Icon>
+            New
+          </Action>
+        </Link>
+      </WorkspaceNavBar>
 
-            {applications && applications.length ? (
-              <>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    autoHeight
-                    rows={applications}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                  />
-                </div>
+      <Crumbs crumbs={crumbs} />
 
-                {!applications.length && <>no apps</>}
-              </>
-            ) : (
-              <Alert variant="outlined" severity="info">
-                No applications yet.
-              </Alert>
-            )}
-          </>
-        }
-      />
+      {applications && applications.length ? (
+        <>
+          <div style={{ flexGrow: 1 }}>
+            <DataGrid
+              autoHeight
+              rows={applications}
+              columns={columns}
+              pageSize={100}
+              rowsPerPageOptions={[100]}
+            />
+          </div>
+
+          {!applications.length && <>no apps</>}
+        </>
+      ) : (
+        <Alert variant="outlined" severity="info">
+          No applications yet.
+        </Alert>
+      )}
     </>
   );
 };
