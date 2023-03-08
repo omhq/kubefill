@@ -1,6 +1,6 @@
 import ApplicationForm from "./ApplicationForm";
 import { useEffect, useState } from "react";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import ApplicationCreateBar from "./ApplicationCreateBar";
 import { createApplication } from "../requests/applications";
 import Drawer from "../globals/Drawer";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const ApplicationCreate = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const [repos, setRepos] = useState<any>();

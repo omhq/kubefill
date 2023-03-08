@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ApplicationFull } from "../types";
 import { deleteApplication, fetchApplication, updateApplication } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, Crumb } from "../Crumbs";
+import { Crumbs, ICrumb } from "../Crumbs";
 import ApplicationBar from "./ApplicationBar";
 import ApplicationForm from "./ApplicationForm";
 import Drawer from "../globals/Drawer";
@@ -26,7 +26,7 @@ const Application = () => {
   const [application, setApplication] = useState<ApplicationFull>();
   const [updating, setUpdating] = useState<boolean>(false);
   const [deleting, setDelelting] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const [repos, setRepos] = useState<any>();

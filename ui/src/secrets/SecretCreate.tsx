@@ -1,6 +1,6 @@
 import SecretForm from "./SecretForm";
 import { useEffect, useState } from "react";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import SecretCreateBar from "./SecretCreateBar";
 import { createApplicationSecret, fetchApplication } from "../requests/applications";
 import Drawer from "../globals/Drawer";
@@ -14,7 +14,7 @@ const SecretCreate = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const [formValues, setFormValues] = useState<SecretCreateType>();

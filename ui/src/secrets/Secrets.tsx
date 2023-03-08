@@ -3,7 +3,7 @@ import { fetchApplication, fetchApplicationSecrets } from "../requests/applicati
 import { ApplicationFull, Secret as SecretType } from "../types";
 import { Box, IconButton, Alert } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import SecretsBar from "./SecretsBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
@@ -17,7 +17,7 @@ const Secrets = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [secrets, setSecrets] = useState<SecretType[]>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "name", headerName: "NAME", flex: 0.8, width: 100 },

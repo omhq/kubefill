@@ -3,7 +3,7 @@ import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
 import { Box, IconButton, Alert } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import ReposBar from "./ReposBar";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
@@ -16,7 +16,7 @@ const Repos = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [repos, setRepos] = useState<RepoType[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "url", headerName: "URL", flex: 0.8, width: 100 },

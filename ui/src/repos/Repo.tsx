@@ -3,7 +3,7 @@ import { Repo as RepoType } from "../types";
 import { fetchRepo, syncRepo, updateRepo } from "../requests/repos";
 import { deleteRepo } from "../requests/repos";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, Crumb } from "../Crumbs";
+import { Crumbs, ICrumb } from "../Crumbs";
 import RepoBar from "./RepoBar";
 import Drawer from "../globals/Drawer";
 import {
@@ -30,7 +30,7 @@ const Repo = () => {
   const [deleting, setDelelting] = useState<boolean>(false);
   const [repo, setRepo] = useState<RepoType>();
   const [formValues, setFormValues] = useState<Partial<any>>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();

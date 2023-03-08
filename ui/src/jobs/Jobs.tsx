@@ -3,7 +3,7 @@ import { fetchApplication, fetchApplicationJobs } from "../requests/applications
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Chip, IconButton, Alert } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import { Visibility } from "@mui/icons-material";
 import { ApplicationFull } from "../types";
 import Drawer from "../globals/Drawer";
@@ -13,7 +13,7 @@ const Jobs = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [jobs, setJobs] = useState<any[]>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "name", headerName: "NAME", flex: 0.2, width: 100 },

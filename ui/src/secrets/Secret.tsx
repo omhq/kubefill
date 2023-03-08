@@ -7,7 +7,7 @@ import {
   fetchApplication,
 } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, Crumb } from "../Crumbs";
+import { Crumbs, ICrumb } from "../Crumbs";
 import SecretBar from "./SecretBar";
 import Drawer from "../globals/Drawer";
 import {
@@ -33,7 +33,7 @@ const Repo = () => {
   const [deleting, setDelelting] = useState<boolean>(false);
   const [secret, setSecret] = useState<SecretType>();
   const [formValues, setFormValues] = useState<Partial<any>>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();

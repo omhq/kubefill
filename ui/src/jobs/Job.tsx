@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchJob, deleteJob } from "../requests/jobs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import { ApplicationFull } from "../types";
 import { fetchApplication } from "../requests/applications";
 import Logs from "./Logs";
@@ -37,7 +37,7 @@ const Job = () => {
   const { jobId, appId } = useParams<{ jobId: string; appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [job, setJob] = useState<any>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [deleting, setDelelting] = useState<boolean>(false);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [uniqueId, setUniqueId] = useState<string | null>(null);

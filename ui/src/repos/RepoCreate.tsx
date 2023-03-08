@@ -1,6 +1,6 @@
 import RepoForm from "./RepoForm";
 import { useEffect, useState } from "react";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import RepoCreateBar from "./RepoCreateBar";
 import { createRepo } from "../requests/repos";
 import Drawer from "../globals/Drawer";
@@ -12,7 +12,7 @@ import { RepoCreate as RepoCreateType } from "../types";
 
 const RepoCreate = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const [formValues, setFormValues] = useState<RepoCreateType>();

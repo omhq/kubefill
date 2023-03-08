@@ -1,6 +1,6 @@
 import Drawer from "../globals/Drawer";
 import SettingsBar from "./SettingsBar";
-import { Crumb, Crumbs } from "../Crumbs";
+import { ICrumb, Crumbs } from "../Crumbs";
 import { useEffect, useState } from "react";
 import { fetchSettings } from "../requests/settings";
 import { Typography } from "@mui/material";
@@ -8,7 +8,7 @@ import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 
 const Settings = () => {
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [settings, setSettings] = useState<Record<string, string>>();
   const { enqueueSnackbar } = useSnackbar();
 
