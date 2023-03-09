@@ -1,22 +1,35 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
-import { Box, IconButton, Alert } from "@mui/material";
+import { Box, IconButton, Alert, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ICrumb, Crumbs } from "../Crumbs";
-import ReposBar from "./ReposBar";
+import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
-import Drawer from "../globals/Drawer";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
+import { LinkAction, WorkspaceNavBar } from "../components";
 
-const Repos = () => {
+const Actions = styled("div")`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: ${({ theme }) => theme.spacing(2)};
+
+  padding: ${({ theme }) => theme.spacing(1)};
+  margin: ${({ theme }) => theme.spacing(1)};
+  border-radius: ${({ theme }) => theme.spacing(1)};
+`;
+
+const DataGridContainer = styled("div")`
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
+
+export const Repos: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [repos, setRepos] = useState<RepoType[]>();
+  const [repos, setRepos] = useState<RepoType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "url", headerName: "URL", flex: 0.8, width: 100 },
@@ -83,14 +96,6 @@ const Repos = () => {
   useEffect(() => {
     let unsubscribed = false;
 
-    setCrumbs([
-      {
-        label: "repos",
-        path: "/",
-        current: true,
-      },
-    ]);
-
     setLoading(true);
     fetchRepos()
       .then((data: any) => {
@@ -114,36 +119,42 @@ const Repos = () => {
       unsubscribed = true;
     };
   }, []);
+
   return (
     <>
-      <Drawer
-        child={<ReposBar />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={[
+            {
+              label: "repos",
+              path: "/",
+              current: true,
+            },
+          ]}
+        />
 
-            {repos && repos.length ? (
-              <>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    autoHeight
-                    rows={repos}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                  />
-                </div>
+        <Actions>
+          <LinkAction to="/repos/new">New</LinkAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-                {!repos.length && <>no apps</>}
-              </>
-            ) : (
-              <Alert variant="outlined" severity="info">
-                No repos yet.
-              </Alert>
-            )}
-          </>
-        }
-      />
+      {repos.length > 0 && (
+        <DataGridContainer>
+          <DataGrid
+            autoHeight
+            rows={repos}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+          />
+        </DataGridContainer>
+      )}
+
+      {repos.length === 0 && (
+        <Alert variant="outlined" severity="info">
+          No repos yet
+        </Alert>
+      )}
     </>
   );
 };
