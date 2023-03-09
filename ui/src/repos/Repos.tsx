@@ -10,17 +10,6 @@ import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 import { LinkAction, WorkspaceNavBar } from "../components";
 
-const Actions = styled("div")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  column-gap: ${({ theme }) => theme.spacing(2)};
-
-  padding: ${({ theme }) => theme.spacing(1)};
-  margin: ${({ theme }) => theme.spacing(1)};
-  border-radius: ${({ theme }) => theme.spacing(1)};
-`;
-
 const DataGridContainer = styled("div")`
   padding: ${({ theme }) => theme.spacing(4)};
 `;
@@ -133,9 +122,7 @@ export const Repos: FunctionComponent = (): ReactElement => {
           ]}
         />
 
-        <Actions>
-          <LinkAction to="/repos/new">New</LinkAction>
-        </Actions>
+        <LinkAction to="/repos/new">New</LinkAction>
       </WorkspaceNavBar>
 
       {repos.length > 0 && (

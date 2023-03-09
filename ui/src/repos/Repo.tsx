@@ -182,7 +182,9 @@ const Repo: FunctionComponent = (): ReactElement => {
                     current: false,
                   },
                   {
-                    label: truncate(repo.url),
+                    label: truncate(repo.url, {
+                      length: 100,
+                    }),
                     path: `/repos/${repo.id}`,
                     current: true,
                   },

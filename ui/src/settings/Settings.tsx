@@ -1,10 +1,14 @@
 import { Crumbs } from "../Crumbs";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchSettings } from "../requests/settings";
-import { Typography } from "@mui/material";
+import { Typography, styled } from "@mui/material";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 import { WorkspaceNavBar } from "../components";
+
+const Container = styled("div")`
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
 
 const Settings: FunctionComponent = (): ReactElement => {
   const [settings, setSettings] = useState<Record<string, string>>();
@@ -39,7 +43,7 @@ const Settings: FunctionComponent = (): ReactElement => {
       </WorkspaceNavBar>
 
       {settings && (
-        <>
+        <Container>
           <Typography variant="body1" gutterBottom={true}>
             REPO_ROOT: {settings.repo_root}
           </Typography>
@@ -51,7 +55,7 @@ const Settings: FunctionComponent = (): ReactElement => {
           <Typography variant="body1" gutterBottom={true}>
             PRIVATE_KEY: {settings.private_key}
           </Typography>
-        </>
+        </Container>
       )}
     </>
   );
