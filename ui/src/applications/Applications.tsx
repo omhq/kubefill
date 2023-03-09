@@ -1,18 +1,14 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert, Link, Icon, Button, styled } from "@mui/material";
+import { Box, IconButton, Alert, Button, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
-import { WorkspaceNavBar } from "../components";
-
-const Action = styled(Button)`
-  border-radius: ${({ theme }) => theme.spacing(0.5)};
-`;
+import { LinkAction, WorkspaceNavBar } from "../components";
 
 const DataGridContainer = styled("div")`
   padding: ${({ theme }) => theme.spacing(4)};
@@ -108,6 +104,7 @@ const Applications: FunctionComponent = (): ReactElement => {
       unsubscribed = true;
     };
   }, []);
+
   return (
     <>
       <WorkspaceNavBar>
@@ -121,11 +118,7 @@ const Applications: FunctionComponent = (): ReactElement => {
           ]}
         />
 
-        <Link underline="none" color="inherit" href="/applications/new">
-          <Action variant="outlined" size="small" disableElevation={true}>
-            New
-          </Action>
-        </Link>
+        <LinkAction to="/applications/new">New</LinkAction>
       </WorkspaceNavBar>
 
       {applications.length > 0 && (
@@ -139,6 +132,7 @@ const Applications: FunctionComponent = (): ReactElement => {
           />
         </DataGridContainer>
       )}
+
       {applications.length === 0 && (
         <Alert variant="outlined" severity="info">
           No applications yet
