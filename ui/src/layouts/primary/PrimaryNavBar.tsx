@@ -1,4 +1,4 @@
-import { AppBar, Box, Toolbar, Typography, IconButton, styled, useTheme } from "@mui/material";
+import { AppBar, Box, Toolbar, styled, useTheme } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { Actions, LinkAction } from "../../components";
