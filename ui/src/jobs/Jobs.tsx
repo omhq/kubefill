@@ -1,19 +1,26 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationJobs } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Chip, IconButton, Alert } from "@mui/material";
+import { Box, Chip, IconButton, Alert, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ICrumb, Crumbs } from "../Crumbs";
+import { Crumbs } from "../Crumbs";
 import { Visibility } from "@mui/icons-material";
 import { ApplicationFull } from "../types";
-import Drawer from "../globals/Drawer";
+import { WorkspaceNavBar } from "../components";
 
-const Jobs = () => {
+const Root = styled("div")`
+  display: flex;
+  flex-direction: column;
+
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
+
+const Jobs: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
-  const [jobs, setJobs] = useState<any[]>();
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "name", headerName: "NAME", flex: 0.2, width: 100 },
@@ -105,28 +112,6 @@ const Jobs = () => {
   ];
 
   useEffect(() => {
-    if (application?.app) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: false,
-        },
-        {
-          label: "runs",
-          path: `/applications/${application.app.id}/runs`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application]);
-
-  useEffect(() => {
     let unsubscribed = false;
 
     if (appId) {
@@ -148,36 +133,54 @@ const Jobs = () => {
   }, [appId]);
 
   return (
-    <div>
-      <Drawer
-        child={<></>}
-        body={
+    <>
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            application
+              ? [
+                  {
+                    label: "applications",
+                    path: "/",
+                    current: false,
+                  },
+                  {
+                    label: application.app.name,
+                    path: `/applications/${application.app.id}`,
+                    current: false,
+                  },
+                  {
+                    label: "runs",
+                    path: `/applications/${application.app.id}/runs`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
+      </WorkspaceNavBar>
+
+      <Root>
+        {jobs.length > 0 && appId && (
           <>
-            <Crumbs crumbs={crumbs} />
-
-            {jobs && jobs.length && appId ? (
-              <>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    autoHeight
-                    rows={jobs}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                  />
-                </div>
-
-                {!jobs.length && <>no jobs</>}
-              </>
-            ) : (
-              <Alert variant="outlined" severity="info">
-                This job has never been run.
-              </Alert>
-            )}
+            <div style={{ flexGrow: 1 }}>
+              <DataGrid
+                autoHeight
+                rows={jobs}
+                columns={columns}
+                pageSize={100}
+                rowsPerPageOptions={[100]}
+              />
+            </div>
           </>
-        }
-      />
-    </div>
+        )}
+        {jobs.length === 0 && (
+          <Alert variant="outlined" severity="info">
+            This job has never been run
+          </Alert>
+        )}
+      </Root>
+    </>
   );
 };
 
