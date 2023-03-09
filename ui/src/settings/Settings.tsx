@@ -1,26 +1,14 @@
-import Drawer from "../globals/Drawer";
-import SettingsBar from "./SettingsBar";
-import { ICrumb, Crumbs } from "../Crumbs";
-import { useEffect, useState } from "react";
+import { Crumbs } from "../Crumbs";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchSettings } from "../requests/settings";
 import { Typography } from "@mui/material";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
+import { WorkspaceNavBar } from "../components";
 
-const Settings = () => {
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
+const Settings: FunctionComponent = (): ReactElement => {
   const [settings, setSettings] = useState<Record<string, string>>();
   const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    setCrumbs([
-      {
-        label: "settings",
-        path: "/settings",
-        current: true,
-      },
-    ]);
-  }, []);
 
   useEffect(() => {
     fetchSettings()
@@ -38,30 +26,33 @@ const Settings = () => {
 
   return (
     <>
-      <Drawer
-        child={<SettingsBar />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={[
+            {
+              label: "settings",
+              path: "/settings",
+              current: true,
+            },
+          ]}
+        />
+      </WorkspaceNavBar>
 
-            {settings && (
-              <>
-                <Typography variant="body1" gutterBottom>
-                  REPO_ROOT: {settings?.repo_root}
-                </Typography>
+      {settings && (
+        <>
+          <Typography variant="body1" gutterBottom={true}>
+            REPO_ROOT: {settings.repo_root}
+          </Typography>
 
-                <Typography variant="body1" gutterBottom>
-                  SSH_ROOT: {settings?.ssh_root}
-                </Typography>
+          <Typography variant="body1" gutterBottom={true}>
+            SSH_ROOT: {settings.ssh_root}
+          </Typography>
 
-                <Typography variant="body1" gutterBottom>
-                  PRIVATE_KEY: {settings?.private_key}
-                </Typography>
-              </>
-            )}
-          </>
-        }
-      />
+          <Typography variant="body1" gutterBottom={true}>
+            PRIVATE_KEY: {settings.private_key}
+          </Typography>
+        </>
+      )}
     </>
   );
 };
