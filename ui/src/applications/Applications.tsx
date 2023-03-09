@@ -11,7 +11,7 @@ import { getErrorMessage } from "../requests/utils";
 import { WorkspaceNavBar } from "../components";
 
 const Action = styled(Button)`
-  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 
@@ -123,10 +123,7 @@ const Applications: FunctionComponent = (): ReactElement => {
         />
 
         <Link underline="none" color="inherit" href="/applications/new">
-          <Action variant="contained" size="small" disableElevation={true}>
-            <Icon sx={{ mr: 1 }} fontSize="small">
-              add_circle_outline
-            </Icon>
+          <Action variant="outlined" size="small" disableElevation={true}>
             New
           </Action>
         </Link>

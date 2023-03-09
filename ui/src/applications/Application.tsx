@@ -41,9 +41,8 @@ const Actions = styled("div")`
 `;
 
 const Action = styled(Button)`
-  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
-  min-width: 100px;
 `;
 
 const StyledLink = styled(Link)`
@@ -52,9 +51,8 @@ const StyledLink = styled(Link)`
 `;
 
 const LoadingAction = styled(LoadingButton)`
-  padding: ${({ theme }) => theme.spacing(0.5, 2)};
+  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
-  min-width: 100px;
 `;
 
 const Application = () => {
@@ -209,39 +207,30 @@ const Application = () => {
               {!application && <Filler />}
 
               <Actions>
-                <Action variant="contained" disableElevation={true} size="small">
+                <Action variant="outlined" disableElevation={true} size="small">
                   <StyledLink
                     underline="none"
                     color="inherit"
                     href={`/applications/${appId}/secrets`}
                   >
-                    <Icon fontSize="small" sx={{ mr: 1 }}>
-                      lock
-                    </Icon>
                     Secrets
                   </StyledLink>
                 </Action>
 
-                <Action variant="contained" disableElevation={true} size="small">
+                <Action variant="outlined" disableElevation={true} size="small">
                   <StyledLink underline="none" color="inherit" href={`/applications/${appId}/runs`}>
-                    <Icon fontSize="small" sx={{ mr: 1 }}>
-                      list
-                    </Icon>
                     Runs
                   </StyledLink>
                 </Action>
 
-                <Action variant="contained" disableElevation={true} size="small">
+                <Action variant="outlined" disableElevation={true} size="small">
                   <StyledLink underline="none" color="inherit" href={`/applications/${appId}/run`}>
-                    <Icon fontSize="small" sx={{ mr: 1 }}>
-                      play_arrow
-                    </Icon>
                     Run
                   </StyledLink>
                 </Action>
 
                 <LoadingAction
-                  variant="contained"
+                  variant="outlined"
                   size="small"
                   aria-label="delete"
                   disableElevation={true}
@@ -250,9 +239,6 @@ const Application = () => {
                   color="error"
                   loading={deleting}
                 >
-                  <Icon fontSize="small" sx={{ mr: 1 }}>
-                    delete
-                  </Icon>
                   Delete
                 </LoadingAction>
 
@@ -264,9 +250,6 @@ const Application = () => {
                   color="primary"
                   size="small"
                 >
-                  <Icon fontSize="small" sx={{ mr: 1 }}>
-                    edit
-                  </Icon>
                   Update
                 </LoadingAction>
               </Actions>
