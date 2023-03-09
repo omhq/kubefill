@@ -1,6 +1,7 @@
-import { AppBar, Box, Toolbar, Typography, IconButton, styled } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, IconButton, styled, useTheme } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
 import { Link } from "react-router-dom";
+import { Actions, LinkAction } from "../../components";
 
 const StyledSvg = styled("svg")`
   width: 32px;
@@ -8,11 +9,19 @@ const StyledSvg = styled("svg")`
   margin-right: ${({ theme }) => theme.spacing(1)};
 `;
 
+const StyledToolbar = styled(Toolbar)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
+  const theme = useTheme();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <StyledToolbar>
           <Link to="/">
             <StyledSvg
               width="270"
@@ -45,7 +54,21 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
               />
             </StyledSvg>
           </Link>
-        </Toolbar>
+          <Actions>
+            <LinkAction
+              anchorStyle={{ color: theme.palette.primary.contrastText }}
+              to="/applications"
+            >
+              Applications
+            </LinkAction>
+            <LinkAction anchorStyle={{ color: theme.palette.primary.contrastText }} to="/repos">
+              Repos
+            </LinkAction>
+            <LinkAction anchorStyle={{ color: theme.palette.primary.contrastText }} to="/settings">
+              Settings
+            </LinkAction>
+          </Actions>
+        </StyledToolbar>
       </AppBar>
     </Box>
   );
