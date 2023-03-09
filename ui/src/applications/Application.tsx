@@ -41,7 +41,6 @@ const Actions = styled("div")`
 `;
 
 const Action = styled(Button)`
-  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 
@@ -51,7 +50,6 @@ const StyledLink = styled(Link)`
 `;
 
 const LoadingAction = styled(LoadingButton)`
-  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 

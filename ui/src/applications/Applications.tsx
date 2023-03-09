@@ -11,7 +11,6 @@ import { getErrorMessage } from "../requests/utils";
 import { WorkspaceNavBar } from "../components";
 
 const Action = styled(Button)`
-  padding: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 
