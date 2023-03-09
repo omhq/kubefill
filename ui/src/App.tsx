@@ -77,6 +77,11 @@ const App = () => {
               path="/applications/:appId/runs"
               element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Jobs />} />}
             />
+
+            <Route
+              path="/applications/:appId/runs/:jobId"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Job />} />}
+            />
           </Route>
 
           <Route
@@ -112,10 +117,6 @@ const App = () => {
           <Route
             path="/applications/:appId/run"
             element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Run />} />}
-          />
-          <Route
-            path="/applications/:appId/runs/:jobId"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Job />} />}
           />
           <Route
             path="/settings"
