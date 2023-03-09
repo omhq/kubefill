@@ -1,23 +1,26 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationSecrets } from "../requests/applications";
 import { ApplicationFull, Secret as SecretType } from "../types";
-import { Box, IconButton, Alert } from "@mui/material";
+import { Box, IconButton, Alert, styled } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ICrumb, Crumbs } from "../Crumbs";
-import SecretsBar from "./SecretsBar";
+import { Crumbs } from "../Crumbs";
 import { useNavigate, useParams } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
-import Drawer from "../globals/Drawer";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
+import { Actions, LinkAction, WorkspaceNavBar } from "../components";
 
-const Secrets = () => {
+const DataGridContainer = styled("div")`
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
+
+const Secrets: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
-  const [secrets, setSecrets] = useState<SecretType[]>();
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
+  const [secrets, setSecrets] = useState<SecretType[]>([]);
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "name", headerName: "NAME", flex: 0.8, width: 100 },
@@ -81,28 +84,6 @@ const Secrets = () => {
   ];
 
   useEffect(() => {
-    if (application?.app) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/applications",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: false,
-        },
-        {
-          label: "secrets",
-          path: `/applications/${application.app.id}/secrets`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application]);
-
-  useEffect(() => {
     let unsubscribed = false;
 
     if (appId) {
@@ -139,37 +120,58 @@ const Secrets = () => {
     };
   }, [appId]);
 
+  if (!appId) {
+    throw new Error("The specified app identifier is invalid.");
+  }
+
   return (
     <>
-      {appId && (
-        <>
-          <Drawer
-            child={<SecretsBar appId={appId} />}
-            body={
-              <>
-                <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            application
+              ? [
+                  {
+                    label: "applications",
+                    path: "/applications",
+                    current: false,
+                  },
+                  {
+                    label: application.app.name,
+                    path: `/applications/${application.app.id}`,
+                    current: false,
+                  },
+                  {
+                    label: "secrets",
+                    path: `/applications/${application.app.id}/secrets`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
 
-                {secrets && secrets.length ? (
-                  <>
-                    <div style={{ flexGrow: 1 }}>
-                      <DataGrid
-                        autoHeight
-                        rows={secrets}
-                        columns={columns}
-                        pageSize={100}
-                        rowsPerPageOptions={[100]}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <Alert variant="outlined" severity="info">
-                    No secrets.
-                  </Alert>
-                )}
-              </>
-            }
+        <Actions>
+          <LinkAction to={`/applications/${appId}/secrets/new`}>New</LinkAction>
+        </Actions>
+      </WorkspaceNavBar>
+
+      {secrets.length > 0 && (
+        <DataGridContainer>
+          <DataGrid
+            autoHeight
+            rows={secrets}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
           />
-        </>
+        </DataGridContainer>
+      )}
+
+      {secrets.length === 0 && (
+        <Alert variant="outlined" severity="info">
+          No secrets
+        </Alert>
       )}
     </>
   );
