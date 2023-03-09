@@ -124,12 +124,13 @@ const App = () => {
               path="/applications/:appId/run"
               element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Run />} />}
             />
+
+            <Route
+              path="/settings"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Settings />} />}
+            />
           </Route>
 
-          <Route
-            path="/settings"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Settings />} />}
-          />
           <Route path="/login" element={<Login dispatch={dispatch} />} />
         </Routes>
       </SnackbarProvider>
