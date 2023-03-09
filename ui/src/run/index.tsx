@@ -1,15 +1,29 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { FormData, ApplicationFull } from "../types";
 import { fetchApplication, startJob } from "../requests/applications";
 import ApplicationForm from "./ApplicationForm";
 import { useParams } from "react-router-dom";
-import Bar from "./Bar";
 import _ from "lodash";
-import { Alert, Container } from "@mui/material";
+import { Alert, Container, styled } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
+import {
+  Actions,
+  HorizontalFiller,
+  LinkAction,
+  LoadingAction,
+  WorkspaceNavBar,
+} from "../components";
+import { Crumbs } from "../Crumbs";
 
-const Public = () => {
+const FormContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+
+  padding: ${({ theme }) => theme.spacing(4)};
+`;
+
+const Run: FunctionComponent = (): ReactElement => {
   const { appId } = useParams<{ appId: string }>();
   const [formData, setFormData] = useState<FormData>();
   const [cloneData, setCloneData] = useState<FormData>();
@@ -73,29 +87,59 @@ const Public = () => {
 
   return (
     <>
-      {appId && <Bar appId={appId} run={handleRun} jobId={jobId} loading={loading} />}
-      {application && (
-        <>
-          {application?.manifests ? (
-            <Container sx={{ mt: 10, mb: 2, px: 2 }} maxWidth="md">
-              <ApplicationForm
-                defaultData={application.manifests.data}
-                schema={application.manifests.schema}
-                uiSchema={application.manifests.ui_schema}
-                handleFormChange={handleFormChange}
-              />
-            </Container>
-          ) : (
-            <Container sx={{ mt: 12, mb: 2, px: 2 }} maxWidth="sm">
-              <Alert severity="warning">
-                Missing manifests! Make sure a repository is connected to this app.
-              </Alert>
-            </Container>
-          )}
-        </>
-      )}
+      <WorkspaceNavBar>
+        {application && (
+          <Crumbs
+            crumbs={[
+              {
+                label: "applications",
+                path: "/",
+                current: false,
+              },
+              {
+                label: application.app.name,
+                path: `/applications/${application.app.id}`,
+                current: false,
+              },
+              {
+                label: "run",
+                path: `/applications/${application.app.id}/run`,
+                current: true,
+              },
+            ]}
+          />
+        )}
+        {!application && <HorizontalFiller />}
+
+        <Actions>
+          {jobId && <LinkAction to={`/applications/${appId}/runs/${jobId}`}>Logs</LinkAction>}
+
+          <LoadingAction loading={loading} onClick={handleRun}>
+            Run
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
+
+      <FormContainer>
+        {application?.manifests && (
+          <Container sx={{ mt: 10, mb: 2, px: 2 }} maxWidth="md">
+            <ApplicationForm
+              defaultData={application.manifests.data}
+              schema={application.manifests.schema}
+              uiSchema={application.manifests.ui_schema}
+              handleFormChange={handleFormChange}
+            />
+          </Container>
+        )}
+
+        {!application?.manifests && (
+          <Alert severity="warning">
+            Missing manifests! Make sure a repository is connected to this app.
+          </Alert>
+        )}
+      </FormContainer>
     </>
   );
 };
 
-export default Public;
+export default Run;
