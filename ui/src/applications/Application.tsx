@@ -133,89 +133,87 @@ const Application = () => {
     setOpen(false);
   };
 
+  if (!appId) {
+    throw new Error("The specified app identifier is invalid.");
+  }
+
   return (
     <>
-      {appId && (
-        <>
-          <Dialog
-            fullScreen={fullScreen}
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="responsive-dialog-title"
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Confirm delete?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>This action can't be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <WorkspaceNavBar>
+        {application && (
+          <Crumbs
+            crumbs={[
+              {
+                label: "applications",
+                path: "/",
+                current: false,
+              },
+              {
+                label: application.app.name,
+                path: `/applications/${application.app.id}`,
+                current: true,
+              },
+            ]}
+          />
+        )}
+
+        {!application && <HorizontalFiller />}
+
+        <Actions>
+          <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
+
+          <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
+
+          <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
+
+          <LoadingAction
+            disabled={deleting}
+            loading={deleting}
+            onClick={handleDelete}
+            color="error"
+            aria-label="delete"
           >
-            <DialogTitle id="responsive-dialog-title">{"Confirm delete?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>This action can't be undone.</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button autoFocus onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button onClick={handleConfirmDelete} autoFocus>
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
+            Delete
+          </LoadingAction>
 
-          <>
-            <WorkspaceNavBar>
-              {application && (
-                <Crumbs
-                  crumbs={[
-                    {
-                      label: "applications",
-                      path: "/",
-                      current: false,
-                    },
-                    {
-                      label: application.app.name,
-                      path: `/applications/${application.app.id}`,
-                      current: true,
-                    },
-                  ]}
-                />
-              )}
+          <LoadingAction
+            disabled={!formValid}
+            loading={updating}
+            onClick={handleUpdate}
+            color="primary"
+          >
+            Update
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-              {!application && <HorizontalFiller />}
-
-              <Actions>
-                <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
-
-                <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
-
-                <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
-
-                <LoadingAction
-                  disabled={deleting}
-                  loading={deleting}
-                  onClick={handleDelete}
-                  color="error"
-                  aria-label="delete"
-                >
-                  Delete
-                </LoadingAction>
-
-                <LoadingAction
-                  disabled={!formValid}
-                  loading={updating}
-                  onClick={handleUpdate}
-                  color="primary"
-                >
-                  Update
-                </LoadingAction>
-              </Actions>
-            </WorkspaceNavBar>
-
-            {repos && formDefaults && (
-              <ApplicationForm
-                repos={repos}
-                initialValues={formDefaults}
-                formValid={setFormValid}
-                handleValueUpdate={handleValueUpdate}
-              />
-            )}
-          </>
-        </>
+      {repos && formDefaults && (
+        <ApplicationForm
+          repos={repos}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
       )}
     </>
   );
