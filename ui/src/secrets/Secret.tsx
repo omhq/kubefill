@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { ApplicationFull, Secret as SecretType } from "../types";
 import {
   fetchApplicationSecret,
@@ -7,9 +7,7 @@ import {
   fetchApplication,
 } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, ICrumb } from "../Crumbs";
-import SecretBar from "./SecretBar";
-import Drawer from "../globals/Drawer";
+import { Crumbs } from "../Crumbs";
 import {
   Button,
   Dialog,
@@ -25,15 +23,15 @@ import { getErrorMessage } from "../requests/utils";
 import { truncate } from "lodash";
 import SecretForm from "./SecretForm";
 import { FormikValues } from "formik";
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 
-const Repo = () => {
+const EditSecret: FunctionComponent = (): ReactElement => {
   const { appId, secretId } = useParams<{ appId: string; secretId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [updating, setUpdating] = useState<boolean>(false);
   const [deleting, setDelelting] = useState<boolean>(false);
   const [secret, setSecret] = useState<SecretType>();
   const [formValues, setFormValues] = useState<Partial<any>>();
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
@@ -97,33 +95,6 @@ const Repo = () => {
     setFormValues(values);
   };
 
-  useEffect(() => {
-    if (application?.app && secret) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/applications",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: false,
-        },
-        {
-          label: "secrets",
-          path: `/applications/${application.app.id}/secrets`,
-          current: false,
-        },
-        {
-          label: truncate(secret.name),
-          path: `/applications/${application.app.id}/secrets/${secret.id}`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application, secret]);
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -169,59 +140,93 @@ const Repo = () => {
     };
   }, [appId]);
 
+  if (!secretId) {
+    throw new Error("The specified secret identifier is invalid.");
+  }
+
   return (
     <>
-      {secretId && (
-        <>
-          <Dialog
-            fullScreen={fullScreen}
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="responsive-dialog-title"
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">Confirm delete?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>This action can't be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            application && secret
+              ? [
+                  {
+                    label: "applications",
+                    path: "/applications",
+                    current: false,
+                  },
+                  {
+                    label: application.app.name,
+                    path: `/applications/${application.app.id}`,
+                    current: false,
+                  },
+                  {
+                    label: "secrets",
+                    path: `/applications/${application.app.id}/secrets`,
+                    current: false,
+                  },
+                  {
+                    label: truncate(secret.name),
+                    path: `/applications/${application.app.id}/secrets/${secret.id}`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
+
+        <Actions>
+          <LoadingAction
+            disabled={deleting}
+            loading={deleting}
+            onClick={handleDelete}
+            aria-label="Delete"
           >
-            <DialogTitle id="responsive-dialog-title">{"Confirm delete?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>This action can't be undone.</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button autoFocus onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button onClick={handleConfirmDelete} autoFocus>
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
+            Delete
+          </LoadingAction>
 
-          <Drawer
-            child={
-              <SecretBar
-                updating={updating}
-                deleting={deleting}
-                formValid={formValid}
-                del={handleDelete}
-                update={handleUpdate}
-              />
-            }
-            body={
-              <>
-                <Crumbs crumbs={crumbs} />
+          <LoadingAction
+            disabled={!formValid || updating}
+            loading={updating}
+            onClick={handleUpdate}
+            aria-label="Update"
+          >
+            Update
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-                {secret && formDefaults && (
-                  <SecretForm
-                    secretId={secret.id}
-                    initialValues={formDefaults}
-                    formValid={setFormValid}
-                    handleValueUpdate={handleValueUpdate}
-                  />
-                )}
-              </>
-            }
-          />
-        </>
+      {secret && formDefaults && (
+        <SecretForm
+          secretId={secret.id}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
       )}
     </>
   );
 };
 
-export default Repo;
+export default EditSecret;
