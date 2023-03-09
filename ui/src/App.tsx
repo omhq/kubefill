@@ -92,12 +92,12 @@ const App = () => {
               path="/repos/new"
               element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RepoCreate />} />}
             />
-          </Route>
 
-          <Route
-            path="/repos/:repoId"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repo />} />}
-          />
+            <Route
+              path="/repos/:repoId"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Repo />} />}
+            />
+          </Route>
           <Route
             path="/applications/new"
             element={
