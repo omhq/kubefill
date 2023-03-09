@@ -119,12 +119,13 @@ const App = () => {
               path="/applications/:appId/secrets/:secretId"
               element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Secret />} />}
             />
+
+            <Route
+              path="/applications/:appId/run"
+              element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Run />} />}
+            />
           </Route>
 
-          <Route
-            path="/applications/:appId/run"
-            element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Run />} />}
-          />
           <Route
             path="/settings"
             element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Settings />} />}
