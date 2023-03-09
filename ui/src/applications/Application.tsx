@@ -8,50 +8,23 @@ import { useSnackbar } from "notistack";
 import { FormikValues } from "formik";
 import { fetchRepos } from "../requests/repos";
 import { getErrorMessage } from "../requests/utils";
-import { LoadingButton } from "@mui/lab";
 import {
-  Link,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  styled,
   useMediaQuery,
   useTheme,
-  Icon,
 } from "@mui/material";
-import { WorkspaceNavBar } from "../components";
-
-const Filler = styled("div")`
-  display: flex;
-  flex-grow: 1;
-`;
-
-const Actions = styled("div")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  column-gap: ${({ theme }) => theme.spacing(2)};
-
-  padding: ${({ theme }) => theme.spacing(1)};
-  margin: ${({ theme }) => theme.spacing(1)};
-  border-radius: ${({ theme }) => theme.spacing(1)};
-`;
-
-const Action = styled(Button)`
-  border-radius: ${({ theme }) => theme.spacing(0.5)};
-`;
-
-const StyledLink = styled(Link)`
-  display: flex;
-  align-items: center;
-`;
-
-const LoadingAction = styled(LoadingButton)`
-  border-radius: ${({ theme }) => theme.spacing(0.5)};
-`;
+import {
+  Actions,
+  HorizontalFiller,
+  LinkAction,
+  LoadingAction,
+  WorkspaceNavBar,
+} from "../components";
 
 const Application = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -202,51 +175,31 @@ const Application = () => {
                   ]}
                 />
               )}
-              {!application && <Filler />}
+
+              {!application && <HorizontalFiller />}
 
               <Actions>
-                <Action variant="outlined" disableElevation={true} size="small">
-                  <StyledLink
-                    underline="none"
-                    color="inherit"
-                    href={`/applications/${appId}/secrets`}
-                  >
-                    Secrets
-                  </StyledLink>
-                </Action>
+                <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
 
-                <Action variant="outlined" disableElevation={true} size="small">
-                  <StyledLink underline="none" color="inherit" href={`/applications/${appId}/runs`}>
-                    Runs
-                  </StyledLink>
-                </Action>
+                <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
 
-                <Action variant="outlined" disableElevation={true} size="small">
-                  <StyledLink underline="none" color="inherit" href={`/applications/${appId}/run`}>
-                    Run
-                  </StyledLink>
-                </Action>
+                <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
 
                 <LoadingAction
-                  variant="outlined"
-                  size="small"
-                  aria-label="delete"
-                  disableElevation={true}
                   disabled={deleting}
+                  loading={deleting}
                   onClick={handleDelete}
                   color="error"
-                  loading={deleting}
+                  aria-label="delete"
                 >
                   Delete
                 </LoadingAction>
 
                 <LoadingAction
                   disabled={!formValid}
-                  loading={!!updating}
+                  loading={updating}
                   onClick={handleUpdate}
-                  variant="outlined"
                   color="primary"
-                  size="small"
                 >
                   Update
                 </LoadingAction>
