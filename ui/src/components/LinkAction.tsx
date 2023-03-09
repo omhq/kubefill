@@ -14,15 +14,18 @@ const Root = styled(Button)`
 export interface ILinkActionProps {
   to: string;
   children?: ReactNode;
+  anchorStyle?: any;
 }
 
 export const LinkAction: FunctionComponent<ILinkActionProps> = (
   props: ILinkActionProps
 ): ReactElement => {
-  const { to, children } = props;
+  const { to, anchorStyle, children } = props;
   return (
     <Root size="small" variant="outlined">
-      <Link to={to}>{children}</Link>
+      <Link style={anchorStyle} to={to}>
+        {children}
+      </Link>
     </Root>
   );
 };
