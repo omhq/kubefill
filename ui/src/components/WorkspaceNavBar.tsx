@@ -12,6 +12,12 @@ const StyledToolbar = styled(Toolbar)`
   justify-content: space-between;
   align-items: center;
   margin: ${({ theme }) => theme.spacing(0, 1)};
+
+  ${({ theme }) => `
+    ${theme.breakpoints.down("md")} {
+      margin: 0px;
+    }
+  `}
 `;
 
 export interface IWorkspaceNavBarProps {
