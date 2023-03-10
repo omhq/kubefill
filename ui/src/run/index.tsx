@@ -95,6 +95,7 @@ const Run: FunctionComponent = (): ReactElement => {
                 label: "applications",
                 path: "/",
                 current: false,
+                icon: "apps",
               },
               {
                 label: application.app.name,
@@ -105,6 +106,7 @@ const Run: FunctionComponent = (): ReactElement => {
                 label: "run",
                 path: `/applications/${application.app.id}/run`,
                 current: true,
+                icon: "play",
               },
             ]}
           />

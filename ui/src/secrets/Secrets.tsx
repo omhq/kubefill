@@ -135,6 +135,7 @@ const Secrets: FunctionComponent = (): ReactElement => {
                     label: "applications",
                     path: "/applications",
                     current: false,
+                    icon: "apps",
                   },
                   {
                     label: application.app.name,
@@ -145,6 +146,7 @@ const Secrets: FunctionComponent = (): ReactElement => {
                     label: "secrets",
                     path: `/applications/${application.app.id}/secrets`,
                     current: true,
+                    icon: "lock",
                   },
                 ]
               : []

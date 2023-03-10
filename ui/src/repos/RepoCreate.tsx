@@ -56,8 +56,9 @@ const RepoCreate = () => {
           crumbs={[
             {
               label: "repos",
-              path: "/",
+              path: "/repos",
               current: false,
+              icon: "code",
             },
             {
               label: "new",

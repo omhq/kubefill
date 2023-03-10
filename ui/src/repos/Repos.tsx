@@ -116,8 +116,9 @@ export const Repos: FunctionComponent = (): ReactElement => {
           crumbs={[
             {
               label: "repos",
-              path: "/",
+              path: "/repos",
               current: true,
+              icon: "code",
             },
           ]}
         />

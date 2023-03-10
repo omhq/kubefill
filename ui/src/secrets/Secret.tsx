@@ -175,6 +175,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
                     label: "applications",
                     path: "/applications",
                     current: false,
+                    icon: "apps",
                   },
                   {
                     label: application.app.name,
@@ -185,6 +186,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
                     label: "secrets",
                     path: `/applications/${application.app.id}/secrets`,
                     current: false,
+                    icon: "lock",
                   },
                   {
                     label: truncate(secret.name),

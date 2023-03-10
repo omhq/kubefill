@@ -71,6 +71,7 @@ const ApplicationCreate = () => {
               label: "applications",
               path: "/",
               current: false,
+              icon: "apps",
             },
             {
               label: "new",

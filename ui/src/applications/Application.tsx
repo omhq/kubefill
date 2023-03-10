@@ -183,6 +183,7 @@ const Application = () => {
                 label: "applications",
                 path: "/",
                 current: false,
+                icon: "apps",
               },
               {
                 label: application.app.name,

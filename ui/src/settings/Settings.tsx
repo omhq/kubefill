@@ -37,6 +37,7 @@ const Settings: FunctionComponent = (): ReactElement => {
               label: "settings",
               path: "/settings",
               current: true,
+              icon: "settings",
             },
           ]}
         />

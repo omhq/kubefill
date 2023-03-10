@@ -180,6 +180,7 @@ const Repo: FunctionComponent = (): ReactElement => {
                     label: "repos",
                     path: "/repos",
                     current: false,
+                    icon: "deployed_code",
                   },
                   {
                     label: truncate(repo.url, {

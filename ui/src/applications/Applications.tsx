@@ -114,6 +114,7 @@ const Applications: FunctionComponent = (): ReactElement => {
               label: "applications",
               path: "/",
               current: true,
+              icon: "apps",
             },
           ]}
         />
