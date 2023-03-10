@@ -12,7 +12,7 @@ const CrumbText = styled(Typography)`
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: inherit;
-  font-size: 12px;
+  font-size: 14px;
 
   &:hover {
     text-decoration: underline;
