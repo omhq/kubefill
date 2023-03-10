@@ -16,11 +16,9 @@ import {
 } from "../components";
 import { Crumbs } from "../Crumbs";
 
-const FormContainer = styled("div")`
+const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
-
-  padding: ${({ theme }) => theme.spacing(4)};
 `;
 
 const Run: FunctionComponent = (): ReactElement => {
@@ -128,14 +126,12 @@ const Run: FunctionComponent = (): ReactElement => {
 
       <FormContainer>
         {application?.manifests && (
-          <Container sx={{ mt: 10, mb: 2, px: 2 }} maxWidth="md">
-            <ApplicationForm
-              defaultData={application.manifests.data}
-              schema={application.manifests.schema}
-              uiSchema={application.manifests.ui_schema}
-              handleFormChange={handleFormChange}
-            />
-          </Container>
+          <ApplicationForm
+            defaultData={application.manifests.data}
+            schema={application.manifests.schema}
+            uiSchema={application.manifests.ui_schema}
+            handleFormChange={handleFormChange}
+          />
         )}
 
         {!application?.manifests && (

@@ -1,18 +1,17 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationJobs } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Chip, IconButton, Alert, styled } from "@mui/material";
+import { Box, Chip, IconButton, Alert, styled, Container } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { Visibility } from "@mui/icons-material";
 import { ApplicationFull } from "../types";
 import { WorkspaceNavBar } from "../components";
 
-const Root = styled("div")`
+const Root = styled(Container)`
   display: flex;
   flex-direction: column;
-
-  padding: ${({ theme }) => theme.spacing(4)};
+  margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 const Jobs: FunctionComponent = (): ReactElement => {

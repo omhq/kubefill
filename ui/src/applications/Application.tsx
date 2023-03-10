@@ -10,6 +10,7 @@ import { fetchRepos } from "../requests/repos";
 import { getErrorMessage } from "../requests/utils";
 import {
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -249,12 +250,14 @@ const Application = () => {
       </WorkspaceNavBar>
 
       {repos && formDefaults && (
-        <ApplicationForm
-          repos={repos}
-          initialValues={formDefaults}
-          formValid={setFormValid}
-          handleValueUpdate={handleValueUpdate}
-        />
+        <Container sx={{ mt: 3 }}>
+          <ApplicationForm
+            repos={repos}
+            initialValues={formDefaults}
+            formValid={setFormValid}
+            handleValueUpdate={handleValueUpdate}
+          />
+        </Container>
       )}
     </>
   );

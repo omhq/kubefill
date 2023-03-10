@@ -8,6 +8,7 @@ import { FormikValues } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApplicationFull, SecretCreate as SecretCreateType } from "../types";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Container } from "@mui/material";
 
 const formDefaults = {
   name: "",
@@ -109,12 +110,14 @@ const SecretCreate: FunctionComponent = (): ReactElement => {
         </Actions>
       </WorkspaceNavBar>
 
-      <SecretForm
-        secretId={0}
-        initialValues={formDefaults}
-        formValid={setFormValid}
-        handleValueUpdate={handleValueUpdate}
-      />
+      <Container sx={{ mt: 2 }}>
+        <SecretForm
+          secretId={0}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
+      </Container>
     </>
   );
 };

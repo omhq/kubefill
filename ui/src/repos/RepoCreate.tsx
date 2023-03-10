@@ -8,6 +8,7 @@ import { FormikValues } from "formik";
 import { useNavigate } from "react-router-dom";
 import { RepoCreate as RepoCreateType } from "../types";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Container } from "@mui/material";
 
 const formDefaults = {
   url: "",
@@ -80,12 +81,14 @@ const RepoCreate = () => {
         </Actions>
       </WorkspaceNavBar>
 
-      <RepoForm
-        repoId={0}
-        initialValues={formDefaults}
-        formValid={setFormValid}
-        handleValueUpdate={handleValueUpdate}
-      />
+      <Container sx={{ mt: 2 }}>
+        <RepoForm
+          repoId={0}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
+      </Container>
     </>
   );
 };

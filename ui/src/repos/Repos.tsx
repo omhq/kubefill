@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
-import { Box, IconButton, Alert, styled } from "@mui/material";
+import { Box, IconButton, Alert, styled, Container } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +10,8 @@ import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 import { LinkAction, WorkspaceNavBar } from "../components";
 
-const DataGridContainer = styled("div")`
-  padding: ${({ theme }) => theme.spacing(4)};
+const DataGridContainer = styled(Container)`
+  margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 export const Repos: FunctionComponent = (): ReactElement => {

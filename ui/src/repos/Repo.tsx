@@ -6,12 +6,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Crumbs, ICrumb } from "../Crumbs";
 import {
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  styled,
   Typography,
   useMediaQuery,
   useTheme,
@@ -22,10 +22,6 @@ import { truncate } from "lodash";
 import RepoForm from "./RepoForm";
 import { FormikValues } from "formik";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
-
-const Container = styled("div")`
-  padding: ${({ theme }) => theme.spacing(4)};
-`;
 
 const Repo: FunctionComponent = (): ReactElement => {
   const { repoId } = useParams<{ repoId: string }>();
@@ -218,7 +214,7 @@ const Repo: FunctionComponent = (): ReactElement => {
         </Actions>
       </WorkspaceNavBar>
 
-      <Container>
+      <Container sx={{ mt: 2 }}>
         <Typography variant="body1" fontWeight={600} gutterBottom={true}>
           Branch
         </Typography>

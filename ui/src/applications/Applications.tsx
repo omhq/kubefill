@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert, Button, styled } from "@mui/material";
+import { Box, IconButton, Alert, Button, styled, Container } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,6 @@ import { Visibility } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import { LinkAction, WorkspaceNavBar } from "../components";
-
-const DataGridContainer = styled("div")`
-  padding: ${({ theme }) => theme.spacing(4)};
-`;
 
 const Applications: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
@@ -124,8 +120,8 @@ const Applications: FunctionComponent = (): ReactElement => {
         </LinkAction>
       </WorkspaceNavBar>
 
-      {applications.length > 0 && (
-        <DataGridContainer>
+      <Container sx={{ mt: 2 }}>
+        {applications.length > 0 && (
           <DataGrid
             autoHeight={true}
             rows={applications}
@@ -133,14 +129,14 @@ const Applications: FunctionComponent = (): ReactElement => {
             pageSize={100}
             rowsPerPageOptions={[100]}
           />
-        </DataGridContainer>
-      )}
+        )}
 
-      {applications.length === 0 && (
-        <Alert variant="outlined" severity="info">
-          No applications yet
-        </Alert>
-      )}
+        {applications.length === 0 && (
+          <Alert variant="outlined" severity="info">
+            No applications yet
+          </Alert>
+        )}
+      </Container>
     </>
   );
 };

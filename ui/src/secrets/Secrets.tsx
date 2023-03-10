@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationSecrets } from "../requests/applications";
 import { ApplicationFull, Secret as SecretType } from "../types";
-import { Box, IconButton, Alert, styled } from "@mui/material";
+import { Box, IconButton, Alert, styled, Container } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,8 +10,8 @@ import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 import { Actions, LinkAction, WorkspaceNavBar } from "../components";
 
-const DataGridContainer = styled("div")`
-  padding: ${({ theme }) => theme.spacing(4)};
+const DataGridContainer = styled(Container)`
+  margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 const Secrets: FunctionComponent = (): ReactElement => {
@@ -160,8 +160,8 @@ const Secrets: FunctionComponent = (): ReactElement => {
         </Actions>
       </WorkspaceNavBar>
 
-      {secrets.length > 0 && (
-        <DataGridContainer>
+      <DataGridContainer>
+        {secrets.length > 0 && (
           <DataGrid
             autoHeight
             rows={secrets}
@@ -169,14 +169,14 @@ const Secrets: FunctionComponent = (): ReactElement => {
             pageSize={100}
             rowsPerPageOptions={[100]}
           />
-        </DataGridContainer>
-      )}
+        )}
 
-      {secrets.length === 0 && (
-        <Alert variant="outlined" severity="info">
-          No secrets
-        </Alert>
-      )}
+        {secrets.length === 0 && (
+          <Alert variant="outlined" severity="info">
+            No secrets
+          </Alert>
+        )}
+      </DataGridContainer>
     </>
   );
 };

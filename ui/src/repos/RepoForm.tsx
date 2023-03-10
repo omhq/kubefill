@@ -41,79 +41,77 @@ const RepoForm = ({ repoId, initialValues, formValid, handleValueUpdate }: RepoF
   }, [formik.values, handleValueUpdate]);
 
   return (
-    <Container sx={{ mt: 4, mb: 2, p: 0 }} maxWidth="sm">
-      <Box component="form" noValidate autoComplete="off">
-        <FormControl error={!!formik.touched?.url && !!formik.errors?.url} fullWidth sx={{ mb: 2 }}>
-          <InputLabel htmlFor="name">Repository URL</InputLabel>
-          <OutlinedInput
-            required
-            error={!!formik.touched?.url && !!formik.errors?.url}
-            id="url"
-            name="url"
-            label="Repository URL"
-            value={formik.values?.url}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+    <Box component="form" noValidate autoComplete="off">
+      <FormControl error={!!formik.touched?.url && !!formik.errors?.url} fullWidth sx={{ mb: 2 }}>
+        <InputLabel htmlFor="name">Repository URL</InputLabel>
+        <OutlinedInput
+          required
+          error={!!formik.touched?.url && !!formik.errors?.url}
+          id="url"
+          name="url"
+          label="Repository URL"
+          value={formik.values?.url}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-          {formik.touched?.url && formik.errors?.url && (
-            <FormHelperText id="url-error-text">
-              <>{formik.errors?.url}</>
-            </FormHelperText>
-          )}
-        </FormControl>
+        {formik.touched?.url && formik.errors?.url && (
+          <FormHelperText id="url-error-text">
+            <>{formik.errors?.url}</>
+          </FormHelperText>
+        )}
+      </FormControl>
 
-        <FormControl
+      <FormControl
+        error={!!formik.touched?.branch && !!formik.errors?.branch}
+        fullWidth
+        sx={{ mb: 2 }}
+      >
+        <InputLabel htmlFor="branch">Branch</InputLabel>
+        <OutlinedInput
+          required
           error={!!formik.touched?.branch && !!formik.errors?.branch}
-          fullWidth
-          sx={{ mb: 2 }}
-        >
-          <InputLabel htmlFor="branch">Branch</InputLabel>
-          <OutlinedInput
-            required
-            error={!!formik.touched?.branch && !!formik.errors?.branch}
-            id="branch"
-            name="branch"
-            label="Branch"
-            value={formik.values?.branch || ""}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+          id="branch"
+          name="branch"
+          label="Branch"
+          value={formik.values?.branch || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-          {formik.touched?.branch && formik.errors?.branch && (
-            <FormHelperText id="name-error-text">
-              <>{formik.errors?.branch}</>
-            </FormHelperText>
-          )}
-        </FormControl>
+        {formik.touched?.branch && formik.errors?.branch && (
+          <FormHelperText id="name-error-text">
+            <>{formik.errors?.branch}</>
+          </FormHelperText>
+        )}
+      </FormControl>
 
-        <FormControl
+      <FormControl
+        error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
+        fullWidth
+        sx={{ mb: 2 }}
+      >
+        <TextField
+          required
           error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
+          id="ssh_private_key"
+          name="ssh_private_key"
+          label="SSH private key data"
           fullWidth
-          sx={{ mb: 2 }}
-        >
-          <TextField
-            required
-            error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
-            id="ssh_private_key"
-            name="ssh_private_key"
-            label="SSH private key data"
-            fullWidth
-            multiline
-            rows={10}
-            value={formik.values?.ssh_private_key}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+          multiline
+          rows={10}
+          value={formik.values?.ssh_private_key}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-          {formik.touched?.ssh_private_key && formik.errors?.ssh_private_key && (
-            <FormHelperText id="ssh-private-key-error-text">
-              <>{formik.errors?.ssh_private_key}</>
-            </FormHelperText>
-          )}
-        </FormControl>
-      </Box>
-    </Container>
+        {formik.touched?.ssh_private_key && formik.errors?.ssh_private_key && (
+          <FormHelperText id="ssh-private-key-error-text">
+            <>{formik.errors?.ssh_private_key}</>
+          </FormHelperText>
+        )}
+      </FormControl>
+    </Box>
   );
 };
 

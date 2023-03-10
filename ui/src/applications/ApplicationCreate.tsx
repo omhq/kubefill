@@ -9,6 +9,7 @@ import { FormikValues } from "formik";
 import { useNavigate } from "react-router-dom";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 import { Hidden, Icon, IconButton } from "@mui/material";
+import { Container } from "@mui/system";
 
 const formDefaults = {
   name: "",
@@ -100,12 +101,14 @@ const ApplicationCreate = () => {
         </Actions>
       </WorkspaceNavBar>
 
-      <ApplicationForm
-        repos={repos}
-        initialValues={formDefaults}
-        formValid={setFormValid}
-        handleValueUpdate={handleValueUpdate}
-      />
+      <Container sx={{ mt: 2 }}>
+        <ApplicationForm
+          repos={repos}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
+      </Container>
     </>
   );
 };

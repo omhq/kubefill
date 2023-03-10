@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Crumbs } from "../Crumbs";
 import {
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -222,12 +223,14 @@ const EditSecret: FunctionComponent = (): ReactElement => {
       </WorkspaceNavBar>
 
       {secret && formDefaults && (
-        <SecretForm
-          secretId={secret.id}
-          initialValues={formDefaults}
-          formValid={setFormValid}
-          handleValueUpdate={handleValueUpdate}
-        />
+        <Container sx={{ mt: 2 }}>
+          <SecretForm
+            secretId={secret.id}
+            initialValues={formDefaults}
+            formValid={setFormValid}
+            handleValueUpdate={handleValueUpdate}
+          />
+        </Container>
       )}
     </>
   );

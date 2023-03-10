@@ -8,6 +8,7 @@ import Logs from "./Logs";
 import {
   Button,
   Chip,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,12 +25,11 @@ import { getErrorMessage, getServerPort } from "../requests/utils";
 import { WS_PATH, SERVER_HOSTNAME } from "../constants";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 
-const JobContainer = styled("div")`
+const JobContainer = styled(Container)`
   display: flex;
   flex-direction: column;
   row-gap: ${({ theme }) => theme.spacing(1)};
-
-  padding: ${({ theme }) => theme.spacing(4)};
+  margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 const JobHeader = styled("div")`
