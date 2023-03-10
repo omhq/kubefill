@@ -4,7 +4,7 @@ import { FunctionComponent, ReactElement } from "react";
 import { Link } from "react-router-dom";
 
 const CrumbText = styled(Typography)`
-  font-size: 12px;
+  font-size: 14px;
   padding: 0;
   margin: 0;
 `;
