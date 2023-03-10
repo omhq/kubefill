@@ -39,14 +39,7 @@ const ApplicationForm = ({
   }, [formik.values, handleValueUpdate]);
 
   return (
-    <Box
-      component="form"
-      sx={{
-        "& .MuiTextField-root": { width: "25ch" },
-      }}
-      noValidate={true}
-      autoComplete="off"
-    >
+    <Box component="form" noValidate={true} autoComplete="off">
       <Box sx={{ mb: 2 }}>
         <TextField
           required={true}
@@ -98,7 +91,7 @@ const ApplicationForm = ({
       <Box sx={{ mb: 2 }}>
         <TextField
           fullWidth={true}
-          required
+          required={true}
           error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
           id="manifest_path"
           name="manifest_path"
