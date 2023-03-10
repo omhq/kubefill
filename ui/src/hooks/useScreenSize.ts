@@ -12,9 +12,5 @@ export const useScreenSize = (): TScreenSize => {
 
   const size = (xs && "xs") || (sm && "sm") || (md && "md") || (lg && "lg") || (xl && "xl");
 
-  if (!size) {
-    throw new Error("Unknown screen size detected!");
-  }
-
-  return size;
+  return size ? size : "lg";
 };
