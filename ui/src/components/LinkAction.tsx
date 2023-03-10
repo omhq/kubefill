@@ -7,9 +7,21 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-const Root = styled(Button)`
+interface IStyleButtonProps {
+  selected: boolean;
+}
+
+const StyledButton = styled(Button, {
+  shouldForwardProp: (propName) => propName !== "selected",
+})<IStyleButtonProps>`
   border-radius: ${({ theme }) => theme.spacing(0.5)};
   text-transform: none;
+
+  background-color: ${({ selected }) => (selected ? "#ffffff28" : undefined)};
+
+  &:hover {
+    background-color: ${({ selected }) => (selected ? "#ffffff28" : undefined)};
+  }
 `;
 
 export interface ILinkActionProps {
@@ -17,21 +29,27 @@ export interface ILinkActionProps {
   children?: ReactNode;
   anchorStyle?: any;
   icon: string;
+  selected?: boolean;
 }
 
 export const LinkAction: FunctionComponent<ILinkActionProps> = (
   props: ILinkActionProps
 ): ReactElement => {
-  const { to, anchorStyle, children, icon } = props;
+  const { to, selected, anchorStyle, children, icon } = props;
   const size = useScreenSize();
 
   return (
     <>
       {size !== "sm" && (
         <StyledLink style={anchorStyle} to={to}>
-          <Root size="small" variant="outlined" style={anchorStyle}>
+          <StyledButton
+            size="small"
+            variant="outlined"
+            style={{ ...anchorStyle }}
+            selected={Boolean(selected)}
+          >
             {children}
-          </Root>
+          </StyledButton>
         </StyledLink>
       )}
       {size === "sm" && (

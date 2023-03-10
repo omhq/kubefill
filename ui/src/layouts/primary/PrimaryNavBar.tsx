@@ -1,6 +1,6 @@
 import { AppBar, Box, Toolbar, styled, useTheme, Icon, IconButton, Menu } from "@mui/material";
 import { FunctionComponent, ReactElement, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Actions, LinkAction } from "../../components";
 
 const StyledSvg = styled("svg")`
@@ -18,6 +18,7 @@ const StyledToolbar = styled(Toolbar)`
 
 export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
   const theme = useTheme();
+  const location = useLocation();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -57,16 +58,18 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
           </Link>
           <Actions>
             <LinkAction
-              anchorStyle={{ color: theme.palette.primary.contrastText }}
               to="/applications"
               icon="apps"
+              selected={location.pathname === "/applications"}
+              anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
               Applications
             </LinkAction>
             <LinkAction
-              anchorStyle={{ color: theme.palette.primary.contrastText }}
               to="/repos"
               icon="code"
+              selected={location.pathname === "/repos"}
+              anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
               Repos
             </LinkAction>
@@ -74,6 +77,7 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
               anchorStyle={{ color: theme.palette.primary.contrastText }}
               to="/settings"
               icon="settings"
+              selected={location.pathname === "/settings"}
             >
               Settings
             </LinkAction>
