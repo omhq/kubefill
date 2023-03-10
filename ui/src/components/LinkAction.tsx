@@ -3,14 +3,13 @@ import { FunctionComponent, ReactElement, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useScreenSize } from "../hooks";
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
 const Root = styled(Button)`
   border-radius: ${({ theme }) => theme.spacing(0.5)};
   text-transform: none;
-
-  & a {
-    color: inherit;
-    text-decoration: none;
-  }
 `;
 
 export interface ILinkActionProps {
@@ -29,11 +28,11 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
   return (
     <>
       {size !== "sm" && (
-        <Root size="small" variant="outlined">
-          <Link style={anchorStyle} to={to}>
+        <StyledLink style={anchorStyle} to={to}>
+          <Root size="small" variant="outlined" style={anchorStyle}>
             {children}
-          </Link>
-        </Root>
+          </Root>
+        </StyledLink>
       )}
       {size === "sm" && (
         <Link style={{ color: "unset", ...anchorStyle }} to={to}>
