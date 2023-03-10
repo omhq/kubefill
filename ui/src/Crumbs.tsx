@@ -36,9 +36,7 @@ export const Crumbs: FunctionComponent<ICrumbsProps> = (props: ICrumbsProps): Re
   const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const renderCrumb = (crumb: ICrumb) => {
-    console.log(smallScreen);
     if (smallScreen) {
-      console.log(crumb);
       if (crumb.icon) {
         return (
           <Icon sx={{ mt: 0.7 }} fontSize="small">
