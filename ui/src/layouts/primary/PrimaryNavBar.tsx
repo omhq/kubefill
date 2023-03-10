@@ -1,5 +1,5 @@
-import { AppBar, Box, Toolbar, styled, useTheme } from "@mui/material";
-import { FunctionComponent, ReactElement } from "react";
+import { AppBar, Box, Toolbar, styled, useTheme, Icon, IconButton, Menu } from "@mui/material";
+import { FunctionComponent, ReactElement, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { Actions, LinkAction } from "../../components";
 
@@ -18,6 +18,7 @@ const StyledToolbar = styled(Toolbar)`
 
 export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
   const theme = useTheme();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
