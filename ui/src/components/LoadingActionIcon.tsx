@@ -14,7 +14,7 @@ export const LoadingActionIcon: FunctionComponent<ILoadingActionIconProps> = (
   return (
     <>
       {!loading && (
-        <IconButton disabled={loading} onClick={onClick}>
+        <IconButton size="small" disabled={loading} onClick={onClick}>
           <Icon fontSize="small">{icon}</Icon>
         </IconButton>
       )}
