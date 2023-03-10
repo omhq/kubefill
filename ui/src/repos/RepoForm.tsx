@@ -1,16 +1,9 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from "@mui/material";
+import { Box, FormHelperText } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { CreateValidationSchema, UpdateValidationSchema } from "./ValidationSchemas";
 import { RepoCreate } from "../types";
+import { TextField } from "../components";
 
 type RepoFormParams = {
   repoId: number;
@@ -42,10 +35,10 @@ const RepoForm = ({ repoId, initialValues, formValid, handleValueUpdate }: RepoF
 
   return (
     <Box component="form" noValidate autoComplete="off">
-      <FormControl error={!!formik.touched?.url && !!formik.errors?.url} fullWidth sx={{ mb: 2 }}>
-        <InputLabel htmlFor="name">Repository URL</InputLabel>
-        <OutlinedInput
-          required
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
+          required={true}
           error={!!formik.touched?.url && !!formik.errors?.url}
           id="url"
           name="url"
@@ -56,20 +49,14 @@ const RepoForm = ({ repoId, initialValues, formValid, handleValueUpdate }: RepoF
         />
 
         {formik.touched?.url && formik.errors?.url && (
-          <FormHelperText id="url-error-text">
-            <>{formik.errors?.url}</>
-          </FormHelperText>
+          <FormHelperText id="url-error-text">{formik.errors?.url}</FormHelperText>
         )}
-      </FormControl>
+      </Box>
 
-      <FormControl
-        error={!!formik.touched?.branch && !!formik.errors?.branch}
-        fullWidth
-        sx={{ mb: 2 }}
-      >
-        <InputLabel htmlFor="branch">Branch</InputLabel>
-        <OutlinedInput
-          required
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
+          required={true}
           error={!!formik.touched?.branch && !!formik.errors?.branch}
           id="branch"
           name="branch"
@@ -80,37 +67,32 @@ const RepoForm = ({ repoId, initialValues, formValid, handleValueUpdate }: RepoF
         />
 
         {formik.touched?.branch && formik.errors?.branch && (
-          <FormHelperText id="name-error-text">
-            <>{formik.errors?.branch}</>
-          </FormHelperText>
+          <FormHelperText id="name-error-text">{formik.errors?.branch}</FormHelperText>
         )}
-      </FormControl>
+      </Box>
 
-      <FormControl
-        error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
-        fullWidth
-        sx={{ mb: 2 }}
-      >
+      <Box sx={{ mt: 2 }}>
         <TextField
-          required
+          required={true}
           error={!!formik.touched?.ssh_private_key && !!formik.errors?.ssh_private_key}
           id="ssh_private_key"
           name="ssh_private_key"
           label="SSH private key data"
-          fullWidth
-          multiline
+          fullWidth={true}
+          multiline={true}
           rows={10}
           value={formik.values?.ssh_private_key}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          size="small"
         />
 
         {formik.touched?.ssh_private_key && formik.errors?.ssh_private_key && (
           <FormHelperText id="ssh-private-key-error-text">
-            <>{formik.errors?.ssh_private_key}</>
+            {formik.errors?.ssh_private_key}
           </FormHelperText>
         )}
-      </FormControl>
+      </Box>
     </Box>
   );
 };

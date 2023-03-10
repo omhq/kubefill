@@ -22,6 +22,7 @@ import { truncate } from "lodash";
 import RepoForm from "./RepoForm";
 import { FormikValues } from "formik";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Box } from "@mui/system";
 
 const Repo: FunctionComponent = (): ReactElement => {
   const { repoId } = useParams<{ repoId: string }>();
@@ -30,7 +31,6 @@ const Repo: FunctionComponent = (): ReactElement => {
   const [deleting, setDelelting] = useState<boolean>(false);
   const [repo, setRepo] = useState<RepoType>();
   const [formValues, setFormValues] = useState<Partial<any>>();
-  const [crumbs, setCrumbs] = useState<ICrumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
@@ -243,12 +243,14 @@ const Repo: FunctionComponent = (): ReactElement => {
         )}
 
         {repo && formDefaults && (
-          <RepoForm
-            repoId={repo.id}
-            initialValues={formDefaults}
-            formValid={setFormValid}
-            handleValueUpdate={handleValueUpdate}
-          />
+          <Box sx={{ mt: 3 }}>
+            <RepoForm
+              repoId={repo.id}
+              initialValues={formDefaults}
+              formValid={setFormValid}
+              handleValueUpdate={handleValueUpdate}
+            />
+          </Box>
         )}
       </Container>
     </>

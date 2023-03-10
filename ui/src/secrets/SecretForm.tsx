@@ -1,12 +1,5 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import { Box, FormHelperText, TextField } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { CreateValidationSchema, UpdateValidationSchema } from "./ValidationSchemas";
 import { SecretCreate } from "../types";
@@ -46,10 +39,10 @@ const SecretForm = ({
 
   return (
     <Box component="form" noValidate autoComplete="off">
-      <FormControl error={!!formik.touched?.name && !!formik.errors?.name} fullWidth sx={{ mb: 2 }}>
-        <InputLabel htmlFor="name">Name</InputLabel>
-        <OutlinedInput
-          required
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          required={true}
+          fullWidth={true}
           error={!!formik.touched?.name && !!formik.errors?.name}
           id="name"
           name="name"
@@ -64,16 +57,12 @@ const SecretForm = ({
             <>{formik.errors?.name}</>
           </FormHelperText>
         )}
-      </FormControl>
+      </Box>
 
-      <FormControl
-        error={!!formik.touched?.value && !!formik.errors?.value}
-        fullWidth
-        sx={{ mb: 2 }}
-      >
-        <InputLabel htmlFor="name">Value</InputLabel>
-        <OutlinedInput
-          required
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
+          required={true}
           error={!!formik.touched?.value && !!formik.errors?.value}
           id="value"
           name="value"
@@ -88,7 +77,7 @@ const SecretForm = ({
             <>{formik.errors?.value}</>
           </FormHelperText>
         )}
-      </FormControl>
+      </Box>
     </Box>
   );
 };

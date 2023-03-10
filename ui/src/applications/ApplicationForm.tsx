@@ -1,16 +1,8 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { ValidationSchema } from "./ValidationSchema";
+import { TextField } from "../components";
 
 type ApplicationFormParams = {
   repos: any[];
@@ -55,10 +47,10 @@ const ApplicationForm = ({
       noValidate={true}
       autoComplete="off"
     >
-      <FormControl error={!!formik.touched?.name && !!formik.errors?.name} fullWidth sx={{ mb: 2 }}>
-        <InputLabel htmlFor="name">Name</InputLabel>
-        <OutlinedInput
-          required
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          required={true}
+          fullWidth={true}
           error={!!formik.touched?.name && !!formik.errors?.name}
           id="name"
           name="name"
@@ -69,20 +61,19 @@ const ApplicationForm = ({
         />
 
         {!!formik.touched?.name && formik.errors?.name && (
-          <FormHelperText id="name-error-text">
-            <>{formik.errors?.name}</>
-          </FormHelperText>
+          <FormHelperText id="name-error-text">{formik.errors?.name as string}</FormHelperText>
         )}
-      </FormControl>
+      </Box>
 
       <FormControl
         error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
-        fullWidth
+        fullWidth={true}
         sx={{ mb: 2 }}
       >
         <InputLabel id="repo-id-label">Repo</InputLabel>
         <Select
-          required
+          required={true}
+          size="small"
           error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
           labelId="repo-id-label"
           id="repo_id"
@@ -100,19 +91,13 @@ const ApplicationForm = ({
         </Select>
 
         {formik.touched?.repo_id && formik.errors?.repo_id && (
-          <FormHelperText id="name-error-text">
-            <>{formik.errors?.repo_id}</>
-          </FormHelperText>
+          <FormHelperText id="name-error-text">{formik.errors?.repo_id as string}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl
-        error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
-        fullWidth
-        sx={{ mb: 2 }}
-      >
-        <InputLabel htmlFor="manifest_path">Manifests path</InputLabel>
-        <OutlinedInput
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
           required
           error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
           id="manifest_path"
@@ -125,10 +110,10 @@ const ApplicationForm = ({
 
         {formik.touched?.manifest_path && formik.errors?.manifest_path && (
           <FormHelperText id="name-error-text">
-            <>{formik.errors?.manifest_path}</>
+            {formik.errors?.manifest_path as string}
           </FormHelperText>
         )}
-      </FormControl>
+      </Box>
     </Box>
   );
 };
