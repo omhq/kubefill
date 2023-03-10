@@ -5,3 +5,4 @@ export * from "./LoadingAction";
 export * from "./HorizontalFiller";
 export * from "./MenuItemLink";
 export * from "./LoadingActionIcon";
+export * from "./TextField";
