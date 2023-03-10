@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { ApplicationFull } from "../types";
 import { deleteApplication, fetchApplication, updateApplication } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +15,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Icon,
+  IconButton,
+  Menu,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -25,6 +28,7 @@ import {
   LoadingAction,
   WorkspaceNavBar,
 } from "../components";
+import { MenuItemLink } from "../components/MenuItemLink";
 
 const Application = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -40,6 +44,18 @@ const Application = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleMenuOpen = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleMenuClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
 
   const handleDelete = () => {
     setOpen(true);
@@ -176,34 +192,61 @@ const Application = () => {
             ]}
           />
         )}
-
         {!application && <HorizontalFiller />}
-
         <Actions>
-          <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
+          {!smallScreen && (
+            <>
+              <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
 
-          <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
+              <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
 
-          <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
+              <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
 
-          <LoadingAction
-            disabled={deleting}
-            loading={deleting}
-            onClick={handleDelete}
-            color="error"
-            aria-label="delete"
-          >
-            Delete
-          </LoadingAction>
+              <LoadingAction
+                disabled={deleting}
+                loading={deleting}
+                onClick={handleDelete}
+                color="error"
+                aria-label="delete"
+              >
+                Delete
+              </LoadingAction>
 
-          <LoadingAction
-            disabled={!formValid}
-            loading={updating}
-            onClick={handleUpdate}
-            color="primary"
-          >
-            Update
-          </LoadingAction>
+              <LoadingAction
+                disabled={!formValid}
+                loading={updating}
+                onClick={handleUpdate}
+                color="primary"
+              >
+                Update
+              </LoadingAction>
+            </>
+          )}
+          {smallScreen && (
+            <>
+              <IconButton>
+                <Icon fontSize="small">delete</Icon>
+              </IconButton>
+
+              <IconButton>
+                <Icon fontSize="small">edit</Icon>
+              </IconButton>
+
+              <IconButton onClick={handleMenuOpen}>
+                <Icon fontSize="small">more_vert</Icon>
+              </IconButton>
+
+              {openMenu && (
+                <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+                  <MenuItemLink to={`/applications/${appId}/secrets`}>Secrets</MenuItemLink>
+
+                  <MenuItemLink to={`/applications/${appId}/runs`}>Runs</MenuItemLink>
+
+                  <MenuItemLink to={`/applications/${appId}/run`}>Run</MenuItemLink>
+                </Menu>
+              )}
+            </>
+          )}
         </Actions>
       </WorkspaceNavBar>
 
