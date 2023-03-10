@@ -195,19 +195,24 @@ const Repo: FunctionComponent = (): ReactElement => {
         />
         <Actions>
           <LoadingAction
-            disabled={deleting}
             aria-label="delete"
             onClick={handleDelete}
             loading={deleting}
+            icon="delete"
           >
             Delete
           </LoadingAction>
 
-          <LoadingAction loading={loading} onClick={handleSync}>
+          <LoadingAction loading={loading} onClick={handleSync} icon="sync">
             Sync
           </LoadingAction>
 
-          <LoadingAction disabled={!formValid} loading={!!updating} onClick={handleUpdate}>
+          <LoadingAction
+            disabled={!formValid || updating}
+            loading={updating}
+            onClick={handleUpdate}
+            icon="save"
+          >
             Update
           </LoadingAction>
         </Actions>

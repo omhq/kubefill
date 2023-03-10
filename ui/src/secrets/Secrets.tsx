@@ -154,7 +154,9 @@ const Secrets: FunctionComponent = (): ReactElement => {
         />
 
         <Actions>
-          <LinkAction to={`/applications/${appId}/secrets/new`}>New</LinkAction>
+          <LinkAction to={`/applications/${appId}/secrets/new`} icon="add_circle_outlined">
+            New
+          </LinkAction>
         </Actions>
       </WorkspaceNavBar>
 

@@ -8,8 +8,7 @@ import { fetchRepos } from "../requests/repos";
 import { FormikValues } from "formik";
 import { useNavigate } from "react-router-dom";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
-import { useScreenSize } from "../hooks";
-import { Icon, IconButton } from "@mui/material";
+import { Hidden, Icon, IconButton } from "@mui/material";
 
 const formDefaults = {
   name: "",
@@ -24,7 +23,6 @@ const ApplicationCreate = () => {
   const [formValues, setFormValues] = useState<Partial<any>>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const screenSize = useScreenSize();
 
   const handleCreate = () => {
     if (formValid && formValues) {
@@ -84,16 +82,21 @@ const ApplicationCreate = () => {
           ]}
         />
         <Actions>
-          {screenSize !== "sm" && (
-            <LoadingAction disabled={!formValid} loading={loading} onClick={handleCreate}>
+          <Hidden smDown={true}>
+            <LoadingAction
+              disabled={!formValid}
+              loading={loading}
+              onClick={handleCreate}
+              icon="save"
+            >
               Create
             </LoadingAction>
-          )}
-          {screenSize === "sm" && (
+          </Hidden>
+          <Hidden smUp={true}>
             <IconButton disabled={!formValid} onClick={handleCreate}>
               <Icon fontSize="small">save</Icon>
             </IconButton>
-          )}
+          </Hidden>
         </Actions>
       </WorkspaceNavBar>
 

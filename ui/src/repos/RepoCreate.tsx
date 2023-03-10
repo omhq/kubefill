@@ -73,6 +73,7 @@ const RepoCreate = () => {
             loading={loading}
             onClick={handleCreate}
             color="inherit"
+            icon="save"
           >
             Create
           </LoadingAction>

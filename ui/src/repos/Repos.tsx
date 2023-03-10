@@ -123,7 +123,9 @@ export const Repos: FunctionComponent = (): ReactElement => {
           ]}
         />
 
-        <LinkAction to="/repos/new">New</LinkAction>
+        <LinkAction to="/repos/new" icon="add_circle_outlined">
+          New
+        </LinkAction>
       </WorkspaceNavBar>
 
       {repos.length > 0 && (

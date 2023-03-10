@@ -13,6 +13,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Hidden,
   styled,
   Typography,
   useMediaQuery,
@@ -21,23 +22,7 @@ import {
 import { useSnackbar } from "notistack";
 import { getErrorMessage, getServerPort } from "../requests/utils";
 import { WS_PATH, SERVER_HOSTNAME } from "../constants";
-import { WorkspaceNavBar } from "../components";
-import { LoadingButton } from "@mui/lab";
-
-const Actions = styled("div")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  column-gap: ${({ theme }) => theme.spacing(2)};
-
-  padding: ${({ theme }) => theme.spacing(1)};
-  margin: ${({ theme }) => theme.spacing(1)};
-  border-radius: ${({ theme }) => theme.spacing(1)};
-`;
-
-const LoadingAction = styled(LoadingButton)`
-  border-radius: ${({ theme }) => theme.spacing(0.5)};
-`;
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 
 const JobContainer = styled("div")`
   display: flex;
@@ -218,11 +203,10 @@ const Job = () => {
         <Actions>
           <LoadingAction
             aria-label="delete"
-            variant="outlined"
-            size="small"
             disabled={deleting}
             onClick={handleDelete}
             loading={deleting}
+            icon="delete"
           >
             Delete
           </LoadingAction>

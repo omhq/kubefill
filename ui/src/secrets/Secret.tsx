@@ -204,6 +204,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
             loading={deleting}
             onClick={handleDelete}
             aria-label="Delete"
+            icon="delete"
           >
             Delete
           </LoadingAction>
@@ -213,6 +214,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
             loading={updating}
             onClick={handleUpdate}
             aria-label="Update"
+            icon="save"
           >
             Update
           </LoadingAction>

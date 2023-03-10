@@ -114,9 +114,13 @@ const Run: FunctionComponent = (): ReactElement => {
         {!application && <HorizontalFiller />}
 
         <Actions>
-          {jobId && <LinkAction to={`/applications/${appId}/runs/${jobId}`}>Logs</LinkAction>}
+          {jobId && (
+            <LinkAction to={`/applications/${appId}/runs/${jobId}`} icon="list">
+              Logs
+            </LinkAction>
+          )}
 
-          <LoadingAction loading={loading} onClick={handleRun}>
+          <LoadingAction loading={loading} onClick={handleRun} icon="play">
             Run
           </LoadingAction>
         </Actions>

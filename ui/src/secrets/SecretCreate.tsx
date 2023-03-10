@@ -102,6 +102,7 @@ const SecretCreate: FunctionComponent = (): ReactElement => {
             loading={loading}
             onClick={handleCreate}
             color="inherit"
+            icon="save"
           >
             Create
           </LoadingAction>

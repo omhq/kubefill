@@ -119,7 +119,9 @@ const Applications: FunctionComponent = (): ReactElement => {
           ]}
         />
 
-        <LinkAction to="/applications/new">New</LinkAction>
+        <LinkAction to="/applications/new" icon="add_circle_outlined">
+          New
+        </LinkAction>
       </WorkspaceNavBar>
 
       {applications.length > 0 && (

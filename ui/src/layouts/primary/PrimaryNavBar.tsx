@@ -59,13 +59,22 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
             <LinkAction
               anchorStyle={{ color: theme.palette.primary.contrastText }}
               to="/applications"
+              icon="apps"
             >
               Applications
             </LinkAction>
-            <LinkAction anchorStyle={{ color: theme.palette.primary.contrastText }} to="/repos">
+            <LinkAction
+              anchorStyle={{ color: theme.palette.primary.contrastText }}
+              to="/repos"
+              icon="code"
+            >
               Repos
             </LinkAction>
-            <LinkAction anchorStyle={{ color: theme.palette.primary.contrastText }} to="/settings">
+            <LinkAction
+              anchorStyle={{ color: theme.palette.primary.contrastText }}
+              to="/settings"
+              icon="settings"
+            >
               Settings
             </LinkAction>
           </Actions>
