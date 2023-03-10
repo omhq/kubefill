@@ -4,7 +4,7 @@ import { fetchApplication, startJob } from "../requests/applications";
 import ApplicationForm from "./ApplicationForm";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
-import { Alert, Container, styled } from "@mui/material";
+import { Alert, CircularProgress, Container, styled } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import {
@@ -21,12 +21,22 @@ const FormContainer = styled(Container)`
   flex-direction: column;
 `;
 
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px);
+`;
+
 const Run: FunctionComponent = (): ReactElement => {
   const { appId } = useParams<{ appId: string }>();
   const [formData, setFormData] = useState<FormData>();
   const [cloneData, setCloneData] = useState<FormData>();
   const [application, setApplication] = useState<ApplicationFull>();
-  const [loading, setLoading] = useState<boolean>(false);
+  let [loading, setLoading] = useState<boolean>(false);
+  const [loadingApp, setLoadingApp] = useState(false);
   const [jobId, setJobId] = useState<number | null>(null);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -72,6 +82,7 @@ const Run: FunctionComponent = (): ReactElement => {
 
   useEffect(() => {
     if (appId) {
+      setLoadingApp(true);
       fetchApplication(parseInt(appId)).then((data) => {
         if (data?.manifests?.data) {
           setFormData(data.manifests.data);
@@ -79,6 +90,7 @@ const Run: FunctionComponent = (): ReactElement => {
         }
 
         setApplication(data);
+        setLoadingApp(false);
       });
     }
   }, [appId]);
@@ -118,28 +130,40 @@ const Run: FunctionComponent = (): ReactElement => {
             </LinkAction>
           )}
 
-          <LoadingAction loading={loading} onClick={handleRun} icon="play_circle">
+          <LoadingAction
+            disabled={loading || loadingApp}
+            loading={loading}
+            onClick={handleRun}
+            icon="play_circle"
+          >
             Run
           </LoadingAction>
         </Actions>
       </WorkspaceNavBar>
 
-      <FormContainer>
-        {application?.manifests && (
-          <ApplicationForm
-            defaultData={application.manifests.data}
-            schema={application.manifests.schema}
-            uiSchema={application.manifests.ui_schema}
-            handleFormChange={handleFormChange}
-          />
-        )}
+      {!loadingApp && (
+        <FormContainer>
+          {application?.manifests && (
+            <ApplicationForm
+              defaultData={application.manifests.data}
+              schema={application.manifests.schema}
+              uiSchema={application.manifests.ui_schema}
+              handleFormChange={handleFormChange}
+            />
+          )}
 
-        {!application?.manifests && (
-          <Alert severity="warning">
-            Missing manifests! Make sure a repository is connected to this app.
-          </Alert>
-        )}
-      </FormContainer>
+          {!application?.manifests && (
+            <Alert severity="warning">
+              Missing manifests! Make sure a repository is connected to this app.
+            </Alert>
+          )}
+        </FormContainer>
+      )}
+      {loadingApp && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
+      )}
     </>
   );
 };
