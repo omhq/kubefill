@@ -225,11 +225,11 @@ const Application = () => {
           )}
           {smallScreen && (
             <>
-              <IconButton>
+              <IconButton onClick={handleDelete}>
                 <Icon fontSize="small">delete</Icon>
               </IconButton>
 
-              <IconButton>
+              <IconButton onClick={handleUpdate}>
                 <Icon fontSize="small">edit</Icon>
               </IconButton>
 
