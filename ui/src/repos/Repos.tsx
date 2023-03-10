@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
-import { Box, IconButton, Alert, styled, Container } from "@mui/material";
+import { Box, IconButton, Alert, styled, Container, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +14,20 @@ const DataGridContainer = styled(Container)`
   margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px - 24px);
+`;
+
 export const Repos: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [repos, setRepos] = useState<RepoType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  let [loading, setLoading] = useState<boolean>(true);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "url", headerName: "URL", flex: 0.8, width: 100 },
@@ -128,22 +137,32 @@ export const Repos: FunctionComponent = (): ReactElement => {
         </LinkAction>
       </WorkspaceNavBar>
 
-      {repos.length > 0 && (
-        <DataGridContainer>
-          <DataGrid
-            autoHeight
-            rows={repos}
-            columns={columns}
-            pageSize={100}
-            rowsPerPageOptions={[100]}
-          />
-        </DataGridContainer>
+      {!loading && (
+        <>
+          {repos.length > 0 && (
+            <DataGridContainer>
+              <DataGrid
+                autoHeight
+                rows={repos}
+                columns={columns}
+                pageSize={100}
+                rowsPerPageOptions={[100]}
+              />
+            </DataGridContainer>
+          )}
+
+          {repos.length === 0 && (
+            <Alert variant="outlined" severity="info">
+              No repos yet
+            </Alert>
+          )}
+        </>
       )}
 
-      {repos.length === 0 && (
-        <Alert variant="outlined" severity="info">
-          No repos yet
-        </Alert>
+      {loading && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
       )}
     </>
   );
