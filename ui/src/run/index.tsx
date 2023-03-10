@@ -104,7 +104,7 @@ const Run: FunctionComponent = (): ReactElement => {
                 label: "run",
                 path: `/applications/${application.app.id}/run`,
                 current: true,
-                icon: "play",
+                icon: "play_arrow",
               },
             ]}
           />
@@ -118,7 +118,7 @@ const Run: FunctionComponent = (): ReactElement => {
             </LinkAction>
           )}
 
-          <LoadingAction loading={loading} onClick={handleRun} icon="play">
+          <LoadingAction loading={loading} onClick={handleRun} icon="play_circle">
             Run
           </LoadingAction>
         </Actions>
