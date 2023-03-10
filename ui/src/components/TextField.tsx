@@ -1,4 +1,4 @@
-import { TextFieldProps, TextField as MuiTextField } from "@mui/material";
+import { TextFieldProps, TextField as MuiTextField, styled } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
 
 export type TTextFieldProps = TextFieldProps & {};
@@ -8,5 +8,12 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
 ): ReactElement => {
   const { ...otherProps } = props;
 
-  return <MuiTextField size="small" variant="outlined" {...otherProps} />;
+  return (
+    <MuiTextField
+      InputLabelProps={{ shrink: true }}
+      size="small"
+      variant="outlined"
+      {...otherProps}
+    />
+  );
 };
