@@ -9,4 +9,12 @@ export const Actions = styled("div")`
   padding: ${({ theme }) => theme.spacing(1)};
   margin: ${({ theme }) => theme.spacing(1)};
   border-radius: ${({ theme }) => theme.spacing(1)};
+
+  ${({ theme }) => `
+    ${theme.breakpoints.down("md")} {
+      column-gap: ${theme.spacing(1)};
+      padding: 0px;
+      margin: 0px;
+    }
+  `}
 `;
