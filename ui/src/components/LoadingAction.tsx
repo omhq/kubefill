@@ -5,6 +5,7 @@ import { useScreenSize } from "../hooks";
 import { LoadingActionIcon } from "./LoadingActionIcon";
 
 const Root = styled(LoadingButton)`
+  text-transform: none;
   border-radius: ${({ theme }) => theme.spacing(0.5)};
 `;
 

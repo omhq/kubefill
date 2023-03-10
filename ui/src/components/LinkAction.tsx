@@ -5,6 +5,7 @@ import { useScreenSize } from "../hooks";
 
 const Root = styled(Button)`
   border-radius: ${({ theme }) => theme.spacing(0.5)};
+  text-transform: none;
 
   & a {
     color: inherit;
