@@ -10,24 +10,25 @@ const Root = styled(LoadingButton)`
 
 export interface ILoadingActionProps extends LoadingButtonProps {
   icon: string;
+  lgOnly?: boolean;
 }
 
 export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
   props: ILoadingActionProps
 ): ReactElement => {
-  const { children, icon, ...otherProps } = props;
+  const { children, icon, lgOnly, ...otherProps } = props;
   const size = useScreenSize();
 
   return (
     <>
-      {size === "sm" && (
+      {size === "sm" && !lgOnly && (
         <LoadingActionIcon
           icon={icon}
           onClick={otherProps.onClick as () => void}
           loading={Boolean(otherProps.loading)}
         />
       )}
-      {size !== "sm" && (
+      {(size !== "sm" || lgOnly) && (
         <Root
           size="small"
           variant="outlined"
