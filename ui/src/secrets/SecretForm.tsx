@@ -1,15 +1,9 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import { Box, FormHelperText } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { CreateValidationSchema, UpdateValidationSchema } from "./ValidationSchemas";
 import { SecretCreate } from "../types";
+import { TextField } from "../components";
 
 type SecretFormParams = {
   secretId: number;
@@ -45,59 +39,47 @@ const SecretForm = ({
   }, [formik.values, handleValueUpdate]);
 
   return (
-    <>
-      <Container sx={{ mt: 4, mb: 2, p: 0 }} maxWidth="sm">
-        <Box component="form" noValidate autoComplete="off">
-          <FormControl
-            error={!!formik.touched?.name && !!formik.errors?.name}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            <InputLabel htmlFor="name">Name</InputLabel>
-            <OutlinedInput
-              required
-              error={!!formik.touched?.name && !!formik.errors?.name}
-              id="name"
-              name="name"
-              label="Name"
-              value={formik.values?.name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
+    <Box component="form" noValidate autoComplete="off">
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          required={true}
+          fullWidth={true}
+          error={!!formik.touched?.name && !!formik.errors?.name}
+          id="name"
+          name="name"
+          label="Name"
+          value={formik.values?.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-            {formik.touched?.name && formik.errors?.name && (
-              <FormHelperText id="name-error-text">
-                <>{formik.errors?.name}</>
-              </FormHelperText>
-            )}
-          </FormControl>
+        {formik.touched?.name && formik.errors?.name && (
+          <FormHelperText id="name-error-text">
+            <>{formik.errors?.name}</>
+          </FormHelperText>
+        )}
+      </Box>
 
-          <FormControl
-            error={!!formik.touched?.value && !!formik.errors?.value}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            <InputLabel htmlFor="name">Value</InputLabel>
-            <OutlinedInput
-              required
-              error={!!formik.touched?.value && !!formik.errors?.value}
-              id="value"
-              name="value"
-              label="Value"
-              defaultValue=""
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
+          required={true}
+          error={!!formik.touched?.value && !!formik.errors?.value}
+          id="value"
+          name="value"
+          label="Value"
+          defaultValue=""
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-            {formik.touched?.value && formik.errors?.value && (
-              <FormHelperText id="value-error-text">
-                <>{formik.errors?.value}</>
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Box>
-      </Container>
-    </>
+        {formik.touched?.value && formik.errors?.value && (
+          <FormHelperText id="value-error-text">
+            <>{formik.errors?.value}</>
+          </FormHelperText>
+        )}
+      </Box>
+    </Box>
   );
 };
 

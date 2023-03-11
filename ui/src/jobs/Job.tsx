@@ -1,27 +1,45 @@
 import { useEffect, useState } from "react";
 import { fetchJob, deleteJob } from "../requests/jobs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumb, Crumbs } from "../Crumbs";
+import { Crumbs } from "../Crumbs";
 import { ApplicationFull } from "../types";
 import { fetchApplication } from "../requests/applications";
 import Logs from "./Logs";
-import Drawer from "../globals/Drawer";
 import {
-  Box,
   Button,
   Chip,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Hidden,
+  styled,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import JobBar from "./JobBar";
 import { useSnackbar } from "notistack";
 import { getErrorMessage, getServerPort } from "../requests/utils";
 import { WS_PATH, SERVER_HOSTNAME } from "../constants";
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+
+const JobContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  row-gap: ${({ theme }) => theme.spacing(1)};
+  margin-top: ${({ theme }) => theme.spacing(2)};
+`;
+
+const JobHeader = styled("div")`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: ${({ theme }) => theme.spacing(1)};
+`;
+
+const JobName = styled(Typography)``;
 
 const DOMAIN = SERVER_HOSTNAME || window.location.hostname;
 
@@ -33,11 +51,12 @@ const getUniqueID = () => {
   return s4() + s4() + "-" + s4();
 };
 
+const colorByPhase = { Running: "warning", Succeeded: "success", Failed: "error" };
+
 const Job = () => {
   const { jobId, appId } = useParams<{ jobId: string; appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [job, setJob] = useState<any>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
   const [deleting, setDelelting] = useState<boolean>(false);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [uniqueId, setUniqueId] = useState<string | null>(null);
@@ -74,33 +93,6 @@ const Job = () => {
         });
     }
   };
-
-  useEffect(() => {
-    if (application?.app && job) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: false,
-        },
-        {
-          label: "runs",
-          path: `/applications/${application.app.id}/runs`,
-          current: false,
-        },
-        {
-          label: job.id,
-          path: `/applications/${application.app.id}/runs/${job.id}`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application, job]);
 
   useEffect(() => {
     let unsubscribed = false;
@@ -176,53 +168,66 @@ const Job = () => {
         </DialogActions>
       </Dialog>
 
-      <Drawer
-        child={<JobBar deleting={deleting} del={handleDelete} />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            application
+              ? [
+                  {
+                    label: "apps",
+                    path: "/",
+                    current: false,
+                  },
+                  {
+                    label: application.app.name,
+                    path: `/applications/${application.app.id}`,
+                    current: false,
+                  },
+                  {
+                    label: "runs",
+                    path: `/applications/${application.app.id}/runs`,
+                    current: false,
+                  },
+                  {
+                    label: job.id,
+                    path: `/applications/${application.app.id}/runs/${job.id}`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
 
-            {job && (
-              <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box sx={{ p: 1 }}>{job.name}</Box>
+        <Actions>
+          <LoadingAction
+            aria-label="delete"
+            disabled={deleting}
+            onClick={handleDelete}
+            loading={deleting}
+            icon="delete"
+          >
+            Delete
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-                  <Box sx={{ p: 1 }}>
-                    {job.phase && (
-                      <>
-                        {job.phase === "Running" && (
-                          <>
-                            <Chip label={job.phase} color="warning" variant="outlined" />
-                          </>
-                        )}
+      {job && (
+        <JobContainer>
+          <JobHeader>
+            <JobName>{job.name}</JobName>
 
-                        {job.phase === "Succeeded" && (
-                          <>
-                            <Chip label={job.phase} color="success" variant="outlined" />
-                          </>
-                        )}
-
-                        {job.phase === "Failed" && (
-                          <>
-                            <Chip label={job.phase} color="error" variant="outlined" />
-                          </>
-                        )}
-                      </>
-                    )}
-                  </Box>
-                </Box>
-                <Logs ws={ws} job={job} />
-              </>
+            {job.phase && (
+              <Chip
+                size="small"
+                label={job.phase}
+                color={(colorByPhase as any)[job.phase]}
+                variant="outlined"
+              />
             )}
-          </>
-        }
-      />
+          </JobHeader>
+          <Logs ws={ws} job={job} />
+        </JobContainer>
+      )}
     </>
   );
 };

@@ -1,31 +1,74 @@
-import Typography from "@mui/material/Typography";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@mui/material/Link";
-import { Box } from "@mui/material";
+import { Typography, Box, styled, Breadcrumbs, useTheme, useMediaQuery, Icon } from "@mui/material";
+import { truncate } from "lodash";
+import { FunctionComponent, ReactElement } from "react";
+import { Link } from "react-router-dom";
 
-export type Crumb = {
+const CrumbText = styled(Typography)`
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export interface ICrumb {
   label: string;
   path: string;
   current: boolean;
-};
+  icon?: string;
+}
 
-export function Crumbs({ crumbs }: { crumbs: Crumb[] }) {
+export interface ICrumbsProps {
+  crumbs: ICrumb[];
+}
+
+export const Crumbs: FunctionComponent<ICrumbsProps> = (props: ICrumbsProps): ReactElement => {
+  const { crumbs } = props;
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const renderCrumb = (crumb: ICrumb) => {
+    if (smallScreen) {
+      if (crumb.icon) {
+        return (
+          <Icon sx={{ mt: 0.7 }} fontSize="small">
+            {crumb.icon}
+          </Icon>
+        );
+      }
+      return truncate(crumb.label, {
+        length: 20,
+      });
+    }
+    return crumb.label;
+  };
+
   return (
     <div role="presentation">
-      <Box sx={{ mt: 8 }} maxWidth="lg">
-        {crumbs && crumbs.length > 0 && (
-          <Breadcrumbs sx={{ mb: 2 }} aria-label="breadcrumb">
+      <Box maxWidth="lg">
+        {crumbs.length > 0 && (
+          <Breadcrumbs aria-label="breadcrumb">
             {crumbs.slice(0, -1).map((crumb, index) => (
-              <Link key={index} underline="hover" color="inherit" href={crumb.path}>
-                {crumb.label}
-              </Link>
+              <StyledLink key={index} to={crumb.path}>
+                {renderCrumb(crumb)}
+              </StyledLink>
             ))}
-            <Typography color={crumbs[crumbs.length - 1].current ? "text.primary" : ""}>
-              {crumbs[crumbs.length - 1].label}
-            </Typography>
+            <CrumbText color={crumbs[crumbs.length - 1].current ? "text.primary" : ""}>
+              {renderCrumb(crumbs[crumbs.length - 1])}
+            </CrumbText>
           </Breadcrumbs>
         )}
       </Box>
     </div>
   );
-}
+};

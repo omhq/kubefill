@@ -1,22 +1,25 @@
 import SecretForm from "./SecretForm";
-import { useEffect, useState } from "react";
-import { Crumb, Crumbs } from "../Crumbs";
-import SecretCreateBar from "./SecretCreateBar";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { Crumbs } from "../Crumbs";
 import { createApplicationSecret, fetchApplication } from "../requests/applications";
-import Drawer from "../globals/Drawer";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import { FormikValues } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApplicationFull, SecretCreate as SecretCreateType } from "../types";
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Container } from "@mui/material";
 
-const SecretCreate = () => {
+const formDefaults = {
+  name: "",
+  value: "",
+};
+
+const SecretCreate: FunctionComponent = (): ReactElement => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
   const [formValid, setFormValid] = useState(false);
-  const [formDefaults, setFormDefaults] = useState<any>();
   const [formValues, setFormValues] = useState<SecretCreateType>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -45,40 +48,6 @@ const SecretCreate = () => {
   };
 
   useEffect(() => {
-    if (application?.app) {
-      setCrumbs([
-        {
-          label: "applications",
-          path: "/applications",
-          current: false,
-        },
-        {
-          label: application.app.name,
-          path: `/applications/${application.app.id}`,
-          current: false,
-        },
-        {
-          label: "secrets",
-          path: `/applications/${application.app.id}/secrets`,
-          current: false,
-        },
-        {
-          label: "new",
-          path: `/applications/${application.app.id}/secrets/new`,
-          current: true,
-        },
-      ]);
-    }
-  }, [application]);
-
-  useEffect(() => {
-    setFormDefaults({
-      name: "",
-      value: "",
-    });
-  }, []);
-
-  useEffect(() => {
     let unsubscribed = false;
 
     if (appId) {
@@ -98,23 +67,57 @@ const SecretCreate = () => {
 
   return (
     <>
-      <Drawer
-        child={<SecretCreateBar create={handleCreate} formValid={formValid} loading={loading} />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            application
+              ? [
+                  {
+                    label: "applications",
+                    path: "/applications",
+                    current: false,
+                  },
+                  {
+                    label: application.app.name,
+                    path: `/applications/${application.app.id}`,
+                    current: false,
+                  },
+                  {
+                    label: "secrets",
+                    path: `/applications/${application.app.id}/secrets`,
+                    current: false,
+                  },
+                  {
+                    label: "new",
+                    path: `/applications/${application.app.id}/secrets/new`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
 
-            {formDefaults && (
-              <SecretForm
-                secretId={0}
-                initialValues={formDefaults}
-                formValid={setFormValid}
-                handleValueUpdate={handleValueUpdate}
-              />
-            )}
-          </>
-        }
-      />
+        <Actions>
+          <LoadingAction
+            disabled={!formValid}
+            loading={loading}
+            onClick={handleCreate}
+            color="inherit"
+            icon="save"
+          >
+            Create
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
+
+      <Container sx={{ mt: 2 }}>
+        <SecretForm
+          secretId={0}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
+      </Container>
     </>
   );
 };

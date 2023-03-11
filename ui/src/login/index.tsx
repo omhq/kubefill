@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { login } from "../requests/auth";
@@ -6,21 +6,34 @@ import { LOCAL_STORAGE } from "../constants";
 import { authLoginSuccess } from "../reducers";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Container, FormHelperText, styled } from "@mui/material";
 
-interface IProfileProps {
+import { LoadingAction, TextField } from "../components";
+
+const Root = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  row-gap: ${({ theme }) => theme.spacing(1)};
+  margin-top: ${({ theme }) => theme.spacing(2)};
+`;
+
+const StyledForm = styled("form")`
+  display: flex;
+  flex-direction: column;
+  row-gap: ${({ theme }) => theme.spacing(2)};
+`;
+
+const ActionsContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+export interface ILoginProps {
   dispatch: any;
 }
 
-const Login = (props: IProfileProps) => {
+const Login: FunctionComponent<ILoginProps> = (props: ILoginProps): ReactElement => {
   const { dispatch } = props;
   const [loggingIn, setLoggingIn] = useState(false);
   const [formValid, setFormValid] = useState(false);
@@ -77,78 +90,52 @@ const Login = (props: IProfileProps) => {
   }, [formik.errors, formValid]);
 
   return (
-    <Container sx={{ mt: 4, mb: 2, p: 0 }} maxWidth="sm">
-      <Box component="form" noValidate autoComplete="off">
-        <FormControl
+    <Root>
+      <StyledForm noValidate={true} autoComplete="off">
+        <TextField
+          required={true}
           error={!!formik.touched?.username && !!formik.errors?.username}
-          fullWidth
-          sx={{ mb: 2 }}
-        >
-          <InputLabel htmlFor="username">username</InputLabel>
-          <OutlinedInput
-            required
-            error={!!formik.touched?.username && !!formik.errors?.username}
-            id="username"
-            name="username"
-            label="Username"
-            value={formik.values?.username}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+          id="username"
+          name="username"
+          label="Username"
+          value={formik.values?.username}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          fullWidth={true}
+        />
+        {formik.touched?.username && formik.errors?.username && (
+          <FormHelperText id="username-error-text">{formik.errors?.username}</FormHelperText>
+        )}
 
-          {formik.touched?.username && formik.errors?.username && (
-            <FormHelperText id="username-error-text">
-              <>{formik.errors?.username}</>
-            </FormHelperText>
-          )}
-        </FormControl>
-
-        <FormControl
+        <TextField
+          required={true}
           error={!!formik.touched?.password && !!formik.errors?.password}
-          fullWidth
-          sx={{ mb: 2 }}
-        >
-          <InputLabel htmlFor="password">password</InputLabel>
-          <OutlinedInput
-            required
-            error={!!formik.touched?.password && !!formik.errors?.password}
-            id="password"
-            name="password"
-            label="password"
-            type="password"
-            value={formik.values?.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+          fullWidth={true}
+          id="password"
+          name="password"
+          label="password"
+          type="password"
+          value={formik.values?.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched?.password && formik.errors?.password && (
+          <FormHelperText id="password-error-text">{formik.errors?.password}</FormHelperText>
+        )}
 
-          {formik.touched?.password && formik.errors?.password && (
-            <FormHelperText id="password-error-text">
-              <>{formik.errors?.password}</>
-            </FormHelperText>
-          )}
-        </FormControl>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Box>
-            <LoadingButton
-              disabled={!formValid}
-              loading={!!loggingIn}
-              onClick={handleLogin}
-              variant="outlined"
-              color="primary"
-            >
-              Login
-            </LoadingButton>
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+        <ActionsContainer>
+          <LoadingAction
+            disabled={!formValid}
+            loading={loggingIn}
+            onClick={handleLogin}
+            color="primary"
+            icon={""}
+          >
+            Login
+          </LoadingAction>
+        </ActionsContainer>
+      </StyledForm>
+    </Root>
   );
 };
 

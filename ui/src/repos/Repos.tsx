@@ -1,22 +1,33 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
-import { Box, IconButton, Alert } from "@mui/material";
+import { Box, IconButton, Alert, styled, Container, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
-import ReposBar from "./ReposBar";
+import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
-import Drawer from "../globals/Drawer";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
+import { LinkAction, WorkspaceNavBar } from "../components";
 
-const Repos = () => {
+const DataGridContainer = styled(Container)`
+  margin-top: ${({ theme }) => theme.spacing(2)};
+`;
+
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px - 24px);
+`;
+
+export const Repos: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [repos, setRepos] = useState<RepoType[]>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [repos, setRepos] = useState<RepoType[]>([]);
+  let [loading, setLoading] = useState<boolean>(true);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
     { field: "url", headerName: "URL", flex: 0.8, width: 100 },
@@ -83,14 +94,6 @@ const Repos = () => {
   useEffect(() => {
     let unsubscribed = false;
 
-    setCrumbs([
-      {
-        label: "repos",
-        path: "/",
-        current: true,
-      },
-    ]);
-
     setLoading(true);
     fetchRepos()
       .then((data: any) => {
@@ -114,36 +117,41 @@ const Repos = () => {
       unsubscribed = true;
     };
   }, []);
+
   return (
     <>
-      <Drawer
-        child={<ReposBar />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <div></div>
+        <LinkAction to="/repos/new">New</LinkAction>
+      </WorkspaceNavBar>
 
-            {repos && repos.length ? (
-              <>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    autoHeight
-                    rows={repos}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                  />
-                </div>
+      {!loading && (
+        <>
+          {repos.length > 0 && (
+            <DataGridContainer>
+              <DataGrid
+                autoHeight
+                rows={repos}
+                columns={columns}
+                pageSize={100}
+                rowsPerPageOptions={[100]}
+              />
+            </DataGridContainer>
+          )}
 
-                {!repos.length && <>no apps</>}
-              </>
-            ) : (
-              <Alert variant="outlined" severity="info">
-                No repos yet.
-              </Alert>
-            )}
-          </>
-        }
-      />
+          {repos.length === 0 && (
+            <Alert variant="outlined" severity="info">
+              No repos yet
+            </Alert>
+          )}
+        </>
+      )}
+
+      {loading && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
+      )}
     </>
   );
 };

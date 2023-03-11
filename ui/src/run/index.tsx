@@ -1,20 +1,42 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { FormData, ApplicationFull } from "../types";
 import { fetchApplication, startJob } from "../requests/applications";
 import ApplicationForm from "./ApplicationForm";
 import { useParams } from "react-router-dom";
-import Bar from "./Bar";
 import _ from "lodash";
-import { Alert, Container } from "@mui/material";
+import { Alert, CircularProgress, Container, styled } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
+import {
+  Actions,
+  HorizontalFiller,
+  LinkAction,
+  LoadingAction,
+  WorkspaceNavBar,
+} from "../components";
+import { Crumbs } from "../Crumbs";
 
-const Public = () => {
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px);
+`;
+
+const Run: FunctionComponent = (): ReactElement => {
   const { appId } = useParams<{ appId: string }>();
   const [formData, setFormData] = useState<FormData>();
   const [cloneData, setCloneData] = useState<FormData>();
   const [application, setApplication] = useState<ApplicationFull>();
-  const [loading, setLoading] = useState<boolean>(false);
+  let [loading, setLoading] = useState<boolean>(false);
+  const [loadingApp, setLoadingApp] = useState(false);
   const [jobId, setJobId] = useState<number | null>(null);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -60,6 +82,7 @@ const Public = () => {
 
   useEffect(() => {
     if (appId) {
+      setLoadingApp(true);
       fetchApplication(parseInt(appId)).then((data) => {
         if (data?.manifests?.data) {
           setFormData(data.manifests.data);
@@ -67,35 +90,82 @@ const Public = () => {
         }
 
         setApplication(data);
+        setLoadingApp(false);
       });
     }
   }, [appId]);
 
   return (
     <>
-      {appId && <Bar appId={appId} run={handleRun} jobId={jobId} loading={loading} />}
-      {application && (
-        <>
-          {application?.manifests ? (
-            <Container sx={{ mt: 10, mb: 2, px: 2 }} maxWidth="md">
-              <ApplicationForm
-                defaultData={application.manifests.data}
-                schema={application.manifests.schema}
-                uiSchema={application.manifests.ui_schema}
-                handleFormChange={handleFormChange}
-              />
-            </Container>
-          ) : (
-            <Container sx={{ mt: 12, mb: 2, px: 2 }} maxWidth="sm">
-              <Alert severity="warning">
-                Missing manifests! Make sure a repository is connected to this app.
-              </Alert>
-            </Container>
+      <WorkspaceNavBar>
+        {application && (
+          <Crumbs
+            crumbs={[
+              {
+                label: "applications",
+                path: "/",
+                current: false,
+                icon: "apps",
+              },
+              {
+                label: application.app.name,
+                path: `/applications/${application.app.id}`,
+                current: false,
+              },
+              {
+                label: "run",
+                path: `/applications/${application.app.id}/run`,
+                current: true,
+                icon: "play_arrow",
+              },
+            ]}
+          />
+        )}
+        {!application && <HorizontalFiller />}
+
+        <Actions>
+          {jobId && (
+            <LinkAction to={`/applications/${appId}/runs/${jobId}`} icon="list">
+              Logs
+            </LinkAction>
           )}
-        </>
+
+          <LoadingAction
+            disabled={loading || loadingApp}
+            loading={loading}
+            onClick={handleRun}
+            icon="play_circle"
+          >
+            Run
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
+
+      {!loadingApp && (
+        <FormContainer>
+          {application?.manifests && (
+            <ApplicationForm
+              defaultData={application.manifests.data}
+              schema={application.manifests.schema}
+              uiSchema={application.manifests.ui_schema}
+              handleFormChange={handleFormChange}
+            />
+          )}
+
+          {!application?.manifests && (
+            <Alert severity="warning">
+              Missing manifests! Make sure a repository is connected to this app.
+            </Alert>
+          )}
+        </FormContainer>
+      )}
+      {loadingApp && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
       )}
     </>
   );
 };
 
-export default Public;
+export default Run;

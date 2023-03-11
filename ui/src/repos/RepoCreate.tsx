@@ -1,20 +1,24 @@
 import RepoForm from "./RepoForm";
-import { useEffect, useState } from "react";
-import { Crumb, Crumbs } from "../Crumbs";
-import RepoCreateBar from "./RepoCreateBar";
+import { useState } from "react";
+import { Crumbs } from "../Crumbs";
 import { createRepo } from "../requests/repos";
-import Drawer from "../globals/Drawer";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import { FormikValues } from "formik";
 import { useNavigate } from "react-router-dom";
 import { RepoCreate as RepoCreateType } from "../types";
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Container } from "@mui/material";
+
+const formDefaults = {
+  url: "",
+  branch: "",
+  ssh_private_key: "",
+};
 
 const RepoCreate = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
   const [formValid, setFormValid] = useState(false);
-  const [formDefaults, setFormDefaults] = useState<any>();
   const [formValues, setFormValues] = useState<RepoCreateType>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -42,50 +46,47 @@ const RepoCreate = () => {
     }
   };
 
-  useEffect(() => {
-    setCrumbs([
-      {
-        label: "repos",
-        path: "/",
-        current: false,
-      },
-      {
-        label: "new",
-        path: `/repos/new`,
-        current: true,
-      },
-    ]);
-
-    setFormDefaults({
-      url: "",
-      branch: "",
-      ssh_private_key: "",
-    });
-  }, []);
-
   const handleValueUpdate = (values: FormikValues) => {
     setFormValues(values as RepoCreateType);
   };
 
   return (
     <>
-      <Drawer
-        child={<RepoCreateBar create={handleCreate} formValid={formValid} loading={loading} />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={[
+            {
+              label: "repos",
+              path: "/repos",
+              current: false,
+            },
+            {
+              label: "new",
+              path: `/repos/new`,
+              current: true,
+            },
+          ]}
+        />
+        <Actions>
+          <LoadingAction
+            disabled={!formValid}
+            loading={loading}
+            onClick={handleCreate}
+            color="inherit"
+          >
+            Create
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-            {formDefaults && (
-              <RepoForm
-                repoId={0}
-                initialValues={formDefaults}
-                formValid={setFormValid}
-                handleValueUpdate={handleValueUpdate}
-              />
-            )}
-          </>
-        }
-      />
+      <Container sx={{ mt: 2 }}>
+        <RepoForm
+          repoId={0}
+          initialValues={formDefaults}
+          formValid={setFormValid}
+          handleValueUpdate={handleValueUpdate}
+        />
+      </Container>
     </>
   );
 };

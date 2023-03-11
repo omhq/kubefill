@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Repo as RepoType } from "../types";
 import { fetchRepo, syncRepo, updateRepo } from "../requests/repos";
 import { deleteRepo } from "../requests/repos";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, Crumb } from "../Crumbs";
-import RepoBar from "./RepoBar";
-import Drawer from "../globals/Drawer";
+import { Crumbs } from "../Crumbs";
 import {
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,15 +21,16 @@ import { getErrorMessage } from "../requests/utils";
 import { truncate } from "lodash";
 import RepoForm from "./RepoForm";
 import { FormikValues } from "formik";
+import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+import { Box } from "@mui/system";
 
-const Repo = () => {
+const Repo: FunctionComponent = (): ReactElement => {
   const { repoId } = useParams<{ repoId: string }>();
   const [updating, setUpdating] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [deleting, setDelelting] = useState<boolean>(false);
   const [repo, setRepo] = useState<RepoType>();
   const [formValues, setFormValues] = useState<Partial<any>>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
   const [formValid, setFormValid] = useState(false);
   const [formDefaults, setFormDefaults] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
@@ -117,23 +117,6 @@ const Repo = () => {
     setFormValues(values);
   };
 
-  useEffect(() => {
-    if (repo) {
-      setCrumbs([
-        {
-          label: "repos",
-          path: "/repos",
-          current: false,
-        },
-        {
-          label: truncate(repo.url),
-          path: `/repos/${repo.id}`,
-          current: true,
-        },
-      ]);
-    }
-  }, [repo]);
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -158,86 +141,116 @@ const Repo = () => {
     }
   }, [repoId]);
 
+  if (!repoId) {
+    return <></>;
+  }
+
   return (
     <>
-      {repoId && (
-        <>
-          <Dialog
-            fullScreen={fullScreen}
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="responsive-dialog-title"
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Confirm delete?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>This action can't be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus={true} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button autoFocus={true} onClick={handleConfirmDelete}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <WorkspaceNavBar>
+        <Crumbs
+          crumbs={
+            repo
+              ? [
+                  {
+                    label: "repos",
+                    path: "/repos",
+                    current: false,
+                  },
+                  {
+                    label: truncate(repo.url, {
+                      length: 100,
+                    }),
+                    path: `/repos/${repo.id}`,
+                    current: true,
+                  },
+                ]
+              : []
+          }
+        />
+        <Actions>
+          <LoadingAction
+            aria-label="delete"
+            onClick={handleDelete}
+            loading={deleting}
+            icon="delete"
           >
-            <DialogTitle id="responsive-dialog-title">{"Confirm delete?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>This action can't be undone.</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button autoFocus onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button onClick={handleConfirmDelete} autoFocus>
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
+            Delete
+          </LoadingAction>
 
-          <Drawer
-            child={
-              <RepoBar
-                loading={loading}
-                updating={updating}
-                deleting={deleting}
-                formValid={formValid}
-                sync={handleSync}
-                del={handleDelete}
-                update={handleUpdate}
-              />
-            }
-            body={
-              <>
-                <Crumbs crumbs={crumbs} />
+          <LoadingAction loading={loading} onClick={handleSync} icon="sync">
+            Sync
+          </LoadingAction>
 
-                <Typography variant="body1" fontWeight={600} gutterBottom>
-                  Branch
-                </Typography>
+          <LoadingAction
+            disabled={!formValid || updating}
+            loading={updating}
+            onClick={handleUpdate}
+          >
+            Update
+          </LoadingAction>
+        </Actions>
+      </WorkspaceNavBar>
 
-                <Typography variant="body1" gutterBottom>
-                  {repo?.branch}
-                </Typography>
+      <Container sx={{ mt: 2 }}>
+        <Typography variant="body1" fontWeight={600} gutterBottom={true}>
+          Branch
+        </Typography>
 
-                {repo?.commit && (
-                  <>
-                    <Typography variant="body1" fontWeight={600} gutterBottom>
-                      Latest commit
-                    </Typography>
+        <Typography variant="body1" gutterBottom={true}>
+          {repo?.branch}
+        </Typography>
 
-                    <Typography variant="body1" gutterBottom>
-                      {truncate(repo?.hash, {
-                        length: 32,
-                        omission: "...",
-                      })}
-                    </Typography>
+        {repo?.commit && (
+          <>
+            <Typography variant="body1" fontWeight={600} gutterBottom={true}>
+              Latest commit
+            </Typography>
 
-                    <Typography variant="body1" gutterBottom>
-                      {repo?.commit}
-                    </Typography>
-                  </>
-                )}
+            <Typography variant="body1" gutterBottom={true}>
+              {truncate(repo?.hash, {
+                length: 32,
+                omission: "...",
+              })}
+            </Typography>
 
-                {repo && formDefaults && (
-                  <RepoForm
-                    repoId={repo.id}
-                    initialValues={formDefaults}
-                    formValid={setFormValid}
-                    handleValueUpdate={handleValueUpdate}
-                  />
-                )}
-              </>
-            }
-          />
-        </>
-      )}
+            <Typography variant="body1" gutterBottom={true}>
+              {repo?.commit}
+            </Typography>
+          </>
+        )}
+
+        {repo && formDefaults && (
+          <Box sx={{ mt: 3 }}>
+            <RepoForm
+              repoId={repo.id}
+              initialValues={formDefaults}
+              formValid={setFormValid}
+              handleValueUpdate={handleValueUpdate}
+            />
+          </Box>
+        )}
+      </Container>
     </>
   );
 };

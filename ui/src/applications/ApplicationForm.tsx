@@ -1,16 +1,8 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { ValidationSchema } from "./ValidationSchema";
+import { TextField } from "../components";
 
 type ApplicationFormParams = {
   repos: any[];
@@ -47,97 +39,75 @@ const ApplicationForm = ({
   }, [formik.values, handleValueUpdate]);
 
   return (
-    <>
-      <Container sx={{ mt: 4, mb: 2, p: 0 }} maxWidth="sm">
-        <Box
-          component="form"
-          sx={{
-            "& .MuiTextField-root": { width: "25ch" },
-          }}
-          noValidate
-          autoComplete="off"
+    <Box component="form" noValidate={true} autoComplete="off">
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          required={true}
+          fullWidth={true}
+          error={!!formik.touched?.name && !!formik.errors?.name}
+          id="name"
+          name="name"
+          label="Name"
+          value={formik.values?.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+
+        {!!formik.touched?.name && formik.errors?.name && (
+          <FormHelperText id="name-error-text">{formik.errors?.name as string}</FormHelperText>
+        )}
+      </Box>
+
+      <FormControl
+        error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
+        fullWidth={true}
+        sx={{ mb: 2 }}
+      >
+        <InputLabel id="repo-id-label">Repo</InputLabel>
+        <Select
+          required={true}
+          size="small"
+          error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
+          labelId="repo-id-label"
+          id="repo_id"
+          name="repo_id"
+          label="Repo"
+          value={formik.values?.repo_id || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         >
-          <FormControl
-            error={!!formik.touched?.name && !!formik.errors?.name}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            <InputLabel htmlFor="name">Name</InputLabel>
-            <OutlinedInput
-              required
-              error={!!formik.touched?.name && !!formik.errors?.name}
-              id="name"
-              name="name"
-              label="Name"
-              value={formik.values?.name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
+          {repos.map((repo) => (
+            <MenuItem key={repo.id} value={repo.id}>
+              {repo.url}
+            </MenuItem>
+          ))}
+        </Select>
 
-            {!!formik.touched?.name && formik.errors?.name && (
-              <FormHelperText id="name-error-text">
-                <>{formik.errors?.name}</>
-              </FormHelperText>
-            )}
-          </FormControl>
+        {formik.touched?.repo_id && formik.errors?.repo_id && (
+          <FormHelperText id="name-error-text">{formik.errors?.repo_id as string}</FormHelperText>
+        )}
+      </FormControl>
 
-          <FormControl
-            error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            <InputLabel id="repo-id-label">Repo</InputLabel>
-            <Select
-              required
-              error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
-              labelId="repo-id-label"
-              id="repo_id"
-              name="repo_id"
-              label="Repo"
-              value={formik.values?.repo_id || ""}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              {repos.map((repo) => (
-                <MenuItem key={repo.id} value={repo.id}>
-                  {repo.url}
-                </MenuItem>
-              ))}
-            </Select>
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth={true}
+          required={true}
+          error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
+          id="manifest_path"
+          name="manifest_path"
+          label="Manifests path"
+          value={formik.values?.manifest_path || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-            {formik.touched?.repo_id && formik.errors?.repo_id && (
-              <FormHelperText id="name-error-text">
-                <>{formik.errors?.repo_id}</>
-              </FormHelperText>
-            )}
-          </FormControl>
-
-          <FormControl
-            error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            <InputLabel htmlFor="manifest_path">Manifests path</InputLabel>
-            <OutlinedInput
-              required
-              error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
-              id="manifest_path"
-              name="manifest_path"
-              label="Manifests path"
-              value={formik.values?.manifest_path || ""}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-
-            {formik.touched?.manifest_path && formik.errors?.manifest_path && (
-              <FormHelperText id="name-error-text">
-                <>{formik.errors?.manifest_path}</>
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Box>
-      </Container>
-    </>
+        {formik.touched?.manifest_path && formik.errors?.manifest_path && (
+          <FormHelperText id="name-error-text">
+            {formik.errors?.manifest_path as string}
+          </FormHelperText>
+        )}
+      </Box>
+    </Box>
   );
 };
 

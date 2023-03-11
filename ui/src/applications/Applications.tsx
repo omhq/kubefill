@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert } from "@mui/material";
+import { Box, IconButton, Alert, Button, styled, Container } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumb, Crumbs } from "../Crumbs";
-import ApplicationsBar from "./ApplicationsBar";
+import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
-import Drawer from "../globals/Drawer";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
+import { LinkAction, WorkspaceNavBar } from "../components";
 
-const Applications = () => {
+const Applications: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<ApplicationType[]>();
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
+  const [applications, setApplications] = useState<ApplicationType[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", minWidth: 50 },
@@ -83,14 +81,6 @@ const Applications = () => {
   useEffect(() => {
     let unsubscribed = false;
 
-    setCrumbs([
-      {
-        label: "applications",
-        path: "/",
-        current: true,
-      },
-    ]);
-
     fetchApplications()
       .then((data) => {
         if (!unsubscribed) {
@@ -110,36 +100,31 @@ const Applications = () => {
       unsubscribed = true;
     };
   }, []);
+
   return (
     <>
-      <Drawer
-        child={<ApplicationsBar />}
-        body={
-          <>
-            <Crumbs crumbs={crumbs} />
+      <WorkspaceNavBar>
+        <div></div>
+        <LinkAction to="/applications/new">New</LinkAction>
+      </WorkspaceNavBar>
 
-            {applications && applications.length ? (
-              <>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    autoHeight
-                    rows={applications}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                  />
-                </div>
+      <Container sx={{ mt: 2 }}>
+        {applications.length > 0 && (
+          <DataGrid
+            autoHeight={true}
+            rows={applications}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+          />
+        )}
 
-                {!applications.length && <>no apps</>}
-              </>
-            ) : (
-              <Alert variant="outlined" severity="info">
-                No applications yet.
-              </Alert>
-            )}
-          </>
-        }
-      />
+        {applications.length === 0 && (
+          <Alert variant="outlined" severity="info">
+            No applications yet
+          </Alert>
+        )}
+      </Container>
     </>
   );
 };
