@@ -104,20 +104,8 @@ const Applications: FunctionComponent = (): ReactElement => {
   return (
     <>
       <WorkspaceNavBar>
-        <Crumbs
-          crumbs={[
-            {
-              label: "applications",
-              path: "/",
-              current: true,
-              icon: "apps",
-            },
-          ]}
-        />
-
-        <LinkAction to="/applications/new" icon="add_circle_outlined">
-          New
-        </LinkAction>
+        <div></div>
+        <LinkAction to="/applications/new">New</LinkAction>
       </WorkspaceNavBar>
 
       <Container sx={{ mt: 2 }}>

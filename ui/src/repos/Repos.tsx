@@ -121,20 +121,8 @@ export const Repos: FunctionComponent = (): ReactElement => {
   return (
     <>
       <WorkspaceNavBar>
-        <Crumbs
-          crumbs={[
-            {
-              label: "repos",
-              path: "/repos",
-              current: true,
-              icon: "code",
-            },
-          ]}
-        />
-
-        <LinkAction to="/repos/new" icon="add_circle_outlined">
-          New
-        </LinkAction>
+        <div></div>
+        <LinkAction to="/repos/new">New</LinkAction>
       </WorkspaceNavBar>
 
       {!loading && (

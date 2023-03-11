@@ -13,6 +13,8 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 
   &:hover {
     text-decoration: underline;
@@ -45,7 +47,7 @@ export const Crumbs: FunctionComponent<ICrumbsProps> = (props: ICrumbsProps): Re
         );
       }
       return truncate(crumb.label, {
-        length: 12,
+        length: 20,
       });
     }
     return crumb.label;

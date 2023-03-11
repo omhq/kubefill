@@ -139,10 +139,9 @@ const Jobs: FunctionComponent = (): ReactElement => {
             application
               ? [
                   {
-                    label: "applications",
+                    label: "apps",
                     path: "/",
                     current: false,
-                    icon: "apps",
                   },
                   {
                     label: application.app.name,
@@ -153,7 +152,6 @@ const Jobs: FunctionComponent = (): ReactElement => {
                     label: "runs",
                     path: `/applications/${application.app.id}/runs`,
                     current: true,
-                    icon: "playlist_play",
                   },
                 ]
               : []

@@ -181,10 +181,9 @@ const Application = () => {
           <Crumbs
             crumbs={[
               {
-                label: "applications",
+                label: "apps",
                 path: "/",
                 current: false,
-                icon: "apps",
               },
               {
                 label: application.app.name,
@@ -212,21 +211,14 @@ const Application = () => {
             loading={updating}
             onClick={handleUpdate}
             color="primary"
-            icon="save"
           >
             Update
           </LoadingAction>
 
           <Hidden smDown={true}>
-            <LinkAction to={`/applications/${appId}/secrets`} icon="lock">
-              Secrets
-            </LinkAction>
-
-            <LinkAction to={`/applications/${appId}/runs`} icon="playlist_play">
-              Runs
-            </LinkAction>
-
-            <LinkAction to={`/applications/${appId}/run`} icon="play">
+            <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
+            <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
+            <LinkAction to={`/applications/${appId}/run`} icon="play_circle">
               Run
             </LinkAction>
           </Hidden>
@@ -239,9 +231,7 @@ const Application = () => {
             {openMenu && (
               <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
                 <MenuItemLink to={`/applications/${appId}/secrets`}>Secrets</MenuItemLink>
-
                 <MenuItemLink to={`/applications/${appId}/runs`}>Runs</MenuItemLink>
-
                 <MenuItemLink to={`/applications/${appId}/run`}>Run</MenuItemLink>
               </Menu>
             )}

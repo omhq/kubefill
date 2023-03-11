@@ -59,7 +59,6 @@ const RepoCreate = () => {
               label: "repos",
               path: "/repos",
               current: false,
-              icon: "code",
             },
             {
               label: "new",
@@ -74,7 +73,6 @@ const RepoCreate = () => {
             loading={loading}
             onClick={handleCreate}
             color="inherit"
-            icon="save"
           >
             Create
           </LoadingAction>

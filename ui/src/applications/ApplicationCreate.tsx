@@ -70,10 +70,9 @@ const ApplicationCreate = () => {
         <Crumbs
           crumbs={[
             {
-              label: "applications",
+              label: "apps",
               path: "/",
               current: false,
-              icon: "apps",
             },
             {
               label: "new",
@@ -83,21 +82,9 @@ const ApplicationCreate = () => {
           ]}
         />
         <Actions>
-          <Hidden smDown={true}>
-            <LoadingAction
-              disabled={!formValid}
-              loading={loading}
-              onClick={handleCreate}
-              icon="save"
-            >
-              Create
-            </LoadingAction>
-          </Hidden>
-          <Hidden smUp={true}>
-            <IconButton disabled={!formValid} onClick={handleCreate}>
-              <Icon fontSize="small">save</Icon>
-            </IconButton>
-          </Hidden>
+          <LoadingAction disabled={!formValid} loading={loading} onClick={handleCreate}>
+            Create
+          </LoadingAction>
         </Actions>
       </WorkspaceNavBar>
 

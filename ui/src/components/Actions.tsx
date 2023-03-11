@@ -4,7 +4,7 @@ export const Actions = styled("div")`
   display: flex;
   flex-direction: row;
   align-items: center;
-  column-gap: ${({ theme }) => theme.spacing(2)};
+  column-gap: ${({ theme }) => theme.spacing(1)};
 
   padding: ${({ theme }) => theme.spacing(1)};
   margin: ${({ theme }) => theme.spacing(1)};

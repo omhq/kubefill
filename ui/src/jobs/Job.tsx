@@ -174,10 +174,9 @@ const Job = () => {
             application
               ? [
                   {
-                    label: "applications",
+                    label: "apps",
                     path: "/",
                     current: false,
-                    icon: "apps",
                   },
                   {
                     label: application.app.name,
@@ -188,7 +187,6 @@ const Job = () => {
                     label: "runs",
                     path: `/applications/${application.app.id}/runs`,
                     current: false,
-                    icon: "playlist_play",
                   },
                   {
                     label: job.id,

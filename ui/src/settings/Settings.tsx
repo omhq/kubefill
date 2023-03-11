@@ -1,10 +1,8 @@
-import { Crumbs } from "../Crumbs";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchSettings } from "../requests/settings";
 import { Typography, styled, Container } from "@mui/material";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
-import { WorkspaceNavBar } from "../components";
 
 const StyledContainer = styled(Container)`
   margin-top: ${({ theme }) => theme.spacing(2)};
@@ -30,19 +28,6 @@ const Settings: FunctionComponent = (): ReactElement => {
 
   return (
     <>
-      <WorkspaceNavBar>
-        <Crumbs
-          crumbs={[
-            {
-              label: "settings",
-              path: "/settings",
-              current: true,
-              icon: "settings",
-            },
-          ]}
-        />
-      </WorkspaceNavBar>
-
       {settings && (
         <StyledContainer>
           <Typography variant="body1" gutterBottom={true}>

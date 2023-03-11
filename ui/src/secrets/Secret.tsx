@@ -173,13 +173,12 @@ const EditSecret: FunctionComponent = (): ReactElement => {
             application && secret
               ? [
                   {
-                    label: "applications",
+                    label: "...",
                     path: "/applications",
                     current: false,
-                    icon: "apps",
                   },
                   {
-                    label: application.app.name,
+                    label: "...",
                     path: `/applications/${application.app.id}`,
                     current: false,
                   },
@@ -187,7 +186,6 @@ const EditSecret: FunctionComponent = (): ReactElement => {
                     label: "secrets",
                     path: `/applications/${application.app.id}/secrets`,
                     current: false,
-                    icon: "lock",
                   },
                   {
                     label: truncate(secret.name),
@@ -215,7 +213,6 @@ const EditSecret: FunctionComponent = (): ReactElement => {
             loading={updating}
             onClick={handleUpdate}
             aria-label="Update"
-            icon="save"
           >
             Update
           </LoadingAction>

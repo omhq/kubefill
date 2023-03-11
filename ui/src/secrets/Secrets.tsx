@@ -132,10 +132,9 @@ const Secrets: FunctionComponent = (): ReactElement => {
             application
               ? [
                   {
-                    label: "applications",
+                    label: "apps",
                     path: "/applications",
                     current: false,
-                    icon: "apps",
                   },
                   {
                     label: application.app.name,
@@ -146,7 +145,6 @@ const Secrets: FunctionComponent = (): ReactElement => {
                     label: "secrets",
                     path: `/applications/${application.app.id}/secrets`,
                     current: true,
-                    icon: "lock",
                   },
                 ]
               : []
@@ -154,9 +152,7 @@ const Secrets: FunctionComponent = (): ReactElement => {
         />
 
         <Actions>
-          <LinkAction to={`/applications/${appId}/secrets/new`} icon="add_circle_outlined">
-            New
-          </LinkAction>
+          <LinkAction to={`/applications/${appId}/secrets/new`}>New</LinkAction>
         </Actions>
       </WorkspaceNavBar>
 

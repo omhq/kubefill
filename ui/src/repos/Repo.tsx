@@ -3,7 +3,7 @@ import { Repo as RepoType } from "../types";
 import { fetchRepo, syncRepo, updateRepo } from "../requests/repos";
 import { deleteRepo } from "../requests/repos";
 import { useNavigate, useParams } from "react-router-dom";
-import { Crumbs, ICrumb } from "../Crumbs";
+import { Crumbs } from "../Crumbs";
 import {
   Button,
   Container,
@@ -176,7 +176,6 @@ const Repo: FunctionComponent = (): ReactElement => {
                     label: "repos",
                     path: "/repos",
                     current: false,
-                    icon: "code",
                   },
                   {
                     label: truncate(repo.url, {
@@ -207,7 +206,6 @@ const Repo: FunctionComponent = (): ReactElement => {
             disabled={!formValid || updating}
             loading={updating}
             onClick={handleUpdate}
-            icon="save"
           >
             Update
           </LoadingAction>

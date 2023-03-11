@@ -130,7 +130,6 @@ const Login: FunctionComponent<ILoginProps> = (props: ILoginProps): ReactElement
             onClick={handleLogin}
             color="primary"
             icon={""}
-            lgOnly={true}
           >
             Login
           </LoadingAction>

@@ -1,7 +1,6 @@
 import { Button, Icon, IconButton, styled } from "@mui/material";
 import { FunctionComponent, ReactElement, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { useScreenSize } from "../hooks";
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -28,7 +27,7 @@ export interface ILinkActionProps {
   to: string;
   children?: ReactNode;
   anchorStyle?: any;
-  icon: string;
+  icon?: string | undefined;
   selected?: boolean;
 }
 
@@ -36,11 +35,10 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
   props: ILinkActionProps
 ): ReactElement => {
   const { to, selected, anchorStyle, children, icon } = props;
-  const size = useScreenSize();
 
   return (
     <>
-      {size !== "sm" && (
+      {!icon ? (
         <StyledLink style={anchorStyle} to={to}>
           <StyledButton
             size="small"
@@ -51,8 +49,7 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
             {children}
           </StyledButton>
         </StyledLink>
-      )}
-      {size === "sm" && (
+      ) : (
         <Link style={{ color: "unset", ...anchorStyle }} to={to}>
           <IconButton color="inherit" size="small">
             <Icon fontSize="small">{icon}</Icon>

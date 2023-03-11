@@ -1,7 +1,6 @@
 import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import { styled } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
-import { useScreenSize } from "../hooks";
 import { LoadingActionIcon } from "./LoadingActionIcon";
 
 const Root = styled(LoadingButton)`
@@ -10,26 +9,24 @@ const Root = styled(LoadingButton)`
 `;
 
 export interface ILoadingActionProps extends LoadingButtonProps {
-  icon: string;
+  icon?: string;
   lgOnly?: boolean;
 }
 
 export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
   props: ILoadingActionProps
 ): ReactElement => {
-  const { children, icon, lgOnly, ...otherProps } = props;
-  const size = useScreenSize();
+  const { children, icon, ...otherProps } = props;
 
   return (
     <>
-      {size === "sm" && !lgOnly && (
+      {icon ? (
         <LoadingActionIcon
           icon={icon}
           onClick={otherProps.onClick as () => void}
           loading={Boolean(otherProps.loading)}
         />
-      )}
-      {(size !== "sm" || lgOnly) && (
+      ) : (
         <Root
           size="small"
           variant="outlined"

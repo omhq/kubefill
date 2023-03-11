@@ -1,4 +1,4 @@
-import { CircularProgress, Icon, IconButton } from "@mui/material";
+import { CircularProgress, Icon, IconButton, styled } from "@mui/material";
 import { FunctionComponent, ReactElement } from "react";
 
 export interface ILoadingActionIconProps {
@@ -6,6 +6,12 @@ export interface ILoadingActionIconProps {
   onClick: () => void;
   icon: string;
 }
+
+const ActionsContainer = styled("div")`
+  padding: 5px 7px;
+  display: flex;
+  align-items: center;
+`;
 
 export const LoadingActionIcon: FunctionComponent<ILoadingActionIconProps> = (
   props: ILoadingActionIconProps
@@ -18,7 +24,11 @@ export const LoadingActionIcon: FunctionComponent<ILoadingActionIconProps> = (
           <Icon fontSize="small">{icon}</Icon>
         </IconButton>
       )}
-      {loading && <CircularProgress size={16} />}
+      {loading && (
+        <ActionsContainer>
+          <CircularProgress size={16} />
+        </ActionsContainer>
+      )}
     </>
   );
 };

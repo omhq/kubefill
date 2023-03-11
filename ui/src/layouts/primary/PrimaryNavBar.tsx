@@ -1,5 +1,5 @@
-import { AppBar, Box, Toolbar, styled, useTheme, Icon, IconButton, Menu } from "@mui/material";
-import { FunctionComponent, ReactElement, useCallback, useState } from "react";
+import { AppBar, Box, Toolbar, styled, useTheme } from "@mui/material";
+import { FunctionComponent, ReactElement } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Actions, LinkAction } from "../../components";
 
@@ -59,7 +59,6 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
           <Actions>
             <LinkAction
               to="/applications"
-              icon="apps"
               selected={location.pathname === "/applications"}
               anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
@@ -67,7 +66,6 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
             </LinkAction>
             <LinkAction
               to="/repos"
-              icon="code"
               selected={location.pathname === "/repos"}
               anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
