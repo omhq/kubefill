@@ -59,14 +59,14 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
           <Actions>
             <LinkAction
               to="/applications"
-              selected={location.pathname === "/applications"}
+              selected={location.pathname === "/" || location.pathname.includes("/applications")}
               anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
               Applications
             </LinkAction>
             <LinkAction
               to="/repos"
-              selected={location.pathname === "/repos"}
+              selected={location.pathname.includes("/repos")}
               anchorStyle={{ color: theme.palette.primary.contrastText }}
             >
               Repos
@@ -75,7 +75,7 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
               anchorStyle={{ color: theme.palette.primary.contrastText }}
               to="/settings"
               icon="settings"
-              selected={location.pathname === "/settings"}
+              selected={location.pathname.includes("/settings")}
             >
               Settings
             </LinkAction>
