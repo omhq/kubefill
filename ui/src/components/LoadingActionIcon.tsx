@@ -5,6 +5,7 @@ export interface ILoadingActionIconProps {
   loading: boolean;
   onClick: () => void;
   icon: string;
+  iconColor?: string;
 }
 
 const ActionsContainer = styled("div")`
@@ -13,15 +14,21 @@ const ActionsContainer = styled("div")`
   align-items: center;
 `;
 
+const StyledIcon = styled(Icon)`
+  font-display: block;
+`;
+
 export const LoadingActionIcon: FunctionComponent<ILoadingActionIconProps> = (
   props: ILoadingActionIconProps
 ): ReactElement => {
-  const { loading, onClick, icon } = props;
+  const { loading, onClick, icon, iconColor } = props;
   return (
     <>
       {!loading && (
         <IconButton size="small" disabled={loading} onClick={onClick}>
-          <Icon fontSize="small">{icon}</Icon>
+          <StyledIcon fontSize="small" style={{ color: iconColor }}>
+            {icon}
+          </StyledIcon>
         </IconButton>
       )}
       {loading && (

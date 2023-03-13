@@ -100,6 +100,7 @@ export const Repos: FunctionComponent = (): ReactElement => {
         if (!unsubscribed) {
           const sortedData = data.sort((a: { id: number }, b: { id: number }) => b.id - a.id);
           setRepos(sortedData);
+          setLoading(false);
         }
       })
       .catch((err) => {
@@ -108,9 +109,6 @@ export const Repos: FunctionComponent = (): ReactElement => {
             variant: "error",
           });
         });
-      })
-      .finally(() => {
-        setLoading(false);
       });
 
     return () => {
@@ -126,17 +124,15 @@ export const Repos: FunctionComponent = (): ReactElement => {
       </WorkspaceNavBar>
 
       {!loading && (
-        <>
+        <DataGridContainer>
           {repos.length > 0 && (
-            <DataGridContainer>
-              <DataGrid
-                autoHeight
-                rows={repos}
-                columns={columns}
-                pageSize={100}
-                rowsPerPageOptions={[100]}
-              />
-            </DataGridContainer>
+            <DataGrid
+              autoHeight
+              rows={repos}
+              columns={columns}
+              pageSize={100}
+              rowsPerPageOptions={[100]}
+            />
           )}
 
           {repos.length === 0 && (
@@ -144,7 +140,7 @@ export const Repos: FunctionComponent = (): ReactElement => {
               No repos yet
             </Alert>
           )}
-        </>
+        </DataGridContainer>
       )}
 
       {loading && (
