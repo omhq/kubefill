@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationSecrets } from "../requests/applications";
 import { ApplicationFull, Secret as SecretType } from "../types";
-import { Box, IconButton, Alert, styled, Container } from "@mui/material";
+import { Box, IconButton, Alert, styled, Container, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,15 @@ import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
 import { Actions, LinkAction, WorkspaceNavBar } from "../components";
 
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px - 24px);
+`;
+
 const DataGridContainer = styled(Container)`
   margin-top: ${({ theme }) => theme.spacing(2)};
 `;
@@ -17,6 +26,7 @@ const DataGridContainer = styled(Container)`
 const Secrets: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  let [loading, setLoading] = useState<boolean>(true);
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [secrets, setSecrets] = useState<SecretType[]>([]);
@@ -87,11 +97,13 @@ const Secrets: FunctionComponent = (): ReactElement => {
     let unsubscribed = false;
 
     if (appId) {
+      setLoading(true);
       fetchApplicationSecrets(appId)
         .then((data: any) => {
           if (!unsubscribed) {
             const sortedData = data.sort((a: { id: number }, b: { id: number }) => b.id - a.id);
             setSecrets(sortedData);
+            setLoading(false);
           }
         })
         .catch((err) => {
@@ -156,23 +168,31 @@ const Secrets: FunctionComponent = (): ReactElement => {
         </Actions>
       </WorkspaceNavBar>
 
-      <DataGridContainer>
-        {secrets.length > 0 && (
-          <DataGrid
-            autoHeight
-            rows={secrets}
-            columns={columns}
-            pageSize={100}
-            rowsPerPageOptions={[100]}
-          />
-        )}
+      {!loading && (
+        <DataGridContainer>
+          {secrets.length > 0 && (
+            <DataGrid
+              autoHeight
+              rows={secrets}
+              columns={columns}
+              pageSize={100}
+              rowsPerPageOptions={[100]}
+            />
+          )}
 
-        {secrets.length === 0 && (
-          <Alert variant="outlined" severity="info">
-            No secrets
-          </Alert>
-        )}
-      </DataGridContainer>
+          {secrets.length === 0 && (
+            <Alert variant="outlined" severity="info">
+              No secrets
+            </Alert>
+          )}
+        </DataGridContainer>
+      )}
+
+      {loading && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
+      )}
     </>
   );
 };

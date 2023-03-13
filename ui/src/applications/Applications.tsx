@@ -1,17 +1,26 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplications } from "../requests/applications";
 import { Application as ApplicationType } from "../types";
-import { Box, IconButton, Alert, Button, styled, Container } from "@mui/material";
+import { Box, IconButton, Alert, Container, styled, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import { LinkAction, WorkspaceNavBar } from "../components";
 
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px - 24px);
+`;
+
 const Applications: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
+  let [loading, setLoading] = useState<boolean>(true);
   const [applications, setApplications] = useState<ApplicationType[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const columns: GridColDef[] = [
@@ -81,11 +90,13 @@ const Applications: FunctionComponent = (): ReactElement => {
   useEffect(() => {
     let unsubscribed = false;
 
+    setLoading(true);
     fetchApplications()
       .then((data) => {
         if (!unsubscribed) {
           const sortedData = data.sort((a, b) => b.id - a.id);
           setApplications(sortedData);
+          setLoading(false);
         }
       })
       .catch((err) => {
@@ -99,7 +110,7 @@ const Applications: FunctionComponent = (): ReactElement => {
     return () => {
       unsubscribed = true;
     };
-  }, []);
+  }, [enqueueSnackbar]);
 
   return (
     <>
@@ -108,23 +119,31 @@ const Applications: FunctionComponent = (): ReactElement => {
         <LinkAction to="/applications/new">New</LinkAction>
       </WorkspaceNavBar>
 
-      <Container sx={{ mt: 2 }}>
-        {applications.length > 0 && (
-          <DataGrid
-            autoHeight={true}
-            rows={applications}
-            columns={columns}
-            pageSize={100}
-            rowsPerPageOptions={[100]}
-          />
-        )}
+      {!loading && (
+        <Container sx={{ mt: 2 }}>
+          {applications.length > 0 && (
+            <DataGrid
+              autoHeight={true}
+              rows={applications}
+              columns={columns}
+              pageSize={100}
+              rowsPerPageOptions={[100]}
+            />
+          )}
 
-        {applications.length === 0 && (
-          <Alert variant="outlined" severity="info">
-            No applications yet
-          </Alert>
-        )}
-      </Container>
+          {applications.length === 0 && (
+            <Alert variant="outlined" severity="info">
+              No applications yet
+            </Alert>
+          )}
+        </Container>
+      )}
+
+      {loading && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
+      )}
     </>
   );
 };

@@ -63,7 +63,7 @@ WORKDIR /home/kubefill
 FROM --platform=$BUILDPLATFORM docker.io/library/node:12.18.4 AS kubefill-ui
 
 WORKDIR /src
-COPY ["ui/package.json", "ui/package-lock.json", "./"]
+COPY ["ui/package.json", "./"]
 
 RUN npm install && npm cache clean --force
 

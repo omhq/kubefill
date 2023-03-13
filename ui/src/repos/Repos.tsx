@@ -3,7 +3,6 @@ import { fetchRepos } from "../requests/repos";
 import { Repo as RepoType } from "../types";
 import { Box, IconButton, Alert, styled, Container, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Crumbs } from "../Crumbs";
 import { useNavigate } from "react-router-dom";
 import { Visibility } from "@mui/icons-material";
 import { getErrorMessage } from "../requests/utils";
@@ -114,7 +113,7 @@ export const Repos: FunctionComponent = (): ReactElement => {
     return () => {
       unsubscribed = true;
     };
-  }, []);
+  }, [enqueueSnackbar]);
 
   return (
     <>

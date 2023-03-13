@@ -11,7 +11,6 @@ const StyledToolbar = styled(Toolbar)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: ${({ theme }) => theme.spacing(0, 1)};
 
   ${({ theme }) => `
     ${theme.breakpoints.down("md")} {

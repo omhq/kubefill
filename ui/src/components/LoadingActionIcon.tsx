@@ -6,6 +6,8 @@ export interface ILoadingActionIconProps {
   onClick: () => void;
   icon: string;
   iconColor?: string;
+  iconButtonSize?: "small" | "medium" | "large" | undefined;
+  iconSize?: "small" | "inherit" | "medium" | "large" | undefined;
 }
 
 const ActionsContainer = styled("div")`
@@ -22,11 +24,14 @@ export const LoadingActionIcon: FunctionComponent<ILoadingActionIconProps> = (
   props: ILoadingActionIconProps
 ): ReactElement => {
   const { loading, onClick, icon, iconColor } = props;
+  const iconButtonSize = props.iconButtonSize || "small";
+  const iconSize = props.iconSize || "small";
+
   return (
     <>
       {!loading && (
-        <IconButton size="small" disabled={loading} onClick={onClick}>
-          <StyledIcon fontSize="small" style={{ color: iconColor }}>
+        <IconButton size={iconButtonSize} disabled={loading} onClick={onClick}>
+          <StyledIcon fontSize={iconSize} style={{ color: iconColor }}>
             {icon}
           </StyledIcon>
         </IconButton>

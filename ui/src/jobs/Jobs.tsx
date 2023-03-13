@@ -1,12 +1,21 @@
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { fetchApplication, fetchApplicationJobs } from "../requests/applications";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Chip, IconButton, Alert, styled, Container } from "@mui/material";
+import { Box, Chip, IconButton, Alert, styled, Container, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Crumbs } from "../Crumbs";
 import { Visibility } from "@mui/icons-material";
 import { ApplicationFull } from "../types";
 import { WorkspaceNavBar } from "../components";
+
+const CircularProgressContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: calc(100vh - 56px - 56px - 24px);
+`;
 
 const Root = styled(Container)`
   display: flex;
@@ -16,6 +25,7 @@ const Root = styled(Container)`
 
 const Jobs: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
+  let [loading, setLoading] = useState<boolean>(true);
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<ApplicationFull>();
   const [jobs, setJobs] = useState<any[]>([]);
@@ -114,10 +124,12 @@ const Jobs: FunctionComponent = (): ReactElement => {
     let unsubscribed = false;
 
     if (appId) {
+      setLoading(true);
       fetchApplicationJobs(parseInt(appId)).then((data) => {
         if (!unsubscribed) {
           const sortedData = data.sort((a, b) => b.id - a.id);
           setJobs(sortedData);
+          setLoading(false);
         }
       });
 
@@ -159,26 +171,34 @@ const Jobs: FunctionComponent = (): ReactElement => {
         />
       </WorkspaceNavBar>
 
-      <Root>
-        {jobs.length > 0 && appId && (
-          <>
-            <div style={{ flexGrow: 1 }}>
-              <DataGrid
-                autoHeight
-                rows={jobs}
-                columns={columns}
-                pageSize={100}
-                rowsPerPageOptions={[100]}
-              />
-            </div>
-          </>
-        )}
-        {jobs.length === 0 && (
-          <Alert variant="outlined" severity="info">
-            This job has never been run
-          </Alert>
-        )}
-      </Root>
+      {!loading && (
+        <Root>
+          {jobs.length > 0 && appId && (
+            <>
+              <div style={{ flexGrow: 1 }}>
+                <DataGrid
+                  autoHeight
+                  rows={jobs}
+                  columns={columns}
+                  pageSize={100}
+                  rowsPerPageOptions={[100]}
+                />
+              </div>
+            </>
+          )}
+          {jobs.length === 0 && (
+            <Alert variant="outlined" severity="info">
+              This job has never been run
+            </Alert>
+          )}
+        </Root>
+      )}
+
+      {loading && (
+        <CircularProgressContainer>
+          <CircularProgress size={22} />
+        </CircularProgressContainer>
+      )}
     </>
   );
 };

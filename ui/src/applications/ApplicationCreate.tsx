@@ -8,8 +8,14 @@ import { fetchRepos } from "../requests/repos";
 import { FormikValues } from "formik";
 import { useNavigate } from "react-router-dom";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
-import { Hidden, Icon, IconButton } from "@mui/material";
+import { styled } from "@mui/material";
 import { Container } from "@mui/system";
+
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+`;
 
 const formDefaults = {
   name: "",
@@ -88,14 +94,14 @@ const ApplicationCreate = () => {
         </Actions>
       </WorkspaceNavBar>
 
-      <Container sx={{ mt: 2 }}>
+      <FormContainer sx={{ mt: 2 }} maxWidth={false}>
         <ApplicationForm
           repos={repos}
           initialValues={formDefaults}
           formValid={setFormValid}
           handleValueUpdate={handleValueUpdate}
         />
-      </Container>
+      </FormContainer>
     </>
   );
 };

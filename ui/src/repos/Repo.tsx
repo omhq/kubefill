@@ -13,6 +13,7 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
+  styled,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -23,6 +24,12 @@ import RepoForm from "./RepoForm";
 import { FormikValues } from "formik";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 import { Box } from "@mui/system";
+
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+`;
 
 const Repo: FunctionComponent = (): ReactElement => {
   const { repoId } = useParams<{ repoId: string }>();
@@ -139,7 +146,7 @@ const Repo: FunctionComponent = (): ReactElement => {
           });
         });
     }
-  }, [repoId]);
+  }, [repoId, enqueueSnackbar]);
 
   if (!repoId) {
     return <></>;
@@ -212,7 +219,7 @@ const Repo: FunctionComponent = (): ReactElement => {
         </Actions>
       </WorkspaceNavBar>
 
-      <Container sx={{ mt: 2 }}>
+      <FormContainer sx={{ mt: 2 }} maxWidth={false}>
         <Typography variant="body1" fontWeight={600} gutterBottom={true}>
           Branch
         </Typography>
@@ -250,7 +257,7 @@ const Repo: FunctionComponent = (): ReactElement => {
             />
           </Box>
         )}
-      </Container>
+      </FormContainer>
     </>
   );
 };

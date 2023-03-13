@@ -48,12 +48,14 @@ export interface ILinkActionProps {
   icon?: string;
   selected?: boolean;
   iconColor?: string;
+  iconSize?: "small" | "inherit" | "medium" | "large" | undefined;
 }
 
 export const LinkAction: FunctionComponent<ILinkActionProps> = (
   props: ILinkActionProps
 ): ReactElement => {
   const { to, selected, anchorStyle, children, icon, iconColor } = props;
+  const iconSize = props.iconSize || "small";
 
   return (
     <>
@@ -71,7 +73,7 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
       ) : (
         <Link style={{ color: "unset", ...anchorStyle }} to={to}>
           <StyledIconButton color="inherit" size="small" selected={Boolean(selected)}>
-            <StyledIcon fontSize="small" style={{ color: iconColor }}>
+            <StyledIcon fontSize={iconSize} style={{ color: iconColor }}>
               {icon}
             </StyledIcon>
           </StyledIconButton>

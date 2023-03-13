@@ -19,6 +19,7 @@ import { Crumbs } from "../Crumbs";
 const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
+  max-width: 800px;
 `;
 
 const CircularProgressContainer = styled(Container)`
@@ -45,6 +46,7 @@ const Run: FunctionComponent = (): ReactElement => {
   };
 
   useEffect(() => {
+    // TODO: something weird going on here
     const obj = { ...cloneData };
 
     for (const key in formData) {
@@ -54,6 +56,7 @@ const Run: FunctionComponent = (): ReactElement => {
     }
 
     setCloneData(obj);
+    // eslint-disable-next-line
   }, [formData]);
 
   const handleRun = () => {
@@ -104,10 +107,9 @@ const Run: FunctionComponent = (): ReactElement => {
           <Crumbs
             crumbs={[
               {
-                label: "applications",
+                label: "apps",
                 path: "/",
                 current: false,
-                icon: "apps",
               },
               {
                 label: application.app.name,
@@ -118,7 +120,6 @@ const Run: FunctionComponent = (): ReactElement => {
                 label: "run",
                 path: `/applications/${application.app.id}/run`,
                 current: true,
-                icon: "play_arrow",
               },
             ]}
           />
@@ -126,11 +127,7 @@ const Run: FunctionComponent = (): ReactElement => {
         {!application && <HorizontalFiller />}
 
         <Actions>
-          {jobId && (
-            <LinkAction to={`/applications/${appId}/runs/${jobId}`} icon="list">
-              Logs
-            </LinkAction>
-          )}
+          {jobId && <LinkAction to={`/applications/${appId}/runs/${jobId}`}>Logs</LinkAction>}
 
           <LoadingAction
             disabled={loading || loadingApp}
@@ -138,6 +135,7 @@ const Run: FunctionComponent = (): ReactElement => {
             onClick={handleRun}
             icon="play_circle"
             iconColor={theme.palette.success.main}
+            iconSize="medium"
           >
             Run
           </LoadingAction>
@@ -145,7 +143,7 @@ const Run: FunctionComponent = (): ReactElement => {
       </WorkspaceNavBar>
 
       {!loadingApp && (
-        <FormContainer>
+        <FormContainer maxWidth={false}>
           {application?.manifests && (
             <ApplicationForm
               defaultData={application.manifests.data}

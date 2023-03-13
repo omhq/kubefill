@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  styled,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -25,6 +26,12 @@ import { truncate } from "lodash";
 import SecretForm from "./SecretForm";
 import { FormikValues } from "formik";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
+
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+`;
 
 const EditSecret: FunctionComponent = (): ReactElement => {
   const { appId, secretId } = useParams<{ appId: string; secretId: string }>();
@@ -117,7 +124,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
           });
         });
     }
-  }, [secretId]);
+  }, [appId, secretId, enqueueSnackbar]);
 
   useEffect(() => {
     let unsubscribed = false;
@@ -125,7 +132,9 @@ const EditSecret: FunctionComponent = (): ReactElement => {
     if (appId) {
       fetchApplication(parseInt(appId))
         .then((data) => {
-          setApplication(data);
+          if (!unsubscribed) {
+            setApplication(data);
+          }
         })
         .catch((err) => {
           err.json().then((resp: any) => {
@@ -139,7 +148,7 @@ const EditSecret: FunctionComponent = (): ReactElement => {
     return () => {
       unsubscribed = true;
     };
-  }, [appId]);
+  }, [appId, enqueueSnackbar]);
 
   if (!secretId) {
     throw new Error("The specified secret identifier is invalid.");
@@ -220,14 +229,14 @@ const EditSecret: FunctionComponent = (): ReactElement => {
       </WorkspaceNavBar>
 
       {secret && formDefaults && (
-        <Container sx={{ mt: 2 }}>
+        <FormContainer sx={{ mt: 2 }} maxWidth={false}>
           <SecretForm
             secretId={secret.id}
             initialValues={formDefaults}
             formValid={setFormValid}
             handleValueUpdate={handleValueUpdate}
           />
-        </Container>
+        </FormContainer>
       )}
     </>
   );

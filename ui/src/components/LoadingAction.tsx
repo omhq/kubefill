@@ -12,12 +12,14 @@ export interface ILoadingActionProps extends LoadingButtonProps {
   icon?: string;
   lgOnly?: boolean;
   iconColor?: string;
+  iconButtonSize?: "small" | "medium" | "large" | undefined;
+  iconSize?: "small" | "inherit" | "medium" | "large" | undefined;
 }
 
 export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
   props: ILoadingActionProps
 ): ReactElement => {
-  const { children, icon, iconColor, ...otherProps } = props;
+  const { children, icon, iconColor, iconButtonSize, iconSize, ...otherProps } = props;
 
   return (
     <>
@@ -27,6 +29,8 @@ export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
           onClick={otherProps.onClick as () => void}
           loading={Boolean(otherProps.loading)}
           iconColor={iconColor}
+          iconButtonSize={iconButtonSize}
+          iconSize={iconSize}
         />
       ) : (
         <Root

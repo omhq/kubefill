@@ -26,7 +26,7 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 
 const App = () => {
-  const [_, dispatch] = useReducer(reducer, initialState);
+  const [, dispatch] = useReducer(reducer, initialState);
   const auth = useLocalStorageAuth();
   const navigate = useNavigate();
   const isAuthenticated = !!(auth && Object.keys(auth).length);
@@ -47,7 +47,7 @@ const App = () => {
           navigate("/login");
         });
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, navigate, isAuthenticated]);
 
   return (
     <>

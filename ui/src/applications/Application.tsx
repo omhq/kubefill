@@ -20,6 +20,7 @@ import {
   Icon,
   IconButton,
   Menu,
+  styled,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -31,6 +32,12 @@ import {
   WorkspaceNavBar,
 } from "../components";
 import { MenuItemLink } from "../components/MenuItemLink";
+
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+`;
 
 const Application = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -128,7 +135,7 @@ const Application = () => {
           });
         });
     }
-  }, [appId]);
+  }, [appId, enqueueSnackbar]);
 
   useEffect(() => {
     fetchRepos()
@@ -222,6 +229,7 @@ const Application = () => {
               to={`/applications/${appId}/run`}
               icon="play_circle"
               iconColor={theme.palette.success.main}
+              iconSize="medium"
             >
               Run
             </LinkAction>
@@ -244,14 +252,14 @@ const Application = () => {
       </WorkspaceNavBar>
 
       {repos && formDefaults && (
-        <Container sx={{ mt: 3 }}>
+        <FormContainer sx={{ mt: 3 }} maxWidth={false}>
           <ApplicationForm
             repos={repos}
             initialValues={formDefaults}
             formValid={setFormValid}
             handleValueUpdate={handleValueUpdate}
           />
-        </Container>
+        </FormContainer>
       )}
     </>
   );
