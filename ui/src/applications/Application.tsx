@@ -218,7 +218,11 @@ const Application = () => {
           <Hidden smDown={true}>
             <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
             <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
-            <LinkAction to={`/applications/${appId}/run`} icon="play_circle">
+            <LinkAction
+              to={`/applications/${appId}/run`}
+              icon="play_circle"
+              iconColor={theme.palette.success.main}
+            >
               Run
             </LinkAction>
           </Hidden>
