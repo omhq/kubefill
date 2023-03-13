@@ -6,13 +6,14 @@ import { LOCAL_STORAGE } from "../constants";
 import { authLoginSuccess } from "../reducers";
 import { getErrorMessage } from "../requests/utils";
 import { useSnackbar } from "notistack";
-import { Container, FormHelperText, styled } from "@mui/material";
+import { Container, FormHelperText, Typography, styled } from "@mui/material";
 
 import { LoadingAction, TextField } from "../components";
 
-const Root = styled(Container)`
+const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
+  max-width: 400px;
   row-gap: ${({ theme }) => theme.spacing(1)};
   margin-top: ${({ theme }) => theme.spacing(2)};
 `;
@@ -90,7 +91,11 @@ const Login: FunctionComponent<ILoginProps> = (props: ILoginProps): ReactElement
   }, [formik.errors, formValid]);
 
   return (
-    <Root>
+    <FormContainer sx={{ mt: 2 }} maxWidth={false}>
+      <Typography component="h1" variant="h6" sx={{ my: 1 }}>
+        Sign in
+      </Typography>
+
       <StyledForm noValidate={true} autoComplete="off">
         <TextField
           required={true}
@@ -135,7 +140,7 @@ const Login: FunctionComponent<ILoginProps> = (props: ILoginProps): ReactElement
           </LoadingAction>
         </ActionsContainer>
       </StyledForm>
-    </Root>
+    </FormContainer>
   );
 };
 
