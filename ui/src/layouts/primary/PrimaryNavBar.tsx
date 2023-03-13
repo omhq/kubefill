@@ -22,7 +22,7 @@ export const PrimaryNavBar: FunctionComponent = (): ReactElement => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <StyledToolbar>
           <Link to="/">
             <StyledSvg
