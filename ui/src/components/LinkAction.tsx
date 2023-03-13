@@ -6,13 +6,27 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-interface IStyleButtonProps {
+interface IStyledIconButtonProps {
+  selected: boolean;
+}
+
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (propName) => propName !== "selected",
+})<IStyledIconButtonProps>`
+  background-color: ${({ selected }) => (selected ? "#ffffff28" : undefined)};
+
+  &:hover {
+    background-color: ${({ selected }) => (selected ? "#ffffff28" : undefined)};
+  }
+`;
+
+interface IStyledButtonProps {
   selected: boolean;
 }
 
 const StyledButton = styled(Button, {
   shouldForwardProp: (propName) => propName !== "selected",
-})<IStyleButtonProps>`
+})<IStyledButtonProps>`
   border-radius: ${({ theme }) => theme.spacing(0.5)};
   text-transform: none;
 
@@ -56,11 +70,11 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
         </StyledLink>
       ) : (
         <Link style={{ color: "unset", ...anchorStyle }} to={to}>
-          <IconButton color="inherit" size="small">
+          <StyledIconButton color="inherit" size="small" selected={Boolean(selected)}>
             <StyledIcon fontSize="small" style={{ color: iconColor }}>
               {icon}
             </StyledIcon>
-          </IconButton>
+          </StyledIconButton>
         </Link>
       )}
     </>
