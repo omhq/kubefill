@@ -4,7 +4,7 @@ import { fetchApplication, startJob } from "../requests/applications";
 import ApplicationForm from "./ApplicationForm";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
-import { Alert, CircularProgress, Container, styled } from "@mui/material";
+import { Alert, CircularProgress, Container, styled, useTheme } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage } from "../requests/utils";
 import {
@@ -95,6 +95,8 @@ const Run: FunctionComponent = (): ReactElement => {
     }
   }, [appId]);
 
+  const theme = useTheme();
+
   return (
     <>
       <WorkspaceNavBar>
@@ -135,6 +137,7 @@ const Run: FunctionComponent = (): ReactElement => {
             loading={loading}
             onClick={handleRun}
             icon="play_circle"
+            iconColor={theme.palette.success.main}
           >
             Run
           </LoadingAction>

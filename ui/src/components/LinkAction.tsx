@@ -23,18 +23,23 @@ const StyledButton = styled(Button, {
   }
 `;
 
+const StyledIcon = styled(Icon)`
+  font-display: block;
+`;
+
 export interface ILinkActionProps {
   to: string;
   children?: ReactNode;
   anchorStyle?: any;
-  icon?: string | undefined;
+  icon?: string;
   selected?: boolean;
+  iconColor?: string;
 }
 
 export const LinkAction: FunctionComponent<ILinkActionProps> = (
   props: ILinkActionProps
 ): ReactElement => {
-  const { to, selected, anchorStyle, children, icon } = props;
+  const { to, selected, anchorStyle, children, icon, iconColor } = props;
 
   return (
     <>
@@ -52,7 +57,9 @@ export const LinkAction: FunctionComponent<ILinkActionProps> = (
       ) : (
         <Link style={{ color: "unset", ...anchorStyle }} to={to}>
           <IconButton color="inherit" size="small">
-            <Icon fontSize="small">{icon}</Icon>
+            <StyledIcon fontSize="small" style={{ color: iconColor }}>
+              {icon}
+            </StyledIcon>
           </IconButton>
         </Link>
       )}

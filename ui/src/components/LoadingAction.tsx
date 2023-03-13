@@ -11,12 +11,13 @@ const Root = styled(LoadingButton)`
 export interface ILoadingActionProps extends LoadingButtonProps {
   icon?: string;
   lgOnly?: boolean;
+  iconColor?: string;
 }
 
 export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
   props: ILoadingActionProps
 ): ReactElement => {
-  const { children, icon, ...otherProps } = props;
+  const { children, icon, iconColor, ...otherProps } = props;
 
   return (
     <>
@@ -25,6 +26,7 @@ export const LoadingAction: FunctionComponent<ILoadingActionProps> = (
           icon={icon}
           onClick={otherProps.onClick as () => void}
           loading={Boolean(otherProps.loading)}
+          iconColor={iconColor}
         />
       ) : (
         <Root
