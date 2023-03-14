@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { getErrorMessage, getServerPort } from "../requests/utils";
-import { WS_PATH, SERVER_HOSTNAME } from "../constants";
+import { WS_PATH, WS_SECURE, SERVER_HOSTNAME } from "../constants";
 import { Actions, LoadingAction, WorkspaceNavBar } from "../components";
 
 const JobContainer = styled(Container)`
@@ -120,7 +120,7 @@ const Job = () => {
     if (ws === null && uniqueId) {
       const PORT = getServerPort();
       const connection = new WebSocket(
-        `ws://${DOMAIN}${PORT ? `:${PORT}` : ""}/${WS_PATH}?id=${uniqueId}`
+        `${WS_SECURE ? `wss` : `ws`}://${DOMAIN}${PORT ? `:${PORT}` : ""}/${WS_PATH}?id=${uniqueId}`
       );
 
       setWs(connection);
