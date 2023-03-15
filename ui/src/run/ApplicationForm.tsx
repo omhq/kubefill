@@ -2,6 +2,7 @@ import { IChangeEvent } from "@rjsf/core";
 import Form from "@rjsf/mui";
 import validator from "@rjsf/validator-ajv8";
 import { useState } from "react";
+import { TextField } from "../components";
 import { FormData } from "../types";
 
 const ApplicationForm = ({
@@ -33,9 +34,8 @@ const ApplicationForm = ({
       onError={log("errors")}
       showErrorList={false}
       liveValidate
-    >
-      <></>
-    </Form>
+      widgets={{ TextWidget: TextField as any }}
+    />
   );
 };
 
