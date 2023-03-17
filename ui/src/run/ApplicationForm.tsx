@@ -4,6 +4,7 @@ import validator from "@rjsf/validator-ajv8";
 import { useCallback, useState } from "react";
 import { FormData } from "../types";
 import { getTemplates, getWidgets } from "../rjsf";
+import { Box } from "@mui/material";
 
 export interface IApplicationForm {
   defaultData: any;
@@ -30,18 +31,20 @@ const ApplicationForm = (props: IApplicationForm) => {
   const log = (type: string) => console.log.bind(console, type);
 
   return (
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      formData={data}
-      validator={validator}
-      onChange={handleOnChange}
-      onError={log("errors")}
-      showErrorList={false}
-      liveValidate
-      widgets={widgets}
-      templates={templates}
-    />
+    <Box mt={2}>
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        formData={data}
+        validator={validator}
+        onChange={handleOnChange}
+        onError={log("errors")}
+        showErrorList={false}
+        liveValidate
+        widgets={widgets}
+        templates={templates}
+      />
+    </Box>
   );
 };
 
