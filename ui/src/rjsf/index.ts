@@ -5,7 +5,7 @@ import { ArrayFieldTemplate } from "./ArrayFieldTemplate";
 import { ArrayFieldTitleTemplate } from "./ArrayFieldTitleTemplate";
 import { DescriptionFieldTemplate } from "./DescriptionFieldTemplate";
 import { FieldTemplate } from "./FieldTemplate";
-import { MoveDownButton, MoveUpButton, RemoveButton } from "./IconButtons";
+import { AddButton, MoveDownButton, MoveUpButton, RemoveButton } from "./IconButtons";
 import { ObjectFieldTemplate } from "./ObjectFieldTemplate";
 import { TitleFieldTemplate } from "./TitleFieldTemplate";
 
@@ -27,7 +27,7 @@ export const getTemplates = () => ({
   ObjectFieldTemplate,
   TitleFieldTemplate,
   ButtonTemplates: {
-    AddButton: originalTemplate.ButtonTemplates?.AddButton,
+    AddButton,
     MoveDownButton,
     MoveUpButton,
     RemoveButton,

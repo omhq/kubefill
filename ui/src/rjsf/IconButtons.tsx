@@ -1,5 +1,5 @@
 import { IconButton, IconButtonProps as MuiIconButtonProps } from "@mui/material";
-import { ArrowDownward, ArrowUpward, Remove } from "@mui/icons-material";
+import { Add, ArrowDownward, ArrowUpward, Remove } from "@mui/icons-material";
 
 import {
   FormContextType,
@@ -81,5 +81,26 @@ export const RemoveButton = <
       color="error"
       icon={<Remove fontSize={iconType === "default" ? undefined : "small"} />}
     />
+  );
+};
+
+export const AddButton = <
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any
+>(
+  props: IconButtonProps<T, S, F>
+): ReactElement => {
+  const { uiSchema, registry, ...otherProps } = props;
+  const { translateString } = registry;
+  return (
+    <IconButton
+      title={translateString(TranslatableString.AddItemButton)}
+      color="primary"
+      size="small"
+      {...(otherProps as any)}
+    >
+      <Add fontSize="small" />
+    </IconButton>
   );
 };
