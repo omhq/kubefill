@@ -18,26 +18,26 @@ const CircularProgressContainer = styled(Container)`
   height: calc(100vh - 56px - 56px - 24px);
 `;
 
+const dateFormatter = new Intl.DateTimeFormat("en-US");
+
 const Applications: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   let [loading, setLoading] = useState<boolean>(true);
   const [applications, setApplications] = useState<ApplicationType[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", minWidth: 50 },
-    { field: "name", headerName: "NAME", flex: 0.2, width: 100 },
-    { field: "repo_id", headerName: "REPO", flex: 0.2, width: 100 },
-    { field: "manifest_path", headerName: "MANIFEST PATH", flex: 0.2, width: 100 },
+    { field: "name", headerName: "NAME", flex: 0.5 },
+    { field: "repo_id", headerName: "REPO", width: 100 },
+    { field: "manifest_path", headerName: "MANIFEST PATH", flex: 0.5 },
     {
       field: "created",
       headerName: "CREATED ON",
-      flex: 0.6,
-      width: 200,
+      width: 140,
       valueGetter: (params) => {
         let result = [];
         if (params.row.created_at) {
           const date = new Date(params.row.created_at);
-          result.push(date);
+          result.push(dateFormatter.format(date));
         } else {
           result = ["Unknown"];
         }
@@ -47,13 +47,12 @@ const Applications: FunctionComponent = (): ReactElement => {
     {
       field: "updated",
       headerName: "UPDATED ON",
-      flex: 0.6,
-      width: 200,
+      width: 140,
       valueGetter: (params) => {
         let result = [];
         if (params.row.updated_at) {
           const date = new Date(params.row.updated_at);
-          result.push(date);
+          result.push(dateFormatter.format(date));
         } else {
           result = ["Unknown"];
         }
