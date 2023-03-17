@@ -14,6 +14,8 @@ import { ReactElement } from "react";
 const GridContainer = styled(Grid)`
   display: flex;
   flex-direction: column;
+  row-gap: ${({ theme }) => theme.spacing(1)};
+  margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
 /** The `ArrayFieldTemplate` component is the template used to render all items in an array.
