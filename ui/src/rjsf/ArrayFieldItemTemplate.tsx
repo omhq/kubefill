@@ -23,6 +23,12 @@ const GridItem = styled(Grid)`
   padding-top: ${({ theme }) => theme.spacing(1)};
 `;
 
+const ActionsGrid = styled(Grid)`
+  display: flex;
+  flex-direction: row;
+  column-gap: ${({ theme }) => theme.spacing(1)};
+`;
+
 const Content = styled("div")`
   flex-grow: 1;
 `;
@@ -67,7 +73,7 @@ export const ArrayFieldItemTemplate = <
         <Content>{children}</Content>
 
         {hasToolbar && (
-          <Grid item={true}>
+          <ActionsGrid item={true}>
             {(hasMoveUp || hasMoveDown) && (
               <MoveUpButton
                 style={btnStyle}
@@ -95,7 +101,7 @@ export const ArrayFieldItemTemplate = <
                 registry={registry}
               />
             )}
-          </Grid>
+          </ActionsGrid>
         )}
       </GridItem>
     </GridContainer>
