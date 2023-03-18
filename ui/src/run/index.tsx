@@ -20,6 +20,7 @@ const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
   max-width: 800px;
+  margin-bottom: 30px;
 `;
 
 const CircularProgressContainer = styled(Container)`
@@ -37,7 +38,7 @@ const Run: FunctionComponent = (): ReactElement => {
   const [cloneData, setCloneData] = useState<FormData>();
   const [application, setApplication] = useState<ApplicationFull>();
   let [loading, setLoading] = useState<boolean>(false);
-  const [loadingApp, setLoadingApp] = useState(false);
+  const [loadingApp, setLoadingApp] = useState(true);
   const [jobId, setJobId] = useState<number | null>(null);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -86,15 +87,18 @@ const Run: FunctionComponent = (): ReactElement => {
   useEffect(() => {
     if (appId) {
       setLoadingApp(true);
-      fetchApplication(parseInt(appId)).then((data) => {
-        if (data?.manifests?.data) {
-          setFormData(data.manifests.data);
-          setCloneData(data.manifests.data);
-        }
+      fetchApplication(parseInt(appId))
+        .then((data) => {
+          if (data?.manifests?.data) {
+            setFormData(data.manifests.data);
+            setCloneData(data.manifests.data);
+          }
 
-        setApplication(data);
-        setLoadingApp(false);
-      });
+          setApplication(data);
+        })
+        .finally(() => {
+          setLoadingApp(false);
+        });
     }
   }, [appId]);
 
@@ -144,22 +148,21 @@ const Run: FunctionComponent = (): ReactElement => {
 
       {!loadingApp && (
         <FormContainer maxWidth={false}>
-          {application?.manifests && (
+          {application && application.manifests ? (
             <ApplicationForm
               defaultData={application.manifests.data}
               schema={application.manifests.schema}
               uiSchema={application.manifests.ui_schema}
               handleFormChange={handleFormChange}
             />
-          )}
-
-          {!application?.manifests && (
+          ) : (
             <Alert severity="warning">
               Missing manifests! Make sure a repository is connected to this app.
             </Alert>
           )}
         </FormContainer>
       )}
+
       {loadingApp && (
         <CircularProgressContainer>
           <CircularProgress size={22} />

@@ -43,7 +43,9 @@ const ApplicationForm = (props: IApplicationForm) => {
         liveValidate
         widgets={widgets}
         templates={templates}
-      />
+      >
+        <></>
+      </Form>
     </Box>
   );
 };

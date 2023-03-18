@@ -186,6 +186,7 @@ const Jobs: FunctionComponent = (): ReactElement => {
               </div>
             </>
           )}
+
           {jobs.length === 0 && (
             <Alert variant="outlined" severity="info">
               This job has never been run

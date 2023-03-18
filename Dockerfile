@@ -65,11 +65,11 @@ FROM --platform=$BUILDPLATFORM docker.io/library/node:12.18.4 AS kubefill-ui
 WORKDIR /src
 COPY ["ui/package.json", "./"]
 
-RUN npm install && npm cache clean --force
+RUN yarn install && yarn cache clean --all
 
 COPY ["ui/", "."]
 
-RUN NODE_ENV='production' NODE_OPTIONS=--max_old_space_size=8192 npm run build
+RUN NODE_ENV='production' NODE_OPTIONS=--max_old_space_size=8192 yarn build
 
 ####################################################################################################
 # Build stage which performs the actual build of binaries
