@@ -20,7 +20,7 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
     fullWidth,
     multiline,
     rows,
-    size,
+    size = "small",
     error,
   } = props;
 
