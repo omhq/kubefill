@@ -60,7 +60,7 @@ WORKDIR /home/kubefill
 ####################################################################################################
 # UI stage
 ####################################################################################################
-FROM --platform=$BUILDPLATFORM docker.io/library/node:12.18.4 AS kubefill-ui
+FROM --platform=$BUILDPLATFORM docker.io/library/node:16 AS kubefill-ui
 
 WORKDIR /src
 COPY ["ui/package.json", "./"]
