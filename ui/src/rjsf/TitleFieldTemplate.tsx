@@ -24,9 +24,8 @@ export const TitleFieldTemplate = <
 ): ReactElement => {
   const { id, title } = props;
   return (
-    <Box id={id}>
-      <Title variant="h5">{title}</Title>
-      <Divider />
-    </Box>
+    <Title id={id} variant="h5">
+      {title}
+    </Title>
   );
 };
