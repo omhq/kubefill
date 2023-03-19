@@ -822,18 +822,19 @@ func (s *Server) applicationJobHandler(applicationService *application.Service, 
 			}
 
 			jobConfig.Labels = labels
-			resp, err := s.clientset.Run(jobName, jobConfig)
-
-			if err != nil {
-				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
-				return
-			}
 
 			spec, _ := json.Marshal(jobPayload.Spec)
 			meta, _ := json.Marshal(jobPayload.ObjectMeta)
 			newJob.Spec = spec
 			newJob.Meta = meta
 			jobService.Update(newJob)
+
+			resp, err := s.clientset.Run(jobName, jobConfig)
+
+			if err != nil {
+				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
+				return
+			}
 
 			respBytes, err := json.Marshal(JobRunResponse{
 				Job:    newJob,
