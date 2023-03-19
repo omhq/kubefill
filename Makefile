@@ -7,7 +7,7 @@ BIN_NAME=kubefill
 DEV_IMAGE?=false
 
 DOCKER_PUSH?=false
-IMAGE_TAG=latest
+IMAGE_TAG=1.0.0
 
 .PHONY: all
 all: image

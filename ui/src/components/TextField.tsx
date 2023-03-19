@@ -6,8 +6,19 @@ export type TTextFieldProps = TextFieldProps & {};
 export const TextField: FunctionComponent<TTextFieldProps> = (
   props: TTextFieldProps
 ): ReactElement => {
-  const { id, disabled, label, name, onBlur, onChange, onFocus, placeholder, required, value } =
-    props;
+  const {
+    id,
+    disabled,
+    label,
+    name,
+    onBlur,
+    onChange,
+    onFocus,
+    placeholder,
+    required,
+    value,
+    fullWidth,
+  } = props;
 
   return (
     <MuiTextField
@@ -25,6 +36,7 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
       placeholder={placeholder}
       required={required}
       value={value}
+      fullWidth={fullWidth}
     />
   );
 };
