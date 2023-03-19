@@ -18,13 +18,17 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
     required,
     value,
     fullWidth,
+    multiline,
+    rows,
+    size,
+    error,
   } = props;
 
   return (
     <MuiTextField
       InputLabelProps={{ shrink: true, style: { fontSize: 13 } }}
       InputProps={{ style: { fontSize: 13 } }}
-      size="small"
+      size={size}
       variant="outlined"
       disabled={disabled}
       id={id}
@@ -37,6 +41,9 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
       required={required}
       value={value}
       fullWidth={fullWidth}
+      multiline={multiline}
+      rows={rows}
+      error={error}
     />
   );
 };
