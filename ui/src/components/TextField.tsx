@@ -11,6 +11,7 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
     disabled,
     label,
     name,
+    size = "small",
     onBlur,
     onChange,
     onFocus,
@@ -20,8 +21,8 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
     fullWidth,
     multiline,
     rows,
-    size = "small",
     error,
+    type,
   } = props;
 
   return (
@@ -44,6 +45,7 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
       multiline={multiline}
       rows={rows}
       error={error}
+      type={type}
     />
   );
 };

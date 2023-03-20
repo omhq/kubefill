@@ -1,5 +1,4 @@
 import { generateTemplates, generateWidgets } from "@rjsf/mui";
-import { TextField } from "../components";
 import { ArrayFieldItemTemplate } from "./ArrayFieldItemTemplate";
 import { ArrayFieldTemplate } from "./ArrayFieldTemplate";
 import { ArrayFieldTitleTemplate } from "./ArrayFieldTitleTemplate";
@@ -14,7 +13,6 @@ const originalTemplate = generateTemplates();
 
 export const getWidgets = () => ({
   ...originalWidgets,
-  TextWidget: TextField as any,
 });
 
 export const getTemplates = () => ({

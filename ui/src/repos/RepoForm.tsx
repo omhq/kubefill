@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { Box, FormHelperText } from "@mui/material";
+import { Box, FormHelperText, TextField } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { CreateValidationSchema, UpdateValidationSchema } from "./ValidationSchemas";
 import { RepoCreate } from "../types";
-import { TextField } from "../components";
 
 type RepoFormParams = {
   repoId: number;

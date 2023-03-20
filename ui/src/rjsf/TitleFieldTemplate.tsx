@@ -7,8 +7,7 @@ import { ReactElement } from "react";
 
 const Title = styled(Typography)`
   font-size: 14px;
-  color: #8e9297;
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
+  margin-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
 /** The `TitleField` is the template to use to render the title of a field
@@ -23,6 +22,7 @@ export const TitleFieldTemplate = <
   props: TitleFieldProps<T, S, F>
 ): ReactElement => {
   const { id, title } = props;
+
   return (
     <Title id={id} variant="h5">
       {title}

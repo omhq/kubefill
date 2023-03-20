@@ -4,7 +4,7 @@ import { DescriptionFieldProps, FormContextType, RJSFSchema, StrictRJSFSchema } 
 import { Fragment, ReactElement } from "react";
 
 const Description = styled(Typography)`
-  font-size: 12px;
+  font-size: 14px;
   margin: ${({ theme }) => theme.spacing(2, 0)};
 `;
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { FormikValues, useFormik } from "formik";
 import { ValidationSchema } from "./ValidationSchema";
-import { TextField } from "../components";
+import { TextField } from "@mui/material";
 
 type ApplicationFormParams = {
   repos: any[];
@@ -47,7 +47,6 @@ const ApplicationForm = ({
           error={!!formik.touched?.name && !!formik.errors?.name}
           id="name"
           name="name"
-          size="small"
           label="Name"
           value={formik.values?.name}
           onChange={formik.handleChange}
@@ -67,7 +66,6 @@ const ApplicationForm = ({
         <InputLabel id="repo-id-label">Repo</InputLabel>
         <Select
           required={true}
-          size="small"
           error={!!formik.touched?.repo_id && !!formik.errors?.repo_id}
           labelId="repo-id-label"
           id="repo_id"
@@ -96,7 +94,6 @@ const ApplicationForm = ({
           error={!!formik.touched?.manifest_path && !!formik.errors?.manifest_path}
           id="manifest_path"
           name="manifest_path"
-          size="small"
           label="Manifests path"
           value={formik.values?.manifest_path || ""}
           onChange={formik.handleChange}
