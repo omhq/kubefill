@@ -29,7 +29,7 @@ export const TextField: FunctionComponent<TTextFieldProps> = (
     <MuiTextField
       InputLabelProps={{ shrink: true, style: { fontSize: 13 } }}
       InputProps={{ style: { fontSize: 13 } }}
-      size={size}
+      size="small"
       variant="outlined"
       disabled={disabled}
       id={id}
