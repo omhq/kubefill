@@ -120,7 +120,9 @@ const Job = () => {
     if (ws === null && uniqueId) {
       const PORT = getServerPort();
       const connection = new WebSocket(
-        `${WS_SECURE ? `wss` : `ws`}://${DOMAIN}${PORT ? `:${PORT}` : ""}/${WS_PATH}?id=${uniqueId}`
+        `${WS_SECURE === "true" ? `wss` : `ws`}://${DOMAIN}${
+          PORT ? `:${PORT}` : ""
+        }/${WS_PATH}?id=${uniqueId}`
       );
 
       setWs(connection);
