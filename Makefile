@@ -1,5 +1,3 @@
-PROJECT=kubefill
-IMAGE=kubefill
 CURRENT_DIR=$(shell pwd)
 DIST_DIR=${CURRENT_DIR}/dist
 CLI_NAME=kubefill

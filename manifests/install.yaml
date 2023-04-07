@@ -169,6 +169,13 @@ spec:
       containers:
       - name: main
         image: postgres:12-alpine
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         ports:
           - containerPort: 5432
         env:
@@ -257,8 +264,15 @@ spec:
     spec:
       containers:
         - name: kubefill-repo-server
-          image: kubefill/kubefill:latest
+          image: kubefill/kubefill:1.0.0
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: REPO_ROOT
               value: /home/kubefill/repos
@@ -338,8 +352,15 @@ spec:
     spec:
       containers:
       - name: kubefill-server
-        image: kubefill/kubefill:latest
+        image: kubefill/kubefill:1.0.0
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         env:
         - name: LOGS_PATH
           value: /home/kubefill/logs
