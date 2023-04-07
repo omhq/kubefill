@@ -5,17 +5,19 @@ import (
 	"unicode"
 )
 
-func StripComments(lines []string) (ret []string) {
-	for _, l := range lines {
-		l = strings.TrimSpace(l)
-
-		split := strings.SplitN(l, "#", 2)
+func StripComments(lines []string) (result []string) {
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		split := strings.SplitN(line, "#", 2)
 
 		if len(split) == 0 || split[0] == "" {
 			continue
 		}
 
-		ret = append(ret, strings.TrimRightFunc(split[0], unicode.IsSpace))
+		result = append(
+			result,
+			strings.TrimRightFunc(split[0], unicode.IsSpace),
+		)
 	}
 
 	return

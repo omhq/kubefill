@@ -12,8 +12,7 @@ import (
 
 	"github.com/kubefill/kubefill/mdx/document"
 	"github.com/kubefill/kubefill/mdx/renderer/cmark"
-	"github.com/kubefill/kubefill/mdx/runner"
-	"github.com/kubefill/kubefill/mdx/shell"
+	util "github.com/kubefill/kubefill/mdx/shell"
 )
 
 func readMarkdownFile(path string) ([]byte, error) {
@@ -55,6 +54,25 @@ func readMarkdownFile(path string) ([]byte, error) {
 	return data, nil
 }
 
+var supportedExecutables = []string{
+	"bash",
+	"bat", // fallback to sh
+	"sh",
+	"sh-raw",
+	"shell",
+	"zsh",
+	"go",
+}
+
+func isSupported(lang string) bool {
+	for _, item := range supportedExecutables {
+		if item == lang {
+			return true
+		}
+	}
+	return false
+}
+
 func getCodeBlocks(
 	allowUnknown bool,
 	path string,
@@ -74,7 +92,7 @@ func getCodeBlocks(
 
 	filtered := make(document.CodeBlocks, 0, len(blocks))
 	for _, b := range blocks {
-		if allowUnknown || (b.Language() != "" && runner.IsSupported(b.Language())) {
+		if allowUnknown || (b.Language() != "" && isSupported(b.Language())) {
 			filtered = append(filtered, b)
 		}
 	}
@@ -93,8 +111,8 @@ func main() {
 		lines := block.Lines()
 
 		fmt.Printf("name=%s, first_command=%s, commands=%s, intro=%s\n", block.Name(),
-			shell.TryGetNonCommentLine(lines),
-			fmt.Sprintf("%d", len(shell.StripComments(lines))),
+			util.TryGetNonCommentLine(lines),
+			fmt.Sprintf("%d", len(util.StripComments(lines))),
 			block.Intro(),
 		)
 	}
