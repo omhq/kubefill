@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -12,7 +14,6 @@ import (
 
 	"github.com/kubefill/kubefill/mdx/document"
 	"github.com/kubefill/kubefill/mdx/renderer/cmark"
-	util "github.com/kubefill/kubefill/mdx/shell"
 )
 
 func readMarkdownFile(path string) ([]byte, error) {
@@ -54,25 +55,6 @@ func readMarkdownFile(path string) ([]byte, error) {
 	return data, nil
 }
 
-var supportedExecutables = []string{
-	"bash",
-	"bat", // fallback to sh
-	"sh",
-	"sh-raw",
-	"shell",
-	"zsh",
-	"go",
-}
-
-func isSupported(lang string) bool {
-	for _, item := range supportedExecutables {
-		if item == lang {
-			return true
-		}
-	}
-	return false
-}
-
 func getCodeBlocks(
 	allowUnknown bool,
 	path string,
@@ -90,16 +72,88 @@ func getCodeBlocks(
 
 	blocks := document.CollectCodeBlocks(node)
 
-	filtered := make(document.CodeBlocks, 0, len(blocks))
-	for _, b := range blocks {
-		if allowUnknown || (b.Language() != "" && isSupported(b.Language())) {
-			filtered = append(filtered, b)
-		}
-	}
-	return filtered, nil
+	return blocks, nil
 }
 
-const tlsFileMode = os.FileMode(int(0o700))
+type Attributes struct {
+	Image          string `json:"image"`
+	RequestsMemory string `json:"requestsMemory"`
+	RequestsCpu    string `json:"requestsCpu"`
+}
+
+func getAttributes(lines []string) (Attributes, error) {
+	var attributes Attributes
+	for index, line := range lines {
+		line = strings.TrimSpace(line)
+		/* When we encounter an empty line, we stop looking for attributes. */
+		if line == "" {
+			break
+		}
+
+		commentParts := strings.SplitN(line, "#", 2)
+
+		/* This is not a comment. We stop looking for attributes when we encounter
+		 * an empty line.
+		 */
+		if len(commentParts) == 1 {
+			return attributes, errors.New(
+				fmt.Sprintf(
+					"[syntax error at line %d] Line break expected between attributes and commands",
+					index+1,
+				),
+			)
+		} else {
+			attributeParts := strings.SplitN(commentParts[1], ":", 2)
+
+			/* We consider a comment an attribute only it is splittable
+			 * at ":". Otherwise we stop looking for attributes at this point by
+			 * erroring out.
+			 */
+			if len(attributeParts) != 2 {
+				return attributes, errors.New(
+					fmt.Sprintf(
+						"[syntax error at line %d] Unexpected non-attribute comment lines",
+						index+1,
+					),
+				)
+			}
+
+			attributeName := strings.TrimSpace(attributeParts[0])
+			attributeValue := strings.TrimSpace(attributeParts[1])
+			switch attributeName {
+			case "image":
+				{
+					attributes.Image = attributeValue
+					break
+				}
+
+			case "requests.memory":
+				{
+					attributes.RequestsMemory = attributeValue
+					break
+				}
+
+			case "requests.cpu":
+				{
+					attributes.RequestsCpu = attributeValue
+					break
+				}
+
+			default:
+				{
+					return attributes, errors.New(
+						fmt.Sprintf(
+							"[syntax error at line %d] Unknown attribute '%s'",
+							index+1,
+							attributeName,
+						),
+					)
+				}
+			}
+		}
+	}
+	return attributes, nil
+}
 
 func main() {
 	blocks, err := getCodeBlocks(false, "./README.md")
@@ -109,11 +163,15 @@ func main() {
 
 	for _, block := range blocks {
 		lines := block.Lines()
+		attributes, err := getAttributes(lines)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		fmt.Printf("name=%s, first_command=%s, commands=%s, intro=%s\n", block.Name(),
-			util.TryGetNonCommentLine(lines),
-			fmt.Sprintf("%d", len(util.StripComments(lines))),
-			block.Intro(),
-		)
+		bytes, err := json.MarshalIndent(attributes, "", "    ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(bytes))
 	}
 }
