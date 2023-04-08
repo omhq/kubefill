@@ -17,14 +17,22 @@ To select a different file than `README.md`, use `--filename`.
 
 The easiest way on MacOS is to use Homebrew:
 
-```sh { name=update-brew }
-$ brew update
+```python
+# image: python:3.11
+# requests.memory: "64Mi"
+# requests.cpu: "250m"
+
+print("1")
 ```
 
 Install runme:
 
-```sh { name=install-runme }
-$ brew install stateful/tap/runme
+```python
+# image: python:3.9
+# requests.memory: "64Mi"
+# requests.cpu: "250m"
+
+print("2")
 ```
 
 Alternatively, check out [runme's releases](https://github.com/stateful/runme/releases) and select
@@ -46,8 +54,12 @@ $ runme help
 
 ### List
 
-```sh { name=runme-list closeTerminalOnSuccess=false interactive=false }
-$ runme list
+```python
+# image: python:3.7
+# requests.memory: "64Mi"
+# requests.cpu: "250m"
+
+print("3")
 ```
 
 ### Print

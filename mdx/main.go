@@ -155,23 +155,44 @@ func getAttributes(lines []string) (Attributes, error) {
 	return attributes, nil
 }
 
+type FinalBlock struct {
+	Parsed     bool       `json:"parsed"`
+	Attributes Attributes `json:"attributes"`
+}
+
 func main() {
 	blocks, err := getCodeBlocks(false, "./README.md")
+	full := map[string]FinalBlock{}
+
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
 
 	for _, block := range blocks {
 		lines := block.Lines()
+		name := block.Name()
 		attributes, err := getAttributes(lines)
+		finalBlock := FinalBlock{Parsed: false}
+
+		log.Println(name)
+
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
-		bytes, err := json.MarshalIndent(attributes, "", "    ")
-		if err != nil {
-			log.Fatal(err)
+		if err == nil {
+			finalBlock.Attributes = attributes
+			finalBlock.Parsed = true
 		}
-		fmt.Println(string(bytes))
+
+		full[name] = finalBlock
 	}
+
+	fullAsJson, err := json.Marshal(full)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(string(fullAsJson))
 }
