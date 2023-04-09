@@ -75,10 +75,19 @@ func getCodeBlocks(
 	return blocks, nil
 }
 
+type ContainerResource struct {
+	Cpu    string `json:"cpu"`
+	Memory string `json:"memory"`
+}
+
+type ContainerResources struct {
+	Limits   ContainerResource `json:"limits"`
+	Requests ContainerResource `json:"requests"`
+}
+
 type Attributes struct {
-	Image          string `json:"image"`
-	RequestsMemory string `json:"requestsMemory"`
-	RequestsCpu    string `json:"requestsCpu"`
+	Image     string             `json:"image"`
+	Resources ContainerResources `json:"resources"`
 }
 
 func getAttributes(lines []string) (Attributes, error) {
@@ -127,15 +136,27 @@ func getAttributes(lines []string) (Attributes, error) {
 					break
 				}
 
-			case "requests.memory":
+			case "resources.limits.memory":
 				{
-					attributes.RequestsMemory = attributeValue
+					attributes.Resources.Limits.Memory = attributeValue
 					break
 				}
 
-			case "requests.cpu":
+			case "resources.limits.cpu":
 				{
-					attributes.RequestsCpu = attributeValue
+					attributes.Resources.Limits.Cpu = attributeValue
+					break
+				}
+
+			case "resources.requests.memory":
+				{
+					attributes.Resources.Requests.Memory = attributeValue
+					break
+				}
+
+			case "resources.requests.cpu":
+				{
+					attributes.Resources.Requests.Cpu = attributeValue
 					break
 				}
 
@@ -158,6 +179,7 @@ func getAttributes(lines []string) (Attributes, error) {
 type FinalBlock struct {
 	Parsed     bool       `json:"parsed"`
 	Attributes Attributes `json:"attributes"`
+	Index      int        `json:"index"`
 }
 
 func main() {
@@ -168,13 +190,11 @@ func main() {
 		fmt.Printf("%v\n", err)
 	}
 
-	for _, block := range blocks {
+	for index, block := range blocks {
 		lines := block.Lines()
 		name := block.Name()
 		attributes, err := getAttributes(lines)
-		finalBlock := FinalBlock{Parsed: false}
-
-		log.Println(name)
+		finalBlock := FinalBlock{Index: index, Parsed: false}
 
 		if err != nil {
 			log.Println(err)
@@ -188,7 +208,7 @@ func main() {
 		full[name] = finalBlock
 	}
 
-	fullAsJson, err := json.Marshal(full)
+	fullAsJson, err := json.MarshalIndent(full, "", "    ")
 
 	if err != nil {
 		log.Println(err)
