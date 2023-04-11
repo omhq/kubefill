@@ -564,7 +564,7 @@ func (s *Server) applicationSecretsHandler(applicationService *application.Servi
 
 		switch r.Method {
 		case "GET":
-			secrets, err := secretService.GetAllByAppId(appIdUint)
+			secrets := secretService.GetAllByAppId(appIdUint)
 
 			if err != nil {
 				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)
@@ -575,10 +575,10 @@ func (s *Server) applicationSecretsHandler(applicationService *application.Servi
 
 			for _, s := range secrets {
 				data = append(data, secret.SecretHttpResp{
-					Id:         s.ID,
+					Id:         uint(s.Id),
 					Name:       s.Name,
-					Created_At: s.CreatedAt.Format(time.RFC3339Nano),
-					Updated_At: s.UpdatedAt.Format(time.RFC3339Nano),
+					Created_At: s.Created_At,
+					Updated_At: s.Updated_At,
 				})
 			}
 
@@ -589,7 +589,13 @@ func (s *Server) applicationSecretsHandler(applicationService *application.Servi
 				return
 			}
 
-			io.WriteString(rw, string(secretsBytes))
+			secretsAsString := string(secretsBytes)
+
+			if secretsAsString != "null" {
+				io.WriteString(rw, secretsAsString)
+			}
+
+			io.WriteString(rw, "[]")
 		case "POST":
 			var newSecretPayload secret.Secret
 			err := decodeJSONBody(rw, r, &newSecretPayload)
@@ -769,7 +775,7 @@ func (s *Server) applicationJobHandler(applicationService *application.Service, 
 			}
 
 			secretsMap := make(map[string]string)
-			secrets, err := secretService.GetAllByAppId(appIdUint)
+			secrets := secretService.GetAllByAppId(appIdUint)
 
 			if err != nil {
 				JSONError(rw, errorResp{Message: err.Error()}, http.StatusInternalServerError)

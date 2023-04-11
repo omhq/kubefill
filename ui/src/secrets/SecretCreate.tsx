@@ -98,13 +98,7 @@ const SecretCreate: FunctionComponent = (): ReactElement => {
         />
 
         <Actions>
-          <LoadingAction
-            disabled={!formValid}
-            loading={loading}
-            onClick={handleCreate}
-            color="inherit"
-            icon="save"
-          >
+          <LoadingAction disabled={!formValid} loading={loading} onClick={handleCreate}>
             Create
           </LoadingAction>
         </Actions>

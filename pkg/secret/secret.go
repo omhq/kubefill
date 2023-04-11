@@ -10,10 +10,10 @@ func NewService(db *db.Connection) *SecretService {
 	}
 }
 
-func (s *SecretService) GetAllByAppId(appId uint) ([]db.Secret, error) {
-	var secrets []db.Secret
-	err := s.db.Where("application_id = ?", appId).Find(&secrets).Error
-	return secrets, err
+func (s *SecretService) GetAllByAppId(appId uint) []Secret {
+	var secrets []Secret
+	s.db.Where("application_id = ?", appId).Find(&secrets)
+	return secrets
 }
 
 func (s *SecretService) GetByKey(name string) (db.Secret, error) {
