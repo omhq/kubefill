@@ -15,6 +15,7 @@ import {
   WorkspaceNavBar,
 } from "../components";
 import { Crumbs } from "../Crumbs";
+import { isManifests } from "../utils";
 
 const FormContainer = styled(Container)`
   display: flex;
@@ -130,25 +131,27 @@ const Run: FunctionComponent = (): ReactElement => {
         )}
         {!application && <HorizontalFiller />}
 
-        <Actions>
-          {jobId && <LinkAction to={`/applications/${appId}/runs/${jobId}`}>Logs</LinkAction>}
+        {application && isManifests(application.manifests) && (
+          <Actions>
+            {jobId && <LinkAction to={`/applications/${appId}/runs/${jobId}`}>Logs</LinkAction>}
 
-          <LoadingAction
-            disabled={loading || loadingApp}
-            loading={loading}
-            onClick={handleRun}
-            icon="play_circle"
-            iconColor={theme.palette.success.main}
-            iconSize="medium"
-          >
-            Run
-          </LoadingAction>
-        </Actions>
+            <LoadingAction
+              disabled={loading || loadingApp}
+              loading={loading}
+              onClick={handleRun}
+              icon="play_circle"
+              iconColor={theme.palette.success.main}
+              iconSize="medium"
+            >
+              Run
+            </LoadingAction>
+          </Actions>
+        )}
       </WorkspaceNavBar>
 
       {!loadingApp && (
         <FormContainer maxWidth={false}>
-          {application && application.manifests ? (
+          {application && isManifests(application.manifests) ? (
             <ApplicationForm
               defaultData={application.manifests.data}
               schema={application.manifests.schema}
