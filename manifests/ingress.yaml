@@ -5,17 +5,22 @@ metadata:
   name: kubefill-server-ingress
   namespace: kubefill
   annotations:
-    ingress.kubernetes.io/app-root: "/"
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
 spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - DOMAIN_NAME
+      secretName: SECRET_NAME
   rules:
-    - host: DOMAIN_HERE
+    - host: DOMAIN_NAME
       http:
         paths:
-          - backend:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
               service:
                 name: kubefill-server
                 port:
                   number: 8080
-            path: "/"
-            pathType: ImplementationSpecific

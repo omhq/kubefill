@@ -264,7 +264,7 @@ spec:
     spec:
       containers:
         - name: kubefill-repo-server
-          image: kubefill/kubefill:1.0.0
+          image: kubefill/server:1.0.4
           imagePullPolicy: Always
           resources:
             requests:
@@ -274,10 +274,16 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           env:
+            - name: HOME
+              value: /root
+            - name: SSH_ROOT
+              value: /root/.ssh
+            - name: SSH_KNOWN_HOSTS
+              value: /root/.ssh/know_hosts
             - name: REPO_ROOT
               value: /home/kubefill/repos
-            - name: SSH_ROOT
-              value: /home/kubefill/ssh
+            - name: GODEBUG
+              value: "gctrace=1"
           ports:
             - name: http
               containerPort: 8081
@@ -350,31 +356,35 @@ spec:
       labels:
         app: kubefill-server
     spec:
-      containers:
-      - name: kubefill-server
-        image: kubefill/kubefill:1.0.0
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        env:
-        - name: LOGS_PATH
-          value: /home/kubefill/logs
-        - name: SECRETS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: secrets-key
-              key: key
-        ports:
-        - name: http
-          containerPort: 8080
-        command:
-        - kubefill-server
       serviceAccountName: kubefill-server
+      containers:
+        - name: kubefill-server
+          image: kubefill/server:1.0.4
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+          - name: HOME
+            value: /root
+          - name: LOGS_PATH
+            value: /home/kubefill/logs
+          - name: SECRETS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secrets-key
+                key: key
+          - name: GODEBUG
+            value: "gctrace=1"
+          ports:
+            - name: http
+              containerPort: 8080
+          command:
+            - kubefill-server
 
 ---
 apiVersion: v1  
