@@ -1,18 +1,12 @@
-# Kubefill
+# Selfservice
 
-Run kubernetes workloads through user friendly forms.
-
-## Why does this exist
-
-This project puts version controlled html forms and markdown docs between a user and the workloads in your k8s cluster.
-
-![kubefill](https://user-images.githubusercontent.com/849403/219342375-d6798267-4eee-4c5b-b877-e163dbf012cf.jpg)
+Simple Jenkins alternative.
 
 ## Install
 
 ```bash
 kubectl create namespace kubefill
-kubectl apply -n kubefill -f https://raw.githubusercontent.com/kubefill/kubefill/main/manifests/install.yaml
+kubectl apply -n kubefill -f ./install.yaml
 ```
 
 ## Port Forwarding
@@ -45,4 +39,12 @@ spec:
                   number: 8080
             path: "/"
             pathType: ImplementationSpecific
+```
+
+# Development
+
+- Install go 1.19.
+
+```bash
+go mod tidy
 ```
