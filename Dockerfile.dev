@@ -1,16 +1,10 @@
 ####################################################################################################
 # kubefill-dev
 ####################################################################################################
-FROM kubefill/kubefill-base:latest
+FROM kubefill-base
 COPY kubefill /usr/local/bin/
 
 USER root
-
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/home/kubefill/awscliv2.zip" && \
-    unzip /home/kubefill/awscliv2.zip
-
-RUN /home/kubefill/aws/install
-RUN rm /home/kubefill/awscliv2.zip && rm -fr /home/kubefill/aws
 
 RUN ln -s /usr/local/bin/kubefill /usr/local/bin/kubefill-server && \
     ln -s /usr/local/bin/kubefill /usr/local/bin/kubefill-reposerver
