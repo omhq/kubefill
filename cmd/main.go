@@ -7,6 +7,7 @@ import (
 	cli "github.com/kubefill/kubefill/cmd/kubefill/commands"
 	reposerver "github.com/kubefill/kubefill/cmd/reposerver/commands"
 	server "github.com/kubefill/kubefill/cmd/server/commands"
+	wsserver "github.com/kubefill/kubefill/cmd/wsserver/commands"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +30,8 @@ func main() {
 		command = server.NewCommand()
 	case "kubefill-reposerver":
 		command = reposerver.NewCommand()
+	case "kubefill-wsserver":
+		command = wsserver.NewCommand()
 	default:
 		command = cli.NewCommand()
 	}
