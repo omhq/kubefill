@@ -1,12 +1,10 @@
 package server
 
-type Message struct {
-	data []byte
-}
+type Message []byte
 
 type RoomMessage struct {
-	data []byte
-	Id   string
+	Message
+	Id string
 }
 
 type JoinRoom struct {
@@ -50,7 +48,7 @@ func (h *Hub) run() {
 		case m := <-h.broadcast:
 			for client := range h.clients {
 				select {
-				case client.send <- m.data:
+				case client.send <- m:
 				default:
 					delete(h.clients, client)
 					close(client.send)
@@ -77,7 +75,7 @@ func (h *Hub) run() {
 			connections := h.rooms[m.Id]
 			for c := range connections {
 				select {
-				case c.send <- m.data:
+				case c.send <- m.Message:
 				default:
 					if len(connections) == 0 {
 						delete(h.rooms, m.Id)

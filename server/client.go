@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -53,10 +52,6 @@ type Client struct {
 	hub  *Hub
 	conn *websocket.Conn
 	send chan []byte
-}
-
-func wrapMessage(message string) string {
-	return fmt.Sprintf("{\"data\": \"%s\"}", message)
 }
 
 func getAction(event string) string {
@@ -130,7 +125,7 @@ func (c *Client) readPump() {
 				for {
 					select {
 					case lineOrErr := <-input:
-						c.hub.broadcastToRoom <- RoomMessage{data: []byte(wrapMessage(lineOrErr)), Id: c.Id}
+						c.hub.broadcastToRoom <- RoomMessage{Message: []byte(lineOrErr), Id: c.Id}
 					case <-stop:
 						return
 					case <-ctx.Done():
