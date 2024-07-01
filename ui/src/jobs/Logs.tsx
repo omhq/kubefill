@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Highlight from "react-highlight";
 import { fetchLogs } from "../requests/logs";
 import { getErrorMessage } from "../requests/utils";
@@ -66,7 +66,7 @@ const Logs = ({ job, ws }: { job: any; ws: WebSocket | null }) => {
   useEffect(() => {
     setVh(getVh());
     setVw(getVw());
-  }, []);
+  }, [getVh, getVw]);
 
   const scrollToBottom = () => {
     if (logWrapRef.current) {
@@ -99,13 +99,16 @@ const Logs = ({ job, ws }: { job: any; ws: WebSocket | null }) => {
         }
       }
     }
-  }, [ws, job]);
+  }, [ws, job, enqueueSnackbar]);
 
   useEffect(() => {
     if (ws && ws.OPEN) {
       ws.onmessage = function (event) {
-        const json = JSON.parse(event.data);
-        setLiveLogs((prev) => [...prev, ...[json.data]]);
+        try {
+          setLiveLogs((prev) => [...prev, ...[event.data]]);
+        } catch (err) {
+          console.error(err);
+        }
       };
     }
   }, [ws]);
@@ -126,7 +129,7 @@ const Logs = ({ job, ws }: { job: any; ws: WebSocket | null }) => {
           });
         });
       });
-  }, [job.id]);
+  }, [enqueueSnackbar, job.id]);
 
   return (
     <>

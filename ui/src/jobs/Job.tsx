@@ -14,7 +14,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Hidden,
   styled,
   Typography,
   useMediaQuery,

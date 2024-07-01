@@ -225,7 +225,7 @@ const Application = () => {
           <Hidden smDown={true}>
             <LinkAction to={`/applications/${appId}/secrets`}>Secrets</LinkAction>
             <LinkAction to={`/applications/${appId}/runs`}>Runs</LinkAction>
-            <LinkAction to={`/applications/${appId}/run`}>Form</LinkAction>
+            <LinkAction to={`/applications/${appId}/run`}>Run</LinkAction>
           </Hidden>
 
           <Hidden smUp={true}>
@@ -237,7 +237,7 @@ const Application = () => {
               <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
                 <MenuItemLink to={`/applications/${appId}/secrets`}>Secrets</MenuItemLink>
                 <MenuItemLink to={`/applications/${appId}/runs`}>Runs</MenuItemLink>
-                <MenuItemLink to={`/applications/${appId}/run`}>Form</MenuItemLink>
+                <MenuItemLink to={`/applications/${appId}/run`}>Run</MenuItemLink>
               </Menu>
             )}
           </Hidden>
