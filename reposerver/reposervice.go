@@ -112,11 +112,11 @@ func (s RepoService) Sync(_ context.Context, syncRequest *SyncRequest) (*SyncRes
 	repoName := strings.TrimSuffix(repoParts[len(repoParts)-1], ".git")
 
 	baseUrl, port := ParseGitURL(repo)
-	CreateKnownHostsFile()
+	createKnownHostsFile()
 
-	if !CheckHostInKnownHosts(baseUrl) {
+	if !checkHostInKnownHosts(baseUrl) {
 		fmt.Println("Host not in known_hosts", baseUrl, port)
-		AddHostToKnownHosts(baseUrl, port)
+		addHostToKnownHosts(baseUrl, port)
 	}
 
 	r, err := doSync(repoId, repo, branch, getFullRepoDir(s.repoRoot, owner, repoName))

@@ -17,19 +17,32 @@ import (
 )
 
 func ParseGitURL(url string) (string, string) {
-	re := regexp.MustCompile("^git@(.*):([0-9]+)/")
-	match := re.FindStringSubmatch(url)
-	if match != nil {
-		baseUrl := match[1]
-		port := match[2]
+	reSSH := regexp.MustCompile(`^ssh://git@(.*):([0-9]+)/`)
+	matchSSH := reSSH.FindStringSubmatch(url)
+	if matchSSH != nil {
+		baseUrl := matchSSH[1]
+		port := matchSSH[2]
 		return baseUrl, port
 	}
 
-	splitResult := strings.Split(url, "@")
-	baseUrl := strings.Split(splitResult[1], ":")[0]
-	port := "22"
+	// Regular expression to match URLs with the format git@host:port/
+	reGit := regexp.MustCompile(`^git@(.*):([0-9]+)/`)
+	matchGit := reGit.FindStringSubmatch(url)
+	if matchGit != nil {
+		baseUrl := matchGit[1]
+		port := matchGit[2]
+		return baseUrl, port
+	}
 
-	return baseUrl, port
+	// Handle URLs without port
+	splitResult := strings.Split(url, "@")
+	if len(splitResult) > 1 {
+		baseUrl := strings.Split(splitResult[1], ":")[0]
+		port := "22"
+		return baseUrl, port
+	}
+
+	return "", "22"
 }
 
 func logError(message string, err error) {
@@ -42,21 +55,29 @@ func logError(message string, err error) {
 	}).Error(message)
 }
 
-func CreateKnownHostsFile() {
-	knownHostsPath := os.Getenv("HOME") + "/.ssh/known_hosts"
-	_, err := os.Stat(knownHostsPath)
+func createKnownHostsFile() {
+	sshDir := os.Getenv("HOME") + "/.ssh"
+	knownHostsFile := sshDir + "/known_hosts"
 
-	if os.IsNotExist(err) {
-		_, err := os.Create(knownHostsPath)
+	if _, err := os.Stat(sshDir); os.IsNotExist(err) {
+		err := os.MkdirAll(sshDir, 0700)
 		if err != nil {
-			log.Fatalf("failed to create known_hosts file: %s", err)
+			logError("failed to create .ssh directory", err)
+			return
 		}
-	} else if err != nil {
-		log.Fatalf("failed to check if known_hosts file exists: %s", err)
+	}
+
+	if _, err := os.Stat(knownHostsFile); os.IsNotExist(err) {
+		file, err := os.Create(knownHostsFile)
+		if err != nil {
+			logError("failed to create known_hosts file", err)
+			return
+		}
+		file.Close()
 	}
 }
 
-func AddHostToKnownHosts(host string, port string) {
+func addHostToKnownHosts(host string, port string) {
 	fmt.Println("Adding host to known_hosts", host, port)
 
 	cmd := exec.Command("ssh-keyscan", "-p", port, host)
@@ -76,7 +97,7 @@ func AddHostToKnownHosts(host string, port string) {
 	}
 }
 
-func CheckHostInKnownHosts(host string) bool {
+func checkHostInKnownHosts(host string) bool {
 	file, err := os.Open(os.Getenv("HOME") + "/.ssh/known_hosts")
 	if err != nil {
 		log.Fatal(err)

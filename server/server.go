@@ -167,7 +167,7 @@ func (s *Server) Run() {
 
 	go informer.StartInformer(s.ServerConfig.LogsPath)
 	go func() {
-		log.Infof("Starting server...")
+		log.Infof("Started server...")
 		s.checkServeErr("http", http.ListenAndServe(":8080", nil))
 	}()
 
