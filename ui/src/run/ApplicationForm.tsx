@@ -1,7 +1,7 @@
 import { IChangeEvent } from "@rjsf/core";
 import Form from "@rjsf/mui";
 import validator from "@rjsf/validator-ajv8";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { FormData } from "../types";
 import { getTemplates, getWidgets } from "../rjsf";
 import { Box } from "@mui/material";
@@ -18,11 +18,8 @@ const widgets = getWidgets();
 
 const ApplicationForm = (props: IApplicationForm) => {
   const { defaultData, schema, uiSchema, handleFormChange } = props;
-  const [data, setData] = useState<FormData>(defaultData);
-
   const handleOnChange = useCallback(
     (data: IChangeEvent) => {
-      setData(data.formData);
       handleFormChange(data.formData);
     },
     [handleFormChange]
@@ -35,7 +32,7 @@ const ApplicationForm = (props: IApplicationForm) => {
       <Form
         schema={schema}
         uiSchema={uiSchema}
-        formData={data}
+        formData={defaultData}
         validator={validator}
         onChange={handleOnChange}
         onError={log("errors")}
