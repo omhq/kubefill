@@ -112,9 +112,9 @@ metadata:
   labels:
     app: kubefill-repo-server
 spec:
-  storageClassName: manual
+  storageClassName: gp2
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
@@ -127,9 +127,9 @@ metadata:
   labels:
     app: kubefill-repo-server
 spec:
-  storageClassName: manual
+  storageClassName: gp2
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
@@ -142,9 +142,9 @@ metadata:
   labels:
     app: kubefill-postgres
 spec:
-  storageClassName: manual
+  storageClassName: gp2
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
@@ -183,6 +183,8 @@ spec:
             value: postgres
           - name: POSTGRES_PASSWORD
             value: postgres
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
         readinessProbe:
           exec:
             command:
@@ -275,31 +277,31 @@ spec:
               cpu: "500m"
           env:
             - name: HOME
-              value: /root
+              value: /home/kubefill
             - name: SSH_ROOT
-              value: /root/.ssh
+              value: /home/kubefill/.ssh
             - name: SSH_KNOWN_HOSTS
-              value: /root/.ssh/know_hosts
+              value: /home/kubefill/.ssh/know_hosts
             - name: REPO_ROOT
               value: /home/kubefill/repos
             - name: GODEBUG
-              value: ""
+              value: "gctrace=1"
           ports:
             - name: http
               containerPort: 8081
           command:
             - kubefill-reposerver
           volumeMounts:
-            - mountPath: /home/kubefill/ssh
+            - mountPath: /home/kubefill/.ssh
               name: ssh-persistent-storage
             - mountPath: /home/kubefill/repos
               name: repos-persistent-storage
       initContainers:
         - name: ssh-volume-mount-hack
           image: busybox
-          command: ["sh", "-c", "chown -R 999:999 /home/kubefill/ssh"]
+          command: ["sh", "-c", "chown -R 999:999 /home/kubefill/.ssh"]
           volumeMounts:
-            - mountPath: /home/kubefill/ssh
+            - mountPath: /home/kubefill/.ssh
               name: ssh-persistent-storage
         - name: repos-volume-mount-hack
           image: busybox
@@ -370,7 +372,7 @@ spec:
               cpu: "500m"
           env:
           - name: HOME
-            value: /root
+            value: /home/kubefill
           - name: LOGS_PATH
             value: /home/kubefill/logs
           - name: SECRETS_KEY
@@ -379,7 +381,7 @@ spec:
                 name: secrets-key
                 key: key
           - name: GODEBUG
-            value: ""
+            value: "gctrace=1"
           ports:
             - name: http
               containerPort: 8080

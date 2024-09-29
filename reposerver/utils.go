@@ -83,24 +83,24 @@ func addHostToKnownHosts(host string, port string) {
 	cmd := exec.Command("ssh-keyscan", "-p", port, host)
 	keyscanOutput, err := cmd.Output()
 	if err != nil {
-		log.Fatalf("failed to scan host keys: %s", err)
+		log.Errorf("failed to scan host keys: %s", err)
 	}
 
 	f, err := os.OpenFile(os.Getenv("HOME")+"/.ssh/known_hosts", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatalf("failed to open known_hosts file: %s", err)
+		log.Errorf("failed to open known_hosts file: %s", err)
 	}
 	defer f.Close()
 
 	if _, err = f.WriteString(string(keyscanOutput)); err != nil {
-		log.Fatalf("failed to write to known_hosts file: %s", err)
+		log.Errorf("failed to write to known_hosts file: %s", err)
 	}
 }
 
 func checkHostInKnownHosts(host string) bool {
 	file, err := os.Open(os.Getenv("HOME") + "/.ssh/known_hosts")
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	defer file.Close()
 
@@ -112,7 +112,7 @@ func checkHostInKnownHosts(host string) bool {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	return false
@@ -142,7 +142,7 @@ func getFullRepoDir(rootDir string, owner string, repoName string) string {
 }
 
 func doSync(repoId string, repoUrl string, repoBranch string, repoDir string) (*git.Repository, error) {
-	os.Setenv("SSH_KNOWN_HOSTS", "/root/.ssh/known_hosts")
+	os.Setenv("SSH_KNOWN_HOSTS", os.Getenv("HOME")+"/.ssh/known_hosts")
 
 	fmt.Println("Syncing repo", repoId, repoUrl, repoBranch, repoDir)
 

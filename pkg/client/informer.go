@@ -91,13 +91,13 @@ func saveLog(jobId uint, podName string, logMessage string, logsPath string) {
 
 	f, err := os.OpenFile(filepath.Join(rootPath, "logs.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	if _, err := f.Write([]byte(logMessage + "\n")); err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	if err := f.Close(); err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
