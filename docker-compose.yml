@@ -2,7 +2,8 @@ version: "3.9"
 services:
 
   kubefill-postgres:
-    image: postgres:12-alpine
+    image: postgres:13.1
+    platform: linux/x86_64
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
       interval: 10s
@@ -18,33 +19,73 @@ services:
       - 5432:5432
 
   kubefill-repo-server:
-    build:
-      dockerfile: ./Dockerfile
-    image: kubefill/kubefill:dev-6623c18-dirty
+    image: kubefill/workspace:latest
+    platform: linux/x86_64
+    working_dir: /home/kubefill/cmd
     ports:
       - 8081:8081
-    command: ["kubefill-reposerver"]
+    tty: true
+    stdin_open: true
+    command: go run main.go
     volumes:
+      - ./logs:/home/kubefill/logs
       - ./repos:/home/kubefill/repos
-      - ./ssh:/home/kubefill/ssh
+      - ./ssh:/home/kubefill/.ssh
+
+      - ./wsserver:/home/kubefill/wsserver
+      - ./server:/home/kubefill/server
+      - ./reposerver:/home/kubefill/reposerver
+
+      - ./cmd:/home/kubefill/cmd
+      - ./common:/home/kubefill/common
+      - ./pkg:/home/kubefill/pkg
+      - ./ui:/home/kubefill/ui
+      - ./util:/home/kubefill/util
+
+      - ./embed.go:/home/kubefill/embed.go
+      - ./go.mod:/home/kubefill/go.mod
+      - ./go.sum:/home/kubefill/go.sum
+
     environment:
+      - BINARY_NAME=kubefill-reposerver
+      - HOME=/home/kubefill
+
       - REPO_ROOT=/home/kubefill/repos
-      - SSH_ROOT=/home/kubefill/ssh
+      - SSH_ROOT=/home/kubefill/.ssh
+      - SSH_KNOWN_HOSTS=/home/kubefill/.ssh/know_hosts
 
   kubefill-server:
-    build:
-      dockerfile: ./Dockerfile
-    image: kubefill/kubefill:dev-6623c18-dirty
-    depends_on:
-      - kubefill-repo-server
-      - kubefill-postgres
+    image: kubefill/workspace:latest
+    platform: linux/x86_64
+    working_dir: /home/kubefill/cmd
     ports:
       - 8080:8080
-    command: ["kubefill-server"]
+    tty: true
+    stdin_open: true
+    command: go run main.go
     volumes:
-      - ~/.kube/config:/home/kubefill/.kube/config
       - ./logs:/home/kubefill/logs
+
+      - ./wsserver:/home/kubefill/wsserver
+      - ./server:/home/kubefill/server
+      - ./reposerver:/home/kubefill/reposerver
+
+      - ./cmd:/home/kubefill/cmd
+      - ./common:/home/kubefill/common
+      - ./pkg:/home/kubefill/pkg
+      - ./ui:/home/kubefill/ui
+      - ./util:/home/kubefill/util
+
+      - ./embed.go:/home/kubefill/embed.go
+      - ./go.mod:/home/kubefill/go.mod
+      - ./go.sum:/home/kubefill/go.sum
+
+      - ~/.kube/config:/home/kubefill/.kube/config
+
     environment:
+      - BINARY_NAME=kubefill-server
+      - HOME=/home/kubefill
+
       - SECRETS_KEY=
       - LOGS_PATH=/home/kubefill/logs
       - KUBECONFIG=/home/kubefill/.kube/config
